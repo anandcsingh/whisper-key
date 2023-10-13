@@ -1,14 +1,14 @@
 import {MerkleMap, Field, PublicKey} from "o1js"  
 
-export class MerkleMapDatabase {
+export class MerkleMapState {
   map: MerkleMap;
   nextID: bigint;
   length: number;
 }
 
 
-export abstract class BackingStore {
-  async getMerkleMap(): Promise<MerkleMapDatabase> {
+export abstract class ZkMentatStore {
+  async getMerkleMap(): Promise<MerkleMapState> {
     let map = new MerkleMap();
     let index = 0;
 
@@ -22,9 +22,9 @@ export abstract class BackingStore {
       length: all.size,
     };
   }
-  abstract getAll(): Promise<Map<PublicKey, any>>;
-  abstract getAllHashes(): Promise<Map<PublicKey, Field>>;
-  abstract get(publicKey: PublicKey): Promise<any | undefined | null>;
-  abstract upsert(martialArtist: any): Promise<void>;
+  abstract getAll(): Promise<Map<any, any>>;
+  abstract getAllHashes(): Promise<Map<any, Field>>;
+  abstract get(key: any): Promise<any | undefined | null>;
+  abstract upsert(entity: any): Promise<void>;
   abstract clearStore(): Promise<void>;
 }
