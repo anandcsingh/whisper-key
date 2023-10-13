@@ -4,23 +4,25 @@
     "description": "A simple datastore for use in o1js Zero Knowledge smart contracts",
     "main": "index.js",
     "scripts": {
-      "test": "jest"
+        "test": "jest"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/anandcsingh/whisper-key.git"
+        "type": "git",
+        "url": "git+https://github.com/anandcsingh/whisper-key.git"
     },
     "keywords": [
-      "mina",
-      "zk",
-      "o1js",
-      "database"
+        "mina",
+        "zk",
+        "o1js",
+        "database"
     ],
     "author": "Anand Singh",
     "license": "Apache-2.0",
     "bugs": {
-      "url": "https://github.com/anandcsingh/whisper-key/issues"
+        "url": "https://github.com/anandcsingh/whisper-key/issues"
     },
-    "homepage": "https://github.com/anandcsingh/whisper-key#readme"
-  }
-  
+    "homepage": "https://github.com/anandcsingh/whisper-key#readme",
+    "dependencies": {
+        "o1js": "^0.13.1"
+    }
+}
