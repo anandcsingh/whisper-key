@@ -1,5 +1,5 @@
 {
-    "name": "zk-mentat",
+    "name": "zk-mentat-store",
     "version": "1.0.0",
     "description": "A simple datastore for use in o1js Zero Knowledge smart contracts",
     "main": "index.js",
