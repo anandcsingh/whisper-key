@@ -1,4 +1,4 @@
-import {MerkleMap, Field, PublicKey} from "o1js"  
+import { MerkleMap, Field, PublicKey } from "o1js"
 
 export class MerkleMapState {
   map: MerkleMap;
