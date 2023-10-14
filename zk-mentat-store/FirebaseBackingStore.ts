@@ -106,12 +106,12 @@ export class FirebaseBackingStore extends ZkMentatStore {
             return undefined;
         }
     }
-    async upsert<T>(martialArtist: T): Promise<void> {
+    async upsert<T>(dataObj: T): Promise<void> {
         const docRef = doc(
             database,
             this.collectionName,
         );
-        const data = this.getObjectFromStruct(martialArtist);
+        const data = this.getObjectFromStruct(dataObj);
         await setDoc(docRef, data);
     }
     getObjectFromStruct<T>(data: T) {
