@@ -23,6 +23,7 @@
     },
     "homepage": "https://github.com/anandcsingh/whisper-key#readme",
     "dependencies": {
+        "firebase": "^10.5.0",
         "o1js": "^0.13.1"
     }
 }
