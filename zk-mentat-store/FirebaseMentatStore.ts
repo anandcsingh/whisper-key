@@ -16,11 +16,11 @@ import { initializeApp } from "firebase/app";
 
 export class FirebaseConfig {
     apiKey: string;
-  authDomain: string;
-  projectId: string;
-  storageBucket: string;
-  messagingSenderId: string;
-  appId: string;
+    authDomain: string;
+    projectId: string;
+    storageBucket: string;
+    messagingSenderId: string;
+    appId: string;
 }
 
 export class FirebaseMentatStore extends ZkMentatStore {
@@ -31,7 +31,7 @@ export class FirebaseMentatStore extends ZkMentatStore {
     constructor(collectionName: string, keyField: any, config: FirebaseConfig) {
         super();
         this.collectionName = collectionName;
-        
+
         this.app = initializeApp(config);
         this.database = getFirestore(this.app);
         this.keyField = keyField;
