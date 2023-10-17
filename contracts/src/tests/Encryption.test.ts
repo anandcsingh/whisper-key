@@ -47,23 +47,72 @@ describe('Encrypt', () => {
     let credentialString = CircuitString.fromString(credential.email);
     let credentialField = credentialString.toFields();
     let fields = Encryption.encrypt(credentialField, senderAccount);
-    console.log(fields.cipherText);
+    // console.log(fields.cipherText);
     expect(fields.cipherText.length).toBeGreaterThan(0);
   });
 
-  it('can encrypt and decrypt json data', async () => {
-    let message = 'This is a secret.';
-    let messageFields = Encoding.stringToFields(message);
+  // it('can encrypt and decrypt json data', async () => {
+  //   let message = 'This is a secret.';
+  //   let messageFields = Encoding.stringToFields(message);
+
+  //   // encrypt
+  //   let cipherText = Encryption.encrypt(messageFields, senderAccount);
+
+  //   // decrypt
+  //   let decryptedFields = Encryption.decrypt(cipherText, senderKey);
+  //   let decryptedMessage = Encoding.stringFromFields(decryptedFields);
+
+  //   expect(decryptedMessage).toEqual(message);
+  //   // https://github.com/o1-labs/o1js/blob/2bc9ee9d21a21e27cc7825683e22ebab050c9c9d/src/examples/encryption.ts#L37
+  //   // an example and signing @ https://github.com/45930/coinflip-executor-contract/blob/17040a8fcf27afafcb2ef952f53880d01448e7e6/src/executor.test.ts#L287
+  // });
+
+  it('can encrypt and decrypt a number', async () => {
+    let message = Field(123456789);
 
     // encrypt
-    let cipherText = Encryption.encrypt(messageFields, senderAccount);
+    let cipherText = Encryption.encrypt(message.toFields(), senderAccount);
 
     // decrypt
     let decryptedFields = Encryption.decrypt(cipherText, senderKey);
-    let decryptedMessage = Encoding.stringFromFields(decryptedFields);
+    let decryptedMessage = Field.fromFields(decryptedFields);
 
     expect(decryptedMessage).toEqual(message);
+  });
 
-    // an example and signing @ https://github.com/45930/coinflip-executor-contract/blob/17040a8fcf27afafcb2ef952f53880d01448e7e6/src/executor.test.ts#L287
+  it('can encrypt and decrypt string compare fields data', async () => {
+    // With a longer message
+    let message = 'Hello World';
+
+    let messageFields = Encoding.Bijective.Fp.fromString(message);
+
+    let fields = CircuitString.fromString(message).toFields();
+    // encrypt
+    let cipherText = Encryption.encrypt(fields, senderAccount);
+
+    // decrypt
+    let decryptedFields = Encryption.decrypt(cipherText, senderKey);
+
+    let decryptedMessage = Encoding.Bijective.Fp.toString(decryptedFields);
+    console.log(decryptedMessage);
+    expect(decryptedFields).toEqual(fields);
+
+    //let decryptedMessage = CircuitString.fromFields().fromFields(decryptedFields);
+    //expect(decryptedFields).toEqual(fields);
+  });
+
+  it('can encrypt and decrypt string compare string data', async () => {
+    const str = 'any string';
+    const enc = Encryption.encrypt(
+      Encoding.Bijective.Fp.fromString(str),
+      senderAccount
+    );
+    const dec = Encoding.Bijective.Fp.toString(
+      Encryption.decrypt(
+        { publicKey: enc.publicKey, cipherText: enc.cipherText },
+        senderKey
+      )
+    );
+    expect(dec).toEqual(str);
   });
 });
