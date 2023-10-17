@@ -63,5 +63,7 @@ describe('Encrypt', () => {
     let decryptedMessage = Encoding.stringFromFields(decryptedFields);
 
     expect(decryptedMessage).toEqual(message);
+
+    // an example and signing @ https://github.com/45930/coinflip-executor-contract/blob/17040a8fcf27afafcb2ef952f53880d01448e7e6/src/executor.test.ts#L287
   });
 });
