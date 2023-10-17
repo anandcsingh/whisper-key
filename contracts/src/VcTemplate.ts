@@ -22,6 +22,8 @@ import {
     // simle types for now
 
     id: Field,
+    issuer: PublicKey,
+    owner: PublicKey,
     publicKey: PublicKey,
     firstName: CircuitString,
     lastName: CircuitString,

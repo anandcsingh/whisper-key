@@ -8,11 +8,11 @@ export class DeployCredential {
         // consider windows vs linux systems in path finding
         let path = ""; // path to credentials contracts folder, combine credential name
 
-        let tx = await Mina.transaction({ sender: feepayerAddress, fee }, () => {
-            AccountUpdate.fundNewAccount(feepayerAddress);
-            let zkapp = new zkApp(zkAppAddress);
-            zkapp.deploy({ verificationKey });
-          });
+        // let tx = await Mina.transaction({ sender: feepayerAddress, fee }, () => {
+        //     AccountUpdate.fundNewAccount(feepayerAddress);
+        //     let zkapp = new zkApp(zkAppAddress);
+        //     zkapp.deploy({ verificationKey });
+        //   });
 
     
     }
