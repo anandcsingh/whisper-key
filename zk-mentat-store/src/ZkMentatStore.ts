@@ -4,6 +4,12 @@ export class MerkleMapState {
   map: MerkleMap;
   nextID: bigint;
   length: number;
+
+  constructor(map: MerkleMap, nextID: bigint, length: number) {
+    this.map = map;
+    this.nextID = nextID;
+    this.length = length;
+  }
 }
 
 
