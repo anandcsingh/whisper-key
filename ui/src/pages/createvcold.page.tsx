@@ -1,15 +1,12 @@
-
+import Master from '../components/layout/Master'
 import Head from 'next/head';
+import Link from 'next/link'
 import Image from 'next/image';
-import { useEffect } from 'react';
-import GradientBG from '../components/GradientBG.js';
 import styles from '../styles/Home.module.css';
-import heroMinaLogo from '../../public/assets/hero-mina-logo.svg';
-import arrowRightSmall from '../../public/assets/arrow-right-small.svg';
+import LandingPageHeader from '@/components/layout/LandingPageHeader';
 import React, { useState } from 'react';
 
-
-function YourComponent() {
+export default function AnotherComponent() {
     const [fields, setFields] = useState([{ name: '', type: 'string' }]);
 
     const addField = () => {
@@ -17,6 +14,8 @@ function YourComponent() {
     };
 
     return (
+        <>
+        <Master>
         <div>
             <header className="bg-red-500 h-20">
                 <div className="container mx-auto flex items-center justify-between">
@@ -79,7 +78,9 @@ function YourComponent() {
                 </form>
             </div>
         </div>
+        </Master>
+        </>
     );
 }
 
-export default YourComponent;
+

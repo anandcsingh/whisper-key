@@ -19,6 +19,7 @@
     "coi-serviceworker": "^0.1.7",
     "eslint": "8.51.0",
     "eslint-config-next": "13.5.4",
+    "flowbite-react": "^0.6.4",
     "next": "13.5.4",
     "o1js": "0.*",
     "postcss": "8.4.31",
@@ -28,6 +29,8 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
-    "daisyui": "^3.9.2"
+    "@babel/preset-react": "^7.22.15",
+    "@tailwindcss/typography": "^0.5.10",
+    "daisyui": "^3.9.3"
   }
 }
