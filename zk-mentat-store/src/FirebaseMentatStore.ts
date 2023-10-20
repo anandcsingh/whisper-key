@@ -13,6 +13,7 @@ import {
 } from 'firebase/firestore';
 import { ZkMentatStore } from './ZkMentatStore.js';
 import { initializeApp } from "firebase/app";
+import { IEntity } from './IEntity.js';
 
 export class FirebaseConfig {
     apiKey: string;
@@ -41,8 +42,8 @@ export class FirebaseMentatStore extends ZkMentatStore {
     collectionName: string;
     app: any;
     database: any;
-    keyField: any;
-    constructor(collectionName: string, keyField: any, config: FirebaseConfig) {
+    keyField: string;
+    constructor(collectionName: string, keyField: string, config: FirebaseConfig) {
         super();
         this.collectionName = collectionName;
 
@@ -59,8 +60,8 @@ export class FirebaseMentatStore extends ZkMentatStore {
         });
     }
 
-    async getAll<T>(): Promise<Map<any, T>> {
-        let all = new Map<any, T>();
+    async getAll<T>(): Promise<Map<any, IEntity>> {
+        let all = new Map<any, IEntity>();
 
         const maQuery = query(
             collection(this.database, this.collectionName),
@@ -69,7 +70,7 @@ export class FirebaseMentatStore extends ZkMentatStore {
 
         const querySnapshot = await getDocs(maQuery);
         querySnapshot.forEach((doc) => {
-            let entity = doc.data() as T;
+            let entity = doc.data() as IEntity;
             all.set((entity as any)[this.keyField], entity);
         });
         return all;
@@ -90,16 +91,16 @@ export class FirebaseMentatStore extends ZkMentatStore {
         });
         return all;
     }
-    async get<T>(key: any): Promise<T | null | undefined> {
+    async get(key: any): Promise<IEntity | null | undefined> {
         const docRef = doc(this.database, this.collectionName, key);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            return docSnap.data() as T;
+            return docSnap.data() as IEntity;
         } else {
             return undefined;
         }
     }
-    async upsert<T>(dataObj: T): Promise<void> {
+    async upsert(dataObj: IEntity): Promise<void> {
         const docRef = doc(
             this.database,
             this.collectionName,
