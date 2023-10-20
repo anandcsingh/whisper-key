@@ -1,4 +1,5 @@
 import { MerkleMap, Field, PublicKey } from "o1js"
+import { IEntity } from "./IEntity";
 
 export class MerkleMapState {
   map: MerkleMap;
@@ -28,9 +29,9 @@ export abstract class ZkMentatStore {
       length: all.size,
     };
   }
-  abstract getAll(): Promise<Map<any, any>>;
+  abstract getAll(): Promise<Map<any, IEntity>>;
   abstract getAllHashes(): Promise<Map<any, Field>>;
-  abstract get(key: any): Promise<any | undefined | null>;
-  abstract upsert(entity: any): Promise<void>;
+  abstract get(key: any): Promise<IEntity | undefined | null>;
+  abstract upsert(entity: IEntity): Promise<void>;
   abstract clearStore(): Promise<void>;
 }
