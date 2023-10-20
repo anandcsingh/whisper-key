@@ -17,22 +17,14 @@ import {
   Circuit,
 } from 'o1js';
 
-export class {{ClassName}} extends Struct({
+export class  extends Struct({
   // dynamically generate the fields and their types
-  // simle types for now
-
-{{#fields}}
-{{ctr}}
-{{/fields}}
-  
+  // simple types for now
 }) {
   hash(): Field {
     return Poseidon.hash(
       this.publicKey
         .toFields()
-        {{#fields}}
-        {{ctr}}
-        {{/fields}}
     );
   }
 }
@@ -52,7 +44,7 @@ export class GenericContract extends SmartContract {
 
   @method issueCredential(
     owner: PublicKey,
-    credential: {{ClassName}},
+    credential: ,
     witness: MerkleMapWitness,
     currentRoot: Field
   ) {

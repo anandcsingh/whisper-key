@@ -5,11 +5,10 @@ class CredentialGenerator {
   generateAndSave(jsonString: string, template: string): void {
     try {
       // Parse the JSON string to get ClassName
-      const jsonData = JSON.parse(jsonString);
-      const className = jsonData.ClassName;
+      const className = "UserCredentials";
 
       // Render the template using Mustache.js
-      const renderedTemplate = Mustache.render(template, jsonData);
+      const renderedTemplate = Mustache.render(template, jsonString);
 
       // Create the credentials directory if it doesn't exist
       if (!fs.existsSync('credentials')) {
