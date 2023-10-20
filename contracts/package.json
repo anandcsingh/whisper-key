@@ -10,7 +10,6 @@
     "mina-dapp",
     "zkapp"
   ],
-  "type": "module",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {
@@ -49,6 +48,7 @@
     "o1js": "0.13.*"
   },
   "dependencies": {
-    "mustache": "^4.2.0"
+    "mustache": "^4.2.0",
+    "ts-node": "^10.9.1"
   }
 }
