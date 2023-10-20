@@ -10,7 +10,6 @@
     "mina-dapp",
     "zkapp"
   ],
-  "type": "module",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {

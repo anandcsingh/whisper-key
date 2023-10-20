@@ -21,7 +21,7 @@ export class {{ClassName}} extends Struct({
   // dynamically generate the fields and their types
   // simple types for now
 {{#fields}}
-{{ctr}}
+{{title}}: {{type}}
 {{/fields}} 
 }) {
   hash(): Field {
@@ -29,7 +29,7 @@ export class {{ClassName}} extends Struct({
       this.publicKey
         .toFields()
         {{#fields}}
-        {{concat}}
+        .concat(this.{{title}}.toFields())
         {{/fields}}
     );
   }

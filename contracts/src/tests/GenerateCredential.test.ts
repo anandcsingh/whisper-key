@@ -26,7 +26,7 @@ describe('CredentialGenerator', () => {
             const generatedContent = fs.readFileSync(generatedFilePath, 'utf-8');
 
             // Define the expected result (predefined TypeScript content)
-            let expectedResult = `class UserCredentials {\n  username: string = "john_doe";\n  password: string = "secretpassword";\n}`;
+            var expectedResult;
             try {
                 const verifierExists = fs.existsSync(verifierTextpath);
                 if (verifierExists) {
