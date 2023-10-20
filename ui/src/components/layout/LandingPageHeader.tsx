@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Router from 'next/router';
 import { useEffect, useState } from "react";
 import React from 'react';
-import Authentication from '@/modules/Authentication';
+// import Authentication from '@/modules/Authentication';
 
 const Header = () => {
  

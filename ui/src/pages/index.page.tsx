@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link'
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
-// import LandingPageHeader from '@/components/layout/LandingPageHeader';
+import TestHeader from '@/components/layout/TestHeader';
 
 export default function Home() {
  
@@ -14,9 +14,9 @@ export default function Home() {
         <title>RankProof zkApp</title>
         <link rel="icon" href="/assets/favicon.ico" />
       </Head>
-        {/* <LandingPageHeader /> */}
-        <main>
-      <div>
+      <TestHeader />
+      <main>
+        <div>
           
           {/* Start block */}
           <section className="bg-white dark:bg-gray-900">
@@ -31,8 +31,8 @@ export default function Home() {
 
                   <Link 
                   className="inline-flex items-center justify-center w-full px-5 py-3 btn-primary text-sm font-medium text-center text-white-900 border border-indigo-200 rounded-lg sm:w-auto hover:bg-indigo-100 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 text-white border-indigo-700 hover:bg-indigo-700 focus:ring-indigo-800"
-                 //className="inline-flex items-center justify-center w-full px-5 py-3 text-sm text-green-50 btn-primary hover:bg-indigo-600 font-medium focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-lg"
-                 href='/dashboard' >
+                  //className="inline-flex items-center justify-center w-full px-5 py-3 text-sm text-green-50 btn-primary hover:bg-indigo-600 font-medium focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-lg"
+                  href='/dashboard' >
                     Launch App
                 </Link>
                   
@@ -169,7 +169,7 @@ export default function Home() {
             </div>
           </footer>
         </div>   
-        </main> 
+      </main> 
     </>
   );
 }
