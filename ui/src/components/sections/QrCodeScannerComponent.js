@@ -9,7 +9,7 @@ const QrCodeScannerComponent = (props) => {
         <div>
 
             <div className="join">
-                <input ref={addressRef} className="input input-bordered join-item bg-white" />
+                <input ref={addressRef} className="input input-bordered join-item " />
                 <button onClick={startScan} className="btn join-item ">Scan</button>
             </div>
 

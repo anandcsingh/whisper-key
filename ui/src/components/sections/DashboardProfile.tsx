@@ -82,7 +82,7 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ disciplines }) => {
                   <div className="bg-yellow-300 text-blue-800 text-xs font-medium mr-2 px-2.5 py-3 rounded dark:bg-blue-900 dark:text-blue-300">{discipline.discipline} : {discipline.rank}</div>}
               </a>
               <div className="modal" id="my_modal_8">
-                <div className="modal-box bg-white">
+                <div className="modal-box ">
                   <h3 className="font-bold text-lg">Hello!</h3>
                   <p className="py-4">This modal works with anchor links</p>
                   <div className="modal-action">

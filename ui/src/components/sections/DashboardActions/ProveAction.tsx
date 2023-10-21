@@ -25,7 +25,7 @@ const ProveAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
 
             <div className='modals-area'>
                 <dialog className="modal" id="prove_modal">
-                <form method="dialog" className="modal-box bg-white">
+                <form method="dialog" className="modal-box ">
                         <div className="modal-action">
                             <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                         </div>

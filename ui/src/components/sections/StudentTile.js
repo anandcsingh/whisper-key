@@ -29,7 +29,7 @@ const StudentTile = ({
   }
 
     return (
-        <div className="card w-50 bg-white shadow-xl">
+        <div className="card w-50 shadow-xl">
           <figure className="bg-gray-100"></figure>
           <div className="card-body">
             <h2 className="card-title">{shortName(student.publicKey)}</h2>

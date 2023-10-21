@@ -2,7 +2,6 @@
 import { useContext, useRef, useState } from "react";
 import QRCodeScanner from "@/components/QRCodeScanner"
 import Authentication from "@/modules/Authentication";
-import AllMaWorkerClient from "@/modules/workers/AllMaWorkerClient";
 import AllMaWorkerEventsClient from "@/modules/workers/AllMaWorkerEventsClient";
 import { Bool, CircuitString, Field, PublicKey, Struct } from 'o1js';
 import { AuthContext } from "@/components/layout/AuthPage";
@@ -112,7 +111,7 @@ const AddForm = () => {
           <label className="label">
             <span className="text-base label-text">Marital Art discipline</span>
           </label>
-          <select onChange={handleDiscipleineChange} className="select select-bordered w-full max-w-xs bg-white">
+          <select onChange={handleDiscipleineChange} className="select select-bordered w-full max-w-xs ">
             <option>Select a Martial Art</option>
             <option>BJJ</option>
             <option>Judo</option>
@@ -125,7 +124,7 @@ const AddForm = () => {
           <label className="label">
             <span className="text-base label-text">Marital Art rank</span>
           </label>
-          <select onChange={handleRankChange} className="select select-bordered w-full max-w-xs bg-white">
+          <select onChange={handleRankChange} className="select select-bordered w-full max-w-xs ">
             <option>Select a Rank</option>
             <option>White Belt</option>
             <option>Blue Belt</option>
@@ -149,7 +148,7 @@ const AddForm = () => {
           </label>
           <div className="join">
             <QRCodeScanner uniqueID="add-form-scan" className="btn join-item" onScan={handleScan} />
-            <input onChange={handleInstructorChange} value={instructorValue} className="input input-bordered join-item bg-white" />
+            <input onChange={handleInstructorChange} value={instructorValue} className="input input-bordered join-item " />
           </div>
         </div>
         <div className=''>

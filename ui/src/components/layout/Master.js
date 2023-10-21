@@ -11,7 +11,7 @@ const Master = ({ children }) => {
   return (
     <>
       <Head>
-        <title>Whisper Key</title>
+        <title>RankProof zkApp</title>
         <link rel="icon" href="/assets/favicon.ico" />
       </Head>
       {/* <GradientBG> */}

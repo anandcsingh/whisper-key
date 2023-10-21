@@ -14,7 +14,8 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({ showDummyData, 
     
     return (
         <>
-        { authState.userAuthenticated && <DashboardContainerDataLoader showDummyData={showDummyData} dummyDataIsInstructor={dummyDataIsInstructor} /> }
+        {/* { authState.userAuthenticated && <DashboardContainerDataLoader showDummyData={showDummyData} dummyDataIsInstructor={dummyDataIsInstructor} /> } */}
+        <DashboardContainerDataLoader showDummyData={showDummyData} dummyDataIsInstructor={dummyDataIsInstructor} /> 
         </>
 
     );

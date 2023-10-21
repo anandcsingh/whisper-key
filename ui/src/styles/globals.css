@@ -59,17 +59,3 @@ a {
 .rankproof-page {
   width: 100%;
 }
-
-.btn-ghost:hover{
-  background-color: #7b060e;
-}
-
-#whisperNavHdr{
-  color : white;
-  background-color: #a52b2a;
-}
-.navSeparator{
-  width:1px;
-  height: 100%;
-  border:solid 1px black;
-}

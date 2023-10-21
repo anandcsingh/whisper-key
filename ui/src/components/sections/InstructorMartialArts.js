@@ -4,10 +4,8 @@ import { useEffect, useState, useContext } from "react";
 import { InstructorArtViewModel } from '../../view-models/InstructorArtViewModel';
 import { Tabs } from 'flowbite-react';
 import StudentList from './StudentList';
-import { Disciplines } from '../../../../contracts/build/src/models/MartialArtistRepository';
 import { curveBasisClosed } from 'd3';
 import { Field, MerkleMap, PublicKey } from 'o1js';
-import { FirebaseBackingStore } from '../../../../contracts/build/src/models/firebase/FirebaseBackingStore';
 import { AuthContext } from '@/components/layout/AuthPage';
 
 const InstructorMartialArts = ({martialArts}) => {
@@ -19,12 +17,13 @@ const InstructorMartialArts = ({martialArts}) => {
     //let studentAddress = PublicKey.fromBase58("B62qpzAWcbZSjzQH9hiTKvHbDx1eCsmRR7dDzK2DuYjRT2sTyW9vSpR");
     console.log("authState", authState);
     let address = authState.userAddress == '' ? 
-      instructorAddress : PublicKey.fromBase58(authState.userAddress);
-    let backingStore = new FirebaseBackingStore(discipline);
+       instructorAddress : PublicKey.fromBase58(authState.userAddress);
+    // let backingStore = new FirebaseBackingStore(discipline);
 
-    //let martialArt = await backingStore.get(instructorAddress);
-    let martialArt = await backingStore.get(address);
-    return backingStore.getObjectFromStruct(martialArt);
+    // //let martialArt = await backingStore.get(instructorAddress);
+    // let martialArt = await backingStore.get(address);
+    // return backingStore.getObjectFromStruct(martialArt);
+    
   }
 
   useEffect(() => {
@@ -43,7 +42,7 @@ const InstructorMartialArts = ({martialArts}) => {
     <div>
     <h2 className='text-3xl font-bold sm:text-4xl'>Manage my students</h2>
                   <div className='divider'></div>
-                  <div className="flex space-x-4 items-center justify-center gap-2 overflow-x-hidden p-4 bg-white">
+                  <div className="flex space-x-4 items-center justify-center gap-2 overflow-x-hidden p-4 ">
                     <a href='#promote_modal' className='btn btn-primary'>Promote</a>
                     <a href='#revoke_modal' className='btn btn-warning'>Revoke</a>
                   </div>

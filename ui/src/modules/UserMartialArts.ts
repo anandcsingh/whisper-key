@@ -1,6 +1,5 @@
 
 import { PublicKey } from 'o1js';
-import { FirebaseBackingStore } from '../../../contracts/build/src/models/firebase/FirebaseBackingStore';
 
 
 
@@ -34,10 +33,10 @@ export class UserMartialArts {
 
     async getMartialArt(publicKey: string, discipline: string): Promise<UserMartialArt> {
 
-        let backingStore = new FirebaseBackingStore(discipline);
+        //let backingStore = new FirebaseBackingStore(discipline);
 
         //let martialArt = await backingStore.get(instructorAddress);
-        let practioner = await this.getPractioner(backingStore, publicKey);
+        let practioner = null;//await this.getPractioner(backingStore, publicKey);
         if (practioner == null) {
             return {
                 hasMartialArt: false,
@@ -52,17 +51,17 @@ export class UserMartialArts {
             };
         }
         else {
-            let students = await backingStore.getAllStudents(publicKey);
+            // let students = await backingStore.getAllStudents(publicKey);
 
             return {
                 hasMartialArt: true,
-                isInstructor: practioner!.verified && practioner!.rank == "Black Belt",
+                isInstructor: false,//practioner!.verified && practioner!.rank == "Black Belt",
                 publicKey: publicKey,
                 discipline: discipline,
-                rank: practioner!.rank,
-                instructor: practioner!.instructor,
-                students: students!,
-                verified: practioner!.verified
+                rank: "",//practioner!.rank,
+                instructor: "",//practioner!.instructor,
+                students: [],//students!,
+                verified: false//practioner!.verified
             };
         }
     }

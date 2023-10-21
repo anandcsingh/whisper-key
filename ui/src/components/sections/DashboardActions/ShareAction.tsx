@@ -42,7 +42,7 @@ const InstructorsAction: React.FC<DashboardActionsProps> = ({ isInstructor }) =>
 
       <div className='modals-area'>
         <dialog className="modal" id="share_address_modal">
-          <form method="dialog" className="modal-box bg-white">
+          <form method="dialog" className="modal-box ">
             <div className="modal-action">
               <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
             </div>
@@ -58,7 +58,7 @@ const InstructorsAction: React.FC<DashboardActionsProps> = ({ isInstructor }) =>
 
 
       {/* <dialog className="modal" id="share_address_modal">
-                    <form method="dialog" className="modal-box bg-white w-1/2 max-w-5xl">
+                    <form method="dialog" className="modal-box w-1/2 max-w-5xl">
 
                       <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                       {showAddress && <QRCodeCreator address={address} />}

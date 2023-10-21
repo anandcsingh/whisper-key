@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Router from 'next/router';
 import { useContext, useEffect, useState } from "react";
 import React from 'react';
-// import Authentication from '@/modules/Authentication';
+import Authentication from '@/modules/Authentication';
 import { AuthContext } from './AuthPage';
 
 const Header = () => {
@@ -16,7 +16,7 @@ const Header = () => {
     <nav className="bg-gray-800 z-100 invisible lg:visible">
 
       <header className="fixed w-full zclass">
-        <nav className="bg-white border-gray-200 py-2.5 dark:bg-gray-900">
+        <nav className="border-gray-200 py-2.5 dark:bg-gray-900">
           <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
 
             <a href="/" className="flex items-center">

@@ -1,7 +1,3 @@
-import Add from "@/pages/add.page";
-import LineagePage from "./LineagePage";
-import LineageMap from "./LineageMap";
-import Lineage from "@/pages/lineage.page";
 
 
 const DashboardLineageHero = () => {
@@ -20,11 +16,11 @@ const DashboardLineageHero = () => {
 
             <div className='modals-area'>
                 <dialog className="modal" id="lineage_address_modal1">
-                    <form method="dialog" className="modal-box bg-white w-11/12 max-w-5xl">
+                    <form method="dialog" className="modal-box w-11/12 max-w-5xl">
                         <div className="modal-action">
                             <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                         </div>
-                        <LineagePage />
+                        
                     </form>
                     <form method="dialog" className="modal-backdrop">
                         <button>close</button>

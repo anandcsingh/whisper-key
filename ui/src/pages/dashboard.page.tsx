@@ -1,13 +1,11 @@
 import Master from '../components/layout/Master'
 import { AuthPage } from '../components/layout/AuthPage'
 import Link from 'next/link'
-import Add from './add.page';
-import InstructorsDen from './instructorsden.page';
 import QRCodeCreator from '@/components/QRCodeCreator';
 import React, { useState } from 'react';
 import Authentication from '@/modules/Authentication';
 import DashboardActions from '@/components/sections/DashboardActions/DashboardActions';
-import LineagePage from '@/components/sections/LineagePage';
+
 import DashboardContainer from '@/components/sections/DashboardContainer';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 export default function Dashboard() {

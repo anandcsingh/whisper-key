@@ -20,7 +20,7 @@ export default function Home() {
         <div>
           
           {/* Start block */}
-          <section className="bg-white dark:bg-gray-900">
+          <section className=" dark:bg-gray-900">
             <div className="grid max-w-screen-xl px-4 pt-20 pb-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 lg:pt-28">
               <div className="mr-auto place-self-center lg:col-span-7">
                 <h1 className="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">Trusted Rank <br />Approval</h1>
@@ -118,7 +118,7 @@ export default function Home() {
           {/* End block */}
 
           {/* Start block */}
-          <section className="bg-white dark:bg-gray-900">
+          <section className=" dark:bg-gray-900">
             <div className="max-w-screen-xl px-4 py-8 mx-auto lg:py-16 lg:px-6">
               <div className="max-w-screen-sm mx-auto text-center">
                 <h2 className="mb-4 text-3xl font-extrabold leading-tight tracking-tight text-gray-900 dark:text-white">Start your free trial today</h2>

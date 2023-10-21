@@ -1,7 +1,6 @@
 import QRCodeScanner from "@/components/QRCodeScanner";
 import { AuthContext } from "@/components/layout/AuthPage";
 import Authentication from "@/modules/Authentication";
-import AllMaWorkerClient from "@/modules/workers/AllMaWorkerClient";
 import AllMaWorkerEventsClient from "@/modules/workers/AllMaWorkerEventsClient";
 import Router from 'next/router';
 import { useContext, useState } from "react";
@@ -75,7 +74,7 @@ const ProveForm = () => {
           </label>
           <div className="join">
             <QRCodeScanner uniqueID="prove-form-scan" className="btn join-item" onScan={handleScan} />
-            <input onChange={handleStudentChange} value={inquirerValue} className="input input-bordered join-item bg-white" />
+            <input onChange={handleStudentChange} value={inquirerValue} className="input input-bordered join-item " />
           </div>
         </div>
 
@@ -83,7 +82,7 @@ const ProveForm = () => {
           <label className="label">
             <span className="text-base label-text">Marital Art discipline</span>
           </label>
-          <select onChange={handleDiscipleineChange} className="select select-bordered w-full max-w-xs bg-white">
+          <select onChange={handleDiscipleineChange} className="select select-bordered w-full max-w-xs ">
             <option>Select a Martial Art</option>
             <option>BJJ</option>
             <option>Judo</option>

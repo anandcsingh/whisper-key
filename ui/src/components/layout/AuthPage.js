@@ -7,10 +7,7 @@ import Authentication from '../../modules/Authentication';
 import Router from 'next/router';
 import { useEffect, useState, createContext } from "react";
 import Snackbar from '../../modules/Snackbar'
-import AllMaWorkerClient from '../../modules/workers/AllMaWorkerClient'
 import AllMaWorkerEventsClient from '../../modules/workers/AllMaWorkerEventsClient'
-import RankedBjjWorkerClient from '../../modules/workers/rankedBjjWorkerClient';
-import DashboardHeader from './DashboardHeader'
 
 import {
   PublicKey,
@@ -81,7 +78,6 @@ const AuthPage = ({ validate, children }) => {
           }
 
           console.log("loadedSnarky");
-          setState({ ...state, snarkyLoaded: true });
           const hasWallet = await Authentication.checkForWallet();
           if (!hasWallet) {
             setState({ ...state, hasWallet: false, snarkyLoaded: true });

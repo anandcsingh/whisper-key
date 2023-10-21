@@ -2,13 +2,13 @@
 const DashboardStats = () => {
 
     return (
-        <section className="bg-white place-self-center lg:col-span-7 space-y-8">
+        <section className="place-self-center lg:col-span-7 space-y-8">
             <div className="max-w-screen-xl px-4 py-8 mx-auto sm:px-6 sm:py-12 lg:px-8">
               <header className="text-center">
                 <h2 className="text-3xl font-bold sm:text-4xl">Martial Arts Stats</h2>
               </header>
               <div className="m-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-                <div className="bg-white stats w-full ">
+                <div className="stats w-full ">
                   <div className="card w-100 bg-gray-100 shadow-xl mr-5">
                     <div className="card-body">
                       <h2 className="card-title">More Stats!</h2>
