@@ -12,11 +12,12 @@
     "deploy": "next build && next export && type nul > out\\.nojekyll && node ./ghp-postbuild && git add -f out && git commit -m \"Deploy gh-pages\" && cd .. && git subtree push --prefix ui/out origin gh-pages"
   },
   "dependencies": {
-    "@types/node": "20.8.5",
     "@types/react": "18.2.28",
     "@types/react-dom": "18.2.13",
     "autoprefixer": "10.4.16",
     "coi-serviceworker": "^0.1.7",
+    "d3": "^7.8.5",
+    "d3-org-chart": "^3.1.1",
     "eslint": "8.51.0",
     "eslint-config-next": "13.5.4",
     "flowbite-react": "^0.6.4",
@@ -25,12 +26,16 @@
     "postcss": "8.4.31",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-qr-code": "^2.0.12",
+    "react-qr-scanner": "^1.0.0-alpha.11",
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.22.15",
     "@tailwindcss/typography": "^0.5.10",
+    "@types/d3": "^7.4.2",
+    "@types/node": "^20.8.7",
     "daisyui": "^3.9.3"
   }
 }

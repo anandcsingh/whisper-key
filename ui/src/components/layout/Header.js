@@ -1,9 +1,9 @@
-// import Image from 'next/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useEffect, useState } from "react";
 import React from 'react';
-// import Authentication from '@/modules/Authentication';
+import Authentication from '@/modules/Authentication';
 
 const Header = () => {
   const [loggedInState, setLoggedIn] = useState(false);
@@ -49,7 +49,7 @@ const Header = () => {
     <nav className="bg-gray-800">
 
       <header className="fixed w-full">
-        <nav className="bg-white border-gray-200 py-2.5 dark:bg-gray-900">
+        <nav className="border-gray-200 py-2.5 dark:bg-gray-900">
           <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
 
             
@@ -71,7 +71,7 @@ const Header = () => {
                   <div>
                     <button type="button" className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                       <span className="sr-only">Open user menu</span>
-                      <Image height="32" width="32" className="h-8 w-8 rounded-full bg-white" src="https://robohash.org/B62qmdQVgKWmWWxtNpfjdx9wUp6fm1eUsBrK4V3PXjm4bFBvDTK5U3U" alt="" />
+                      <Image height="32" width="32" className="h-8 w-8 rounded-full " src="https://robohash.org/B62qmdQVgKWmWWxtNpfjdx9wUp6fm1eUsBrK4V3PXjm4bFBvDTK5U3U" alt="" />
                     </button>
                   </div>
 

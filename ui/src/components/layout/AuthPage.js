@@ -7,16 +7,13 @@ import Authentication from '../../modules/Authentication';
 import Router from 'next/router';
 import { useEffect, useState, createContext } from "react";
 import Snackbar from '../../modules/Snackbar'
-import AllMaWorkerClient from '../../modules/workers/AllMaWorkerClient'
 import AllMaWorkerEventsClient from '../../modules/workers/AllMaWorkerEventsClient'
-import RankedBjjWorkerClient from '../../modules/workers/rankedBjjWorkerClient';
-import DashboardHeader from './DashboardHeader'
 
 import {
   PublicKey,
   PrivateKey,
   Field,
-} from 'snarkyjs'
+} from 'o1js'
 
 const AuthContext = createContext();
 const AuthPage = ({ validate, children }) => {
@@ -81,7 +78,6 @@ const AuthPage = ({ validate, children }) => {
           }
 
           console.log("loadedSnarky");
-          setState({ ...state, snarkyLoaded: true });
           const hasWallet = await Authentication.checkForWallet();
           if (!hasWallet) {
             setState({ ...state, hasWallet: false, snarkyLoaded: true });
@@ -174,7 +170,7 @@ const AuthPage = ({ validate, children }) => {
                     <div className='pt-20'>
                       <div className={`${!state.snarkyLoaded || state.showRequestingAccount || state.showLoadingContracts ? 'loading-snarky' : ''}`} data-reveal-delay="400">
                         <div style={{ display: state.snarkyLoaded ? "none" : "block" }}>
-                          Loading <span className="text-color-primary">SnarkyJS</span>...
+                          Loading <span className="text-color-primary">o1js</span>...
                         </div>
                         {state.hasWallet != null && !state.hasWallet &&
                           <div className='text-color-warning'>
