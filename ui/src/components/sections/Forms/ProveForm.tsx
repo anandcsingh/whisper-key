@@ -5,7 +5,7 @@ import AllMaWorkerClient from "@/modules/workers/AllMaWorkerClient";
 import AllMaWorkerEventsClient from "@/modules/workers/AllMaWorkerEventsClient";
 import Router from 'next/router';
 import { useContext, useState } from "react";
-import { PublicKey } from "snarkyjs";
+import { PublicKey } from "o1js";
 
 const ProveForm = () => {
   const [authState, setAuthState] = useContext(AuthContext);

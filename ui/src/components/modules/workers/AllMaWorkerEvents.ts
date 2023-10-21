@@ -9,7 +9,7 @@ import {
   CircuitString,
   Bool,
   AccountUpdate,
-} from 'snarkyjs'
+} from 'o1js'
 import { BackingStore, MerkleMapDatabase } from '../../../../contracts/build/src/models/MartialArtistRepository.js';
 
 
@@ -48,7 +48,7 @@ const localBlockchainSetup = {
 // ---------------------------------------------------------------------------------------
 
 const functions = {
-  loadSnarkyJS: async (args: {}) => {
+  loado1js: async (args: {}) => {
     await isReady;
   },
   setActiveInstanceToBerkeley: async (args: {}) => {

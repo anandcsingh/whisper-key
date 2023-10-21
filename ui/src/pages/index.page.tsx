@@ -110,7 +110,7 @@ export default function Home() {
                       <span className="text-base font-medium leading-tight text-gray-900 dark:text-white">Verify Smart Contract</span>
                     </li>
                   </ul>
-                  <p className="font-light lg:text-xl">Written in TypeScript using the SnarkyJS library will run on the browser client generating a proof of student rank verification by a certified instructor. </p>
+                  <p className="font-light lg:text-xl">Written in TypeScript using the o1js library will run on the browser client generating a proof of student rank verification by a certified instructor. </p>
                 </div>
               </div>
             </div>

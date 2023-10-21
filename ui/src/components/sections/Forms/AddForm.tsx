@@ -4,7 +4,7 @@ import QRCodeScanner from "@/components/QRCodeScanner"
 import Authentication from "@/modules/Authentication";
 import AllMaWorkerClient from "@/modules/workers/AllMaWorkerClient";
 import AllMaWorkerEventsClient from "@/modules/workers/AllMaWorkerEventsClient";
-import { Bool, CircuitString, Field, PublicKey, Struct } from 'snarkyjs';
+import { Bool, CircuitString, Field, PublicKey, Struct } from 'o1js';
 import { AuthContext } from "@/components/layout/AuthPage";
 import Router from 'next/router';
 

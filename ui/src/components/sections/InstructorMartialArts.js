@@ -6,7 +6,7 @@ import { Tabs } from 'flowbite-react';
 import StudentList from './StudentList';
 import { Disciplines } from '../../../../contracts/build/src/models/MartialArtistRepository';
 import { curveBasisClosed } from 'd3';
-import { Field, MerkleMap, PublicKey } from 'snarkyjs';
+import { Field, MerkleMap, PublicKey } from 'o1js';
 import { FirebaseBackingStore } from '../../../../contracts/build/src/models/firebase/FirebaseBackingStore';
 import { AuthContext } from '@/components/layout/AuthPage';
 

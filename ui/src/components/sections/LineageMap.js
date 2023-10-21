@@ -2,7 +2,7 @@ import React from 'react';
 
 import { OrgChartComponent } from './OrgChart';
 import * as d3 from 'd3';
-import { PublicKey, state } from 'snarkyjs';
+import { PublicKey, state } from 'o1js';
 import { Disciplines } from '../../../../contracts/build/src/models/MartialArtistRepository';
 import { FirebaseBackingStore } from '../../../../contracts/build/src/models/firebase/FirebaseBackingStore';
 import { Authentication } from '../../modules/Authentication'

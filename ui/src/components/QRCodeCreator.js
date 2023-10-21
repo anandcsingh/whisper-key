@@ -2,7 +2,7 @@ import QRCode from "react-qr-code";
 
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from '@/components/layout/AuthPage'
-import { prop } from "snarkyjs";
+import { prop } from "o1js";
 
 
 const QRCodeCreator = (props) => {

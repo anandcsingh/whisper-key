@@ -4,7 +4,7 @@ import {
   PrivateKey,
   Field,
   MerkleMapWitness,
-} from 'snarkyjs'
+} from 'o1js'
 
 import type { ZkappWorkerRequest, ZkappWorkerReponse, WorkerFunctions } from './AddBjjRankWorker';
 import { AddZkClient, ZkClientResponse } from '../../../../../contracts/build/src/models/RankProofClients';
@@ -12,8 +12,8 @@ export default class AddBjjRankWorkerClient implements AddZkClient {
 
   // ---------------------------------------------------------------------------------------
 
-  loadSnarkyJS() {
-    return this._call('loadSnarkyJS', {});
+  loado1js() {
+    return this._call('loado1js', {});
   }
 
   setActiveInstanceToBerkeley() {

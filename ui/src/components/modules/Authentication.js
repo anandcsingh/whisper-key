@@ -2,7 +2,7 @@ import {
     PublicKey,
     PrivateKey,
     Field,
-} from 'snarkyjs'
+} from 'o1js'
 
 const Authentication = {
     contractAddress: 'B62qkDQqHBkiL6bXWh2RU81C1fBLQqQVK3CMVmW7DAq1yiAg2QPRtdC',
@@ -43,7 +43,7 @@ const Authentication = {
         return this.contractsLoader.contracts;
     },
     loadSnarky: async function () {
-        await this.zkClient.loadSnarkyJS();
+        await this.zkClient.loado1js();
         await this.zkClient.setActiveInstanceToBerkeley();
         this.snarkyLoaded = true;
         return true;

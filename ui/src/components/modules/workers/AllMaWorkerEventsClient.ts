@@ -4,7 +4,7 @@ import {
   PrivateKey,
   Field,
   MerkleMapWitness,
-} from 'snarkyjs'
+} from 'o1js'
 
 import type { ZkappWorkerRequest, ZkappWorkerReponse, WorkerFunctions } from './AllMaWorkerEvents'
 import ActionResult from './AllMaWorkerEvents';
@@ -23,8 +23,8 @@ export default class AllMaWorkerEventsClient {
 
   // ---------------------------------------------------------------------------------------
 
-  loadSnarkyJS() {
-    return this._call('loadSnarkyJS', {});
+  loado1js() {
+    return this._call('loado1js', {});
   }
 
   setupLocalBlockchain() {

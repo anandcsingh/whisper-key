@@ -1,5 +1,5 @@
 
-import { PublicKey } from 'snarkyjs';
+import { PublicKey } from 'o1js';
 import { FirebaseBackingStore } from '../../../contracts/build/src/models/firebase/FirebaseBackingStore';
 
 

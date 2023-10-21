@@ -4,7 +4,7 @@ import Authentication from "@/modules/Authentication";
 import AllMaWorkerEventsClient from "@/modules/workers/AllMaWorkerEventsClient";
 import Router from 'next/router';
 import { useContext, useState } from "react";
-import { PublicKey } from "snarkyjs";
+import { PublicKey } from "o1js";
 
 const PromoteForm = () => {
     const [authState, setAuthState] = useContext(AuthContext);

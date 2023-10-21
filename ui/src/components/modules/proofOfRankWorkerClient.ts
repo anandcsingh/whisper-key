@@ -5,7 +5,7 @@ import {
   Field,
   MerkleMapWitness,
   CircuitString,
-} from 'snarkyjs'
+} from 'o1js'
 
 import type { ZkappWorkerRequest, ZkappWorkerReponse, WorkerFunctions } from '../modules/proofOfRankWorker';
 import { MartialArtist } from '../../../contracts/src/models/MartialArtist';
@@ -16,8 +16,8 @@ export default class ProofOfRankWorkerClient extends ZkClient {
   // ---------------------------------------------------------------------------------------
   className = 'ProofOfRankWorkerClient';
 
-  loadSnarkyJS() {
-    return this._call('loadSnarkyJS', {});
+  loado1js() {
+    return this._call('loado1js', {});
   }
 
   setActiveInstanceToBerkeley() {

@@ -2,10 +2,10 @@ import {
   Mina,
   fetchAccount,
   isReady,
-} from 'snarkyjs'
+} from 'o1js'
 
 const functions = {
-  loadSnarkyJS: async (args: {}) => {
+  loado1js: async (args: {}) => {
     await isReady;
   },
   setActiveInstanceToBerkeley: async (args: {}) => {

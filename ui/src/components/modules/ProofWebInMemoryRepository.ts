@@ -9,7 +9,7 @@ import {
     Proof,
     PublicKey,
     Struct,
-} from 'snarkyjs';
+} from 'o1js';
 
 import type { ProofOfRank } from '../../../contracts/src/ProofOfRank';
 import { MartialArtist } from '../../../contracts/src/models/MartialArtist';

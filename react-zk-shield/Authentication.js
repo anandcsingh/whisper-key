@@ -29,7 +29,7 @@ const Authentication = {
         return this.contractsLoader.contracts;
     },
     loadSnarky: async function () {
-        await this.zkClient.loadSnarkyJS();
+        await this.zkClient.loado1js();
         await this.zkClient.setActiveInstanceToBerkeley();
         this.snarkyLoaded = true;
         return true;

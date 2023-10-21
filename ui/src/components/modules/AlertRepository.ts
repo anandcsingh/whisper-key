@@ -1,6 +1,6 @@
 
 
-import { PublicKey } from 'snarkyjs';
+import { PublicKey } from 'o1js';
 
 export class AlertRepository {
     

@@ -8,7 +8,7 @@ import {
   MerkleMapWitness,
   CircuitString,
   Bool,
-} from 'snarkyjs'
+} from 'o1js'
 import { BackingStore, MerkleMapDatabase } from '../../../../contracts/build/src/models/MartialArtistRepository.js';
 
 
@@ -31,7 +31,7 @@ const state = {
 // ---------------------------------------------------------------------------------------
 
 const functions = {
-  loadSnarkyJS: async (args: {}) => {
+  loado1js: async (args: {}) => {
     await isReady;
   },
   setActiveInstanceToBerkeley: async (args: {}) => {

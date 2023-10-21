@@ -1,4 +1,4 @@
-import { PublicKey } from "snarkyjs";
+import { PublicKey } from "o1js";
 import AddBjjRankWorkerClient from "./workers/bjj/AddBjjRankWorkerClient";
 import PromoteBjjStudentWorkerClient from "./workers/bjj/PromoteBjjStudentWorkerClient";
 import ProveBjjRankWorkerClient from "./workers/bjj/ProveBjjRankWorkerClient";

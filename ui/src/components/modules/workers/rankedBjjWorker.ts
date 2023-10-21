@@ -5,7 +5,7 @@ import {
   PrivateKey,
   Field,
   fetchAccount,
-} from 'snarkyjs'
+} from 'o1js'
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
@@ -27,7 +27,7 @@ const state = {
 // ---------------------------------------------------------------------------------------
 
 const functions = {
-  loadSnarkyJS: async (args: {}) => {
+  loado1js: async (args: {}) => {
     await isReady;
   },
   setActiveInstanceToBerkeley: async (args: {}) => {
