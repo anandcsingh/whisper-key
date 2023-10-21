@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import TestHeader from '@/components/layout/TestHeader';
+import LandingPageHeader from '@/components/layout/LandingPageHeader';
 
 export default function Home() {
  
@@ -14,7 +15,7 @@ export default function Home() {
         <title>RankProof zkApp</title>
         <link rel="icon" href="/assets/favicon.ico" />
       </Head>
-      <TestHeader />
+      <LandingPageHeader />
       <main>
         <div>
           
