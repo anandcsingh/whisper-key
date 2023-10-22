@@ -152,7 +152,7 @@ const AuthPage = ({ validate, children }) => {
   return (
     <>
       <Head>
-        <title>RankProof zkApp</title>
+        <title>Whisper Key</title>
         <link rel="icon" href="/assets/favicon.ico" />
       </Head>
     

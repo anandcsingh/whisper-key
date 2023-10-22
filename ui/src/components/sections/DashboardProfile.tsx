@@ -67,7 +67,7 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ disciplines }) => {
         <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold mb-1">
           Good afternoon, { authState.userAuthenticated && shortName() } 👋
         </h1>
-        <p className="dark:text-indigo-200 pb-2">Start your martial arts journey today, Disciplines:</p>
+        <p className="dark:text-indigo-200 pb-2">Create your Verified Credentials...</p>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-center	">
           <div className='grid grid-cols-3'>
@@ -96,7 +96,7 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ disciplines }) => {
 
           ))}
           </div>
-          <a className="inline-block rounded btn-primary px-12 py-3 text-center text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400" href='#add_action_modal'>ADD New Martial Art</a>
+          <a className="inline-block rounded btn-primary px-12 py-3 text-center text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400" href='#add_action_modal'>Create Verifiable Credential</a>
         </div>
       </div>
     </div>

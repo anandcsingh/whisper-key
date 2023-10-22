@@ -1,6 +1,7 @@
 import Add from "@/pages/add.page";
 import { DashboardActionsProps } from "./DashboardActions";
 import AddForm from "../Forms/AddForm";
+import AddVerifiableCredentialForm from "../Forms/AddVerifiableCredentialForm";
 
 
 const AddAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
@@ -29,7 +30,8 @@ const AddAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
                         <div className="modal-action">
                             <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                         </div>
-                        <AddForm />
+                        {/* <AddForm /> */}
+                        <AddVerifiableCredentialForm />
                     </form>
                     <form method="dialog" className="modal-backdrop">
                         <button>close</button>
