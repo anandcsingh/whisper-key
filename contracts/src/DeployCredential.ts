@@ -1,4 +1,4 @@
-import { AccountUpdate, Mina, PrivateKey, PublicKey } from 'o1js';
+import { AccountUpdate, Mina, PrivateKey } from 'o1js';
 import * as path from 'path';
 
 export class DeployCredential {
@@ -37,6 +37,10 @@ export class DeployCredential {
           memo: '',
         },
       });
+
+      if (isSuccess) {
+        console.log(hash);
+      }
     }
   }
 
