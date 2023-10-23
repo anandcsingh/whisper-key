@@ -32,6 +32,12 @@ function GenerateCredentialFile(json: any) {
     // Implement this method to generate the credential file based on the JSON configuration.
     // You can use the fs module to write the file to a specific location.
     // Example: fs.writeFileSync('path/to/credential/file.ts', generatedContent);
+
+    // ToDo
+    // Access the CredentialGenerator file in the contracts project
+    // It exposes a `generateAndSave` method
+    // Give it a json string and a file path as params to generate creds
+    // The json string has the fields for the credentials, the file path is where the template for the Credential generation is located
 }
 
 function DeployCredential(filename: string) {
