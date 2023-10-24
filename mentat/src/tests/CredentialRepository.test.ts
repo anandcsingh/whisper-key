@@ -27,7 +27,6 @@ describe("CredentialRepository", () => {
       new Date(),
       'Test',
       'Test',
-      'Test'
     );
     await repo.AddCredential(credential);
   });
@@ -44,7 +43,6 @@ describe("CredentialRepository", () => {
       new Date(),
       'Test',
       'Test',
-      'Test'
     );
     await repo.AddCredential(credential);
     credential.id = crypto.randomBytes(16).toString("hex");

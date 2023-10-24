@@ -5,8 +5,7 @@ export class CredentialMetadata {
     version: string;
     created: Date;
     createdBy: string;
-    fileName: string;
-    fileHash: string;
+    jsonDefinition: string;
 
     constructor(
         id: string,
@@ -15,8 +14,7 @@ export class CredentialMetadata {
         version: string,
         created: Date,
         createdBy: string,
-        fileName: string,
-        fileHash: string
+        jsonDefinition: string,
     ) {
         this.id = id;
         this.name = name;
@@ -24,7 +22,6 @@ export class CredentialMetadata {
         this.version = version;
         this.created = created;
         this.createdBy = createdBy;
-        this.fileName = fileName;
-        this.fileHash = fileHash;
+        this.jsonDefinition = jsonDefinition;
     }
 }
