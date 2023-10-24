@@ -16,7 +16,7 @@ module.exports = {
     },
   },
   daisyui: {
-    themes: ["coffee"],
+    themes: ["garden"],
   },
   plugins: [require('flowbite/plugin'),require("@tailwindcss/typography"),require('daisyui')],
 }
