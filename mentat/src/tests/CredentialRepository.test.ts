@@ -2,6 +2,7 @@
 import { InMemoryMentatStore } from "./InMemoryMentatStore";
 import { CircuitString, Field, PublicKey } from "o1js";
 import { LicenseEntity } from "./LicenseEntity";
+import * as crypto from "crypto";
 
 import { CredentialRepository } from '../CredentialRepository';
 import { CredentialMetadata } from '../CredentialMetadata';
@@ -15,11 +16,11 @@ const Config = {
 };
 describe("CredentialRepository", () => {
   it("should create new credential metadata", async () => {
-
-
     let repo = new CredentialRepository();
- 
+    await repo.clearMetadataStore();
+
     let credential = new CredentialMetadata(
+      crypto.randomBytes(16).toString("hex"),
       'Test' + Math.random().toString(36).substring(7),
       'Test',
       '1.0',
@@ -31,5 +32,26 @@ describe("CredentialRepository", () => {
     await repo.AddCredential(credential);
   });
 
+  it("should get all credentials metadata", async () => {
+    let repo = new CredentialRepository();
+    await repo.clearMetadataStore();
+ 
+    let credential = new CredentialMetadata(
+      crypto.randomBytes(16).toString("hex"),
+      'Test' + Math.random().toString(36).substring(7),
+      'Test',
+      '1.0',
+      new Date(),
+      'Test',
+      'Test',
+      'Test'
+    );
+    await repo.AddCredential(credential);
+    credential.id = crypto.randomBytes(16).toString("hex");
+    await repo.AddCredential(credential);
+
+    let credentials = await repo.GetCredentials();
+    expect(credentials.length).toBe(2);
+  });
 
 });
