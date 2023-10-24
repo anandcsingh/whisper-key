@@ -1,28 +1,27 @@
 export class CredentialMetadata {
+    id: string;
     name: string;
     description: string;
     version: string;
     created: Date;
     createdBy: string;
-    fileName: string;
-    fileHash: string;
-  
+    jsonDefinition: string;
+
     constructor(
-      name: string,
-      description: string,
-      version: string,
-      created: Date,
-      createdBy: string,
-      fileName: string,
-      fileHash: string
+        id: string,
+        name: string,
+        description: string,
+        version: string,
+        created: Date,
+        createdBy: string,
+        jsonDefinition: string,
     ) {
-      this.name = name;
-      this.description = description;
-      this.version = version;
-      this.created = created;
-      this.createdBy = createdBy;
-      this.fileName = fileName;
-      this.fileHash = fileHash;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.version = version;
+        this.created = created;
+        this.createdBy = createdBy;
+        this.jsonDefinition = jsonDefinition;
     }
-  }
-  
+}

@@ -14,7 +14,7 @@ export class MerkleMapState {
 }
 
 
-export abstract class ZkMentatStore {
+export abstract class ZkMentatStore  {
   async getMerkleMap(): Promise<MerkleMapState> {
     let map = new MerkleMap();
     let index = 0;
