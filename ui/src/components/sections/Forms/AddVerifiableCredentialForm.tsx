@@ -17,7 +17,6 @@ const AddForm = () => {
   const handlefieldTypeValueChange = async (event: any) => {
     setfieldTypeValue(event.target.value);
   };
-  // const [rankValue, setRankValue] = useState('');
 
   const [rows, setRows] = useState([{ id: 1, name: '', type: 'String' }]);
   const [nextRowId, setNextRowId] = useState(2);
@@ -26,35 +25,15 @@ const AddForm = () => {
   const [vcDescriptionValue, setvcDescriptionValue] = useState('');
   const [fieldNameValue, setfieldNameValue] = useState('');
 
-
-  // const handleRankChange = async (event: any) => {
-  //   setRankValue(event.target.value);
-  // };
-  // const [instructorValue, setInstructorValue] = useState('');
-  // const handleInstructorChange = async (event: any) => {
-  //   setInstructorValue(event.target.value);
-  // };
-  // const [notifyInstructorValue, setNotifyInstructorValue] = useState('');
-  // const handleNotifyInstructorChange = async (event: any) => {
-  //   setNotifyInstructorValue(event.target.value);
-  // };
-
-  // const startScan = async (event: any) => {
-  //   setVisibility('visible');
-
-  // }
-  // const handleScan = async (event: any) => {
-  //   if (event) {
-  //     console.log(event);
-  //     setInstructorValue(event);
-  //     setVisibility('hidden');
-  //   }
-  // }
-
   const addAnotherField = () => {
     console.log("Adding another row to define fields...");
     setRows([...rows, { id: nextRowId, name: '', type: 'String' }]);
     setNextRowId(nextRowId + 1);
+  };
+
+  const removeRow = (id) => {
+    const updatedRows = rows.filter((row) => row.id !== id);
+    setRows(updatedRows);
   };
 
   const handleChange = (id: number, field: string, value: string) => {
@@ -140,75 +119,57 @@ const AddForm = () => {
           </label>
           <input type="text" id="name" className="input input-bordered w-full max-w-xs" placeholder="Enter a description" />
         </div>
-        {/* <div className="form-section vc-field-row">
-          <h3 className='text-3xl font-bold sm:text-4xl'>Define fields</h3>
-          <div className='divider'></div>
-          <div className="form-control">
-            <label className="label">
-              <span className="text-base label-text vc-fieldName" >Name</span>
-            </label>
-            <input type="text" id="name" className="input input-bordered w-full max-w-xs" placeholder="Enter a description" />
-          </div>
-          <div className="form-control">
-            <label className="label">
-              <span className="text-base label-text vc-fieldName" >Type</span>
-            </label>
-            <select className="select select-bordered w-full max-w-xs ">
-              <option>Field</option>
-              <option>PublicKey</option>
-              <option>CircuitString</option>
-              <option>Bool</option>
-            </select>
-          </div>
-          <div>
-            <div className='divider'></div>
-            <button onClick={addAnotherField} className="btn btn-accent">Add Another</button>
-          </div>  
-        </div> */}
-
-<div className="form-section">
-      <h3 className="text-3xl font-bold sm:text-4xl">Define fields</h3>
-      {rows.map((row, index) => (
-        <div key={row.id} className="form-row">
-          <div className="form-control">
-            <label className="label">
-              <span className="text-base label-text vc-fieldName">Name</span>
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              placeholder="Enter a description"
-              value={row.name}
-              onChange={(e) => handleChange(row.id, 'name', e.target.value)}
-            />
-          </div>
-          <div className="form-control">
-            <label className="label">
-              <span className="text-base label-text vc-fieldName">Type</span>
-            </label>
-            <select
-              className="select select-bordered w-full max-w-xs"
-              value={row.type}
-              onChange={(e) => handleChange(row.id, 'type', e.target.value)}
-            >
-              <option>String</option>
-              <option>Int</option>
-              <option>Decimal</option>
-              <option>Boolean</option>
-            </select>
-          </div>
-          {index === rows.length - 1 && (
-            <div>
-              <button onClick={addAnotherField} className="btn btn-accent">
-                Add Another
-              </button>
+        
+        <div className="form-section">
+          <h3 className="text-3xl font-bold sm:text-4xl">Define fields</h3>
+          {rows.map((row, index) => (
+            <div key={row.id} className="form-row">
+              <div className="form-control">
+                <label className="label">
+                  <span className="text-base label-text vc-fieldName">Name</span>
+                </label>
+                <input
+                  type="text"
+                  className="input input-bordered w-full max-w-xs"
+                  placeholder="Enter a description"
+                  value={row.name}
+                  onChange={(e) => handleChange(row.id, 'name', e.target.value)}
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="text-base label-text vc-fieldName">Type</span>
+                </label>
+                <select
+                  className="select select-bordered w-full max-w-xs"
+                  value={row.type}
+                  onChange={(e) => handleChange(row.id, 'type', e.target.value)}
+                >
+                  <option>String</option>
+                  <option>Int</option>
+                  <option>Decimal</option>
+                  <option>Boolean</option>
+                </select>
+              </div>
+              {rows.length > 1 && (
+                <div>
+                  <button onClick={() => removeRow(row.id)} className="btn btn-danger">
+                    Remove
+                  </button>
+                </div>
+              )}
+              {index === rows.length - 1 && (
+                <div>
+                  <button onClick={addAnotherField} className="btn btn-accent">
+                    Add Another
+                  </button>
+                </div>
+              )}
             </div>
-          )}
+          ))}
         </div>
-      ))}
-    </div>
-        
-        
+                
+                
         <div className=''>
           <button onClick={addVeriableCredential} className="btn btn-accent">Add Verifiable Credential</button>
         </div>
