@@ -101,11 +101,14 @@ export class FirebaseMentatStore extends ZkMentatStore {
         }
     }
     async upsert(dataObj: IEntity): Promise<void> {
+        const data = dataObj.toPlainObject();
+        data.hash = dataObj.hash().toString();
         const docRef = doc(
             this.database,
             this.collectionName,
+            (data as any)[this.keyField],
         );
-        const data = dataObj;
-        await setDoc(docRef, dataObj as any);
+        console.log(data);
+        await setDoc(docRef, data);
     }
 }
