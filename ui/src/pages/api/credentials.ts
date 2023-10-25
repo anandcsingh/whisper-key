@@ -15,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
             // 2. Deploy the credential file (replace with your deployment logic).
             const { filename } = query;
-            const deploymentResult = DeployCredential(filename);
+            const deploymentResult = DeployCredential("");
 
             // 3. Save metadata to Firebase database (replace with your Firebase SDK usage).
             const { credentialName, user: metadataUser } = req.body;
