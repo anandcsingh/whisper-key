@@ -11,7 +11,7 @@ import {
     setDoc,
     where,
 } from 'firebase/firestore';
-import { ZkMentatStore } from './ZkMentatStore.js';
+import { ZkMentatStore } from './ZkMentatStore';
 import { initializeApp } from "firebase/app";
 import { IEntity } from './IEntity.js';
 

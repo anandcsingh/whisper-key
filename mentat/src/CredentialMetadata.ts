@@ -5,7 +5,7 @@ export class CredentialMetadata {
     version: string;
     created: Date;
     createdBy: string;
-    jsonDefinition: string;
+    fields: CredentialField[];
 
     constructor(
         id: string,
@@ -14,7 +14,7 @@ export class CredentialMetadata {
         version: string,
         created: Date,
         createdBy: string,
-        jsonDefinition: string,
+        fields: CredentialField[],
     ) {
         this.id = id;
         this.name = name;
@@ -22,6 +22,48 @@ export class CredentialMetadata {
         this.version = version;
         this.created = created;
         this.createdBy = createdBy;
-        this.jsonDefinition = jsonDefinition;
+        this.fields = fields;
+    }
+
+    static fromJson(json: any): CredentialMetadata {
+        let fields: CredentialField[] = [];
+        json.fields.forEach((field: any) => {
+            fields.push(new CredentialField(field.name, field.description, field.type));
+        });
+        return new CredentialMetadata(json.id, json.name, json.description, json.version, json.created, json.createdBy, fields);
+    }
+
+    toPlainObject(): any {
+        let fields: any[] = [];
+        this.fields.forEach((field: CredentialField) => {
+            fields.push({
+                name: field.name,
+                description: field.description,
+                type: field.type,
+            });
+        });
+        return {
+            id: this.id,
+            name: this.name,
+            description: this.description,
+            version: this.version,
+            created: this.created,
+            createdBy: this.createdBy,
+            fields: fields,
+        };
+    }
+}
+export class CredentialField {
+    name: string;
+    description: string;
+    type: string;
+    constructor(
+        name: string,
+        description: string,
+        type: string,
+    ) {
+        this.name = name;
+        this.description = description;
+        this.type = type;
     }
 }
