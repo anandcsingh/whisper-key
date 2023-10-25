@@ -64,6 +64,7 @@ function YourComponent() {
                                         <option value="decimal">decimal</option>
                                     </select>
                                 </div>
+                                
                                 {index === fields.length - 1 && (
                                     <div>
                                         <button type="button" className="bg-red-500 text-white rounded-md p-2 hover:bg-red-700" onClick={addField}>
