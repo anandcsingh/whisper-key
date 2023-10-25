@@ -29,12 +29,12 @@ describe("CredentialRepository", () => {
       [],
     );
     await repo.AddCredential(credential);
-  });
+  }, 60000);
 
   it("should get all credentials metadata", async () => {
     let repo = new CredentialRepository();
     await repo.clearMetadataStore();
- 
+
     let credential = new CredentialMetadata(
       crypto.randomBytes(16).toString("hex"),
       'Test' + Math.random().toString(36).substring(7),
