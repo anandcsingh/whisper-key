@@ -56,7 +56,7 @@ export class CredentialRepository {
       this.collectionName,
       credential.id,
     );
-    await setDoc(docRef, Object.assign({}, credential));
+    await setDoc(docRef, credential.toPlainObject());
   }
 
   async GetCredential(id: string): Promise<CredentialMetadata | undefined> {

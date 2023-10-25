@@ -5,7 +5,7 @@ import { LicenseEntity } from "./LicenseEntity";
 import * as crypto from "crypto";
 
 import { CredentialRepository } from '../CredentialRepository';
-import { CredentialMetadata } from '../CredentialMetadata';
+import { CredentialField, CredentialMetadata } from '../CredentialMetadata';
 const Config = {
   apiKey: "AIzaSyBIJmplBy5lylYZo9_D7WX18_seBKnzSF0",
   authDomain: "rankproof-cohort1.firebaseapp.com",
@@ -42,7 +42,12 @@ describe("CredentialRepository", () => {
       '1.0',
       new Date(),
       'Test',
-      [],
+      [
+        new CredentialField("First Name", "", "CircuitString"),
+        new CredentialField("Last Name", "", "CircuitString"),
+        new CredentialField("Licence Number", "", "Field"),
+        new CredentialField("Verified", "", "Bool"),
+    ],
     );
     await repo.AddCredential(credential);
     credential.id = crypto.randomBytes(16).toString("hex");
