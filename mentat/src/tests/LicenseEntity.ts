@@ -26,6 +26,19 @@ import { IEntity } from '../IEntity';
     class: CircuitString,
   }) implements IEntity  {
 
+    toPlainObject() {
+      return {
+        id: Number(this.id.toBigInt()),
+        publicKey: this.publicKey.toBase58(),
+        firstName: this.firstName.toString(),
+        lastName: this.lastName.toString(),
+        licenceNumber: this.licenceNumber.toString(),
+        createdDate: this.createdDate.toString(),
+        expiryDate: this.expiryDate.toString(),
+        class: this.class.toString(),
+      };
+    }
+
     hash(): Field {
       return Poseidon.hash(
         this.publicKey
