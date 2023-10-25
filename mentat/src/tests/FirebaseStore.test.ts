@@ -2,7 +2,7 @@ import { CircuitString, Field, PublicKey, Struct } from "o1js";
 import { LicenseEntity } from "./LicenseEntity";
 import { FirebaseConfig, FirebaseMentatStore } from "../FirebaseMentatStore";
 
-describe("ObjectCopy", () => {
+describe("FirebaseStore", () => {
     const Config = {
         apiKey: "AIzaSyBIJmplBy5lylYZo9_D7WX18_seBKnzSF0",
         authDomain: "rankproof-cohort1.firebaseapp.com",
@@ -25,7 +25,7 @@ describe("ObjectCopy", () => {
       };
       let struct = new LicenseEntity(licence);
       
-      console.log(struct.toPlainObject());
+      //console.log(struct.toPlainObject());
       expect(struct).toBeTruthy();
   });
 

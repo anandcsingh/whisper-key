@@ -4,7 +4,7 @@ export class CredentialMetadata {
     description: string;
     version: string;
     created: Date;
-    createdBy: string;
+    owner: string;
     fields: CredentialField[];
 
     constructor(
@@ -13,7 +13,7 @@ export class CredentialMetadata {
         description: string,
         version: string,
         created: Date,
-        createdBy: string,
+        owner: string,
         fields: CredentialField[],
     ) {
         this.id = id;
@@ -21,7 +21,7 @@ export class CredentialMetadata {
         this.description = description;
         this.version = version;
         this.created = created;
-        this.createdBy = createdBy;
+        this.owner = owner;
         this.fields = fields;
     }
 
@@ -30,7 +30,7 @@ export class CredentialMetadata {
         json.fields.forEach((field: any) => {
             fields.push(new CredentialField(field.name, field.description, field.type));
         });
-        return new CredentialMetadata(json.id, json.name, json.description, json.version, json.created, json.createdBy, fields);
+        return new CredentialMetadata(json.id, json.name, json.description, json.version, json.created, json.owner, fields);
     }
 
     toPlainObject(): any {
@@ -48,7 +48,7 @@ export class CredentialMetadata {
             description: this.description,
             version: this.version,
             created: this.created,
-            createdBy: this.createdBy,
+            owner: this.owner,
             fields: fields,
         };
     }

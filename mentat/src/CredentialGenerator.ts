@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as Mustache from 'mustache';
 import path from 'path';
 
-class CredentialGenerator {
+export class CredentialGenerator {
   generateAndSave(jsonString: string, template: string): void {
     try {
       // Parse the JSON string to get className

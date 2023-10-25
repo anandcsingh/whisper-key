@@ -15,6 +15,37 @@ const Config = {
   appId: "1:988704691374:web:e57bebd121bef8b2fdc93f"
 };
 describe("CredentialRepository", () => {
+
+  it("should allow transformation of meta data", async () => {
+    let json = {
+      "name": "UserCredentials",
+      "fields": [
+        { "name": "Username", "type": "CircuitString" },
+        { "name": "Password", "type": "CircuitString" }
+      ]
+    };
+
+    let credential: CredentialMetadata = CredentialMetadata.fromJson(json);
+    expect(credential).toBeTruthy();
+    expect(credential.fields.length).toBe(2);
+    expect(credential.fields[0].name).toBe("Username");
+  }, 60000);
+
+  it("should allow cast of meta data", async () => {
+    let json = {
+      "name": "UserCredentials",
+      "fields": [
+        { "name": "Username", "type": "CircuitString" },
+        { "name": "Password", "type": "CircuitString" }
+      ]
+    };
+
+    let credential: CredentialMetadata = json as CredentialMetadata;
+    expect(credential).toBeTruthy();
+    expect(credential.fields.length).toBe(2);
+    expect(credential.fields[0].name).toBe("Username");
+  }, 60000);
+
   it("should create new credential metadata", async () => {
     let repo = new CredentialRepository();
     await repo.clearMetadataStore();

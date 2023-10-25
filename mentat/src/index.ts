@@ -1,5 +1,6 @@
-export function add(a: number, b: number): number {
-    return a + b;
-  }
-  
-  console.log(add(3, 5)); //output: 8
+export { CredentialGenerator } from './CredentialGenerator'
+export { CredentialMetadata, CredentialField } from './CredentialMetadata'
+export { CredentialRepository } from './CredentialRepository'
+export { FirebaseMentatStore } from './FirebaseMentatStore'
+export { IEntity } from './IEntity'
+export { ZkMentatStore } from './ZkMentatStore'

@@ -1,8 +1,7 @@
 // pages/api/credentials.ts
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import CredentialGenerator from '../../../../contracts/src/CredentialGenerator';
-
+import { CredentialGenerator, CredentialRepository, CredentialMetadata } from '../../../../mentat/dist/index'
 import * as fs from 'fs';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -19,12 +18,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
             // 3. Save metadata to Firebase database (replace with your Firebase SDK usage).
             const { credentialName, user: metadataUser } = req.body;
-            const firebaseMetadataResult = AddFirebaseMetadata(credentialName, metadataUser);
+
+            const repo = new CredentialRepository();
+            repo.AddCredential(req.body as CredentialMetadata);
 
             res.status(200).json({
                 message: 'Credential file generated, deployed, and metadata saved successfully',
                 deploymentResult,
-                firebaseMetadataResult,
             });
         } catch (error: any) {
             res.status(500).json({ error: 'Internal server error', details: error.message });
