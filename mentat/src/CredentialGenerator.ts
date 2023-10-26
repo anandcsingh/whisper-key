@@ -1,16 +1,16 @@
 import * as fs from 'fs';
 import * as Mustache from 'mustache';
 import path from 'path';
+import { CredentialMetadata } from './CredentialMetadata';
 
 export class CredentialGenerator {
-  generateAndSave(jsonString: string, template: string): void {
+  generateAndSave(jsonObject: CredentialMetadata, template: string): void {
     try {
       // Parse the JSON string to get className
-      const jsonData = JSON.parse(jsonString);
-      const className = jsonData.ClassName;
+      const className = jsonObject.name;
 
       // Render the template using Mustache.js
-      const renderedTemplate = Mustache.render(template, jsonData);
+      const renderedTemplate = Mustache.render(template, jsonObject);
 
       // Define the path to the credentials folder relative to the current directory
       const credentialsFolderPath = path.join(__dirname, 'credentials');
@@ -38,8 +38,10 @@ export class CredentialGenerator {
       const jsonContent = fs.readFileSync(jsonFilePath, 'utf-8');
       const templateContent = fs.readFileSync(templateFilePath, 'utf-8');
 
+      let jsonObj = JSON.parse(jsonContent) as CredentialMetadata;
+
       // Call generateAndSave with the content from files
-      this.generateAndSave(jsonContent, templateContent);
+      this.generateAndSave(jsonObj, templateContent);
     } catch (error) {
       console.error('An error occurred:', error);
     }

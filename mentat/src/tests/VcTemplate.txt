@@ -17,11 +17,11 @@ import {
   Circuit,
 } from 'o1js';
 
-export class {{ClassName}} extends Struct({
+export class {{name}} extends Struct({
   // dynamically generate the fields and their types
   // simple types for now
 {{#fields}}
-{{title}}: {{type}}
+{{name}}: {{type}}
 {{/fields}} 
 }) {
   hash(): Field {
