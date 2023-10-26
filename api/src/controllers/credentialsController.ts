@@ -1,19 +1,23 @@
 // controllers/credentialsController.ts
 import { Request, Response } from "express";
 import { CredentialMetadata } from "../models/CredentialMetadata.js";
-// import { CredentialGenerator, CredentialRepository } from "../../../mentat/src/index";
+ //import { CredentialMetadata, CredentialGenerator, CredentialRepository } from "../../../mentat/src/index";
 
 
 export const generateCredentials = (req: Request, res: Response) => {
     const creds: CredentialMetadata = req.body as CredentialMetadata;
-
-    GenerateCredentialFile(creds);
-
-    DeployCredential("");
-
-    AddFirebaseMetadata("", "");
+    console.log("Started generating credential");
     res.status(200)
-    .send("Credential Generated @ " + new Date().toISOString());
+    .send(creds);
+    // GenerateCredentialFile(creds);
+    
+    // DeployCredential("");
+    // console.log("Storing credential");
+    // new CredentialRepository().AddCredential(creds);
+    // console.log("Storedcredential");
+
+    // res.status(200)
+    // .send("Credential Generated @ " + new Date().toISOString());
 };
 
 function GenerateCredentialFile(json: CredentialMetadata): string {
@@ -31,6 +35,7 @@ function GenerateCredentialFile(json: CredentialMetadata): string {
     // ToDo: Make generate and save accept a CredentialMetadata type and not json
     //generator.generateAndSave(json, template);
 
+    console.log("Credential generated");
 
     return "Credential generated"
 }
