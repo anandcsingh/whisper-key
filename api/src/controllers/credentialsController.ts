@@ -1,6 +1,6 @@
 // controllers/credentialsController.ts
 import { Request, Response } from "express";
-import { CredentialMetadata } from "../models/CredentialMetadata";
+import { CredentialMetadata } from "../models/CredentialMetadata.js";
 // import { CredentialGenerator, CredentialRepository } from "../../../mentat/src/index";
 
 
@@ -12,9 +12,8 @@ export const generateCredentials = (req: Request, res: Response) => {
     DeployCredential("");
 
     AddFirebaseMetadata("", "");
-
-    return "Credential Generated";
-
+    res.status(200)
+    .send("Credential Generated @ " + new Date().toISOString());
 };
 
 function GenerateCredentialFile(json: CredentialMetadata): string {

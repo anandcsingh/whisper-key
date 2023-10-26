@@ -1,12 +1,12 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
-import { credsRouter } from './routes/credentialsRoute';
+import { credsRouter } from './routes/credentialsRoute.js';
 
 const app = express();
 const port = process.env.PORT || 3000; // Set your desired port
 
 // Middleware
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
 app.use('/api/credentials', credsRouter);
 
