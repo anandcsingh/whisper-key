@@ -1,6 +1,6 @@
 import express from 'express';
-import * as bodyParser from 'body-parser';
-import { credsRouter } from './routes/credentialsRoute';
+import bodyParser from 'body-parser'
+import { credsRouter } from './routes/credentialsRoute.js';
 
 const app = express();
 const port = process.env.PORT || 3000; // Set your desired port
