@@ -7,17 +7,17 @@ import { CredentialMetadata } from "../models/CredentialMetadata.js";
 export const generateCredentials = (req: Request, res: Response) => {
     const creds: CredentialMetadata = req.body as CredentialMetadata;
     console.log("Started generating credential");
-    res.status(200)
-    .send(creds);
-    // GenerateCredentialFile(creds);
     
-    // DeployCredential("");
-    // console.log("Storing credential");
+     GenerateCredentialFile(creds);
+    
+     DeployCredential("");
+     console.log("Storing credential");
     // new CredentialRepository().AddCredential(creds);
-    // console.log("Storedcredential");
+     console.log("Storedcredential");
 
-    // res.status(200)
-    // .send("Credential Generated @ " + new Date().toISOString());
+     creds.created = new Date();
+     res.status(200)
+     .send(creds);
 };
 
 function GenerateCredentialFile(json: CredentialMetadata): string {
