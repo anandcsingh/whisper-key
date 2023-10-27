@@ -22,9 +22,18 @@ const AddForm = () => {
   const [rows, setRows] = useState([{ id: 1, name: '', type: 'String' }]);
   const [nextRowId, setNextRowId] = useState(2);
 
-  const [vcNameValue, setvcNameValue] = useState('');
-  const [vcDescriptionValue, setvcDescriptionValue] = useState('');
+  const [vcNameValue, setVCNameValue] = useState('');
+  const [vcDescriptionValue, setVCDescriptionValue] = useState('');
   const [fieldNameValue, setfieldNameValue] = useState('');
+
+  const handleVCNameChange = async (event: any) => {
+    setVCNameValue(event.target.value);
+  };
+
+  const handleVCDescriptionChange = async (event: any) => {
+    setVCDescriptionValue(event.target.value);
+  };
+  
 
   const addAnotherField = () => {
     console.log("Adding another row to define fields...");
@@ -75,6 +84,15 @@ const AddForm = () => {
     // }
     // console.log(credentialFields);
 
+    let credentialFields = Array<Object>();
+    if(rows[0].name !== ""){
+      rows.forEach(element => {
+        credentialFields.push({name: element.name, description: "", type: element.type});
+      });
+    }
+    let credentialMetaData = {name: vcNameValue, description: vcDescriptionValue, fields: credentialFields};
+    console.log(credentialFields);
+    console.log(credentialMetaData);
 
   //   let result = await client.add(studentID, rankValue, disciplineValue);
   //   console.log("result", result);
@@ -122,13 +140,13 @@ const AddForm = () => {
           <label className="label">
             <span className="text-base label-text">Name</span>
           </label>
-          <input type="text" id="name" className="input input-bordered w-full max-w-xs" placeholder="Enter a name" />
+          <input type="text" id="name" onChange={handleVCNameChange} className="input input-bordered w-full max-w-xs" placeholder="Enter a name" />
         </div>
         <div className="form-control">
           <label className="label">
             <span className="text-base label-text">Description</span>
           </label>
-          <input type="text" id="name" className="input input-bordered w-full max-w-xs" placeholder="Enter a description" />
+          <input type="text" id="name" onChange={handleVCDescriptionChange} className="input input-bordered w-full max-w-xs" placeholder="Enter a description" />
         </div>
         
         <div className="form-section">
