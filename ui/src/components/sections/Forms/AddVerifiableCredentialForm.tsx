@@ -6,6 +6,7 @@ import AllMaWorkerEventsClient from "@/modules/workers/AllMaWorkerEventsClient";
 import { Bool, CircuitString, Field, PublicKey, Struct } from 'o1js';
 import { AuthContext } from "@/components/layout/AuthPage";
 import Router from 'next/router';
+// import {CredentialMetadata, CredentialField} from "../../../../../mentat/src/CredentialMetadata";
 
 
 const AddForm = () => {
@@ -61,10 +62,20 @@ const AddForm = () => {
     console.log(`fetching account ... ${Authentication.contractAddress} @ ${new Date().toLocaleTimeString()}}`);
     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Fetching account, please wait this can take a few mins`, alertNeedsSpinner: true });
 
-    await client.fetchAccount({ publicKey: PublicKey.fromBase58(Authentication.contractAddress) });
-    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Invoking contracts, please wait this can take a few mins`, alertNeedsSpinner: true });
+    // await client.fetchAccount({ publicKey: PublicKey.fromBase58(Authentication.contractAddress) });
+    // setAuthState({ ...authState, alertAvailable: true, alertMessage: `Invoking contracts, please wait this can take a few mins`, alertNeedsSpinner: true });
 
-    console.log(`fetching account done ${Authentication.contractAddress} @ ${new Date().toLocaleTimeString()}`);
+    // console.log(`fetching account done ${Authentication.contractAddress} @ ${new Date().toLocaleTimeString()}`);
+
+    // let credentialFields = Array<CredentialField>();
+    // if(rows[0].name !== ""){
+    //   rows.forEach(element => {
+    //     credentialFields.push(new CredentialField(element.name, "", element.type));
+    //   });
+    // }
+    // console.log(credentialFields);
+
+
   //   let result = await client.add(studentID, rankValue, disciplineValue);
   //   console.log("result", result);
   //   if (result && result.success) {
