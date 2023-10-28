@@ -2,6 +2,12 @@ import express from 'express';
 import bodyParser from 'body-parser'
 import { credsRouter } from './routes/credentialsRoute.js';
 
+
+import { ContractDeployer } from './ContractDeployer.js';
+
+const deployer = new ContractDeployer();
+deployer.deployCredential("AddReal");
+
 const app = express();
 const port = process.env.PORT || 3000; // Set your desired port
 
