@@ -59,3 +59,7 @@ a {
 .rankproof-page {
   width: 100%;
 }
+
+.modal-box {
+  max-width: 35rem;
+}

@@ -7,7 +7,10 @@ import { Bool, CircuitString, Field, PublicKey, Struct } from 'o1js';
 import { AuthContext } from "@/components/layout/AuthPage";
 import Router from 'next/router';
 // import {CredentialMetadata, CredentialField} from "../../../../../mentat/src/CredentialMetadata";
+import axios from "axios";
+//import { defineComponent } from "vue";
 
+const apiUrl = "https://localhost:3000/api/credentials/GenerateCredentialFile";
 
 const AddForm = () => {
   const addressRef = useRef(null);
@@ -93,6 +96,18 @@ const AddForm = () => {
     let credentialMetaData = {name: vcNameValue, description: vcDescriptionValue, fields: credentialFields};
     console.log(credentialFields);
     console.log(credentialMetaData);
+    const requestHeaders = { "Content-Type": "application/json" };
+    let data = JSON.stringify(credentialMetaData);
+    console.log(data);
+    // const request = await axios.post(apiUrl, data, {
+    //   headers: requestHeaders,
+    // });
+
+    // axios.post(apiUrl, { data })
+    // .then(res => {
+    //   console.log(res);
+    //   console.log(res.data);
+    // })
 
   //   let result = await client.add(studentID, rankValue, disciplineValue);
   //   console.log("result", result);
@@ -150,9 +165,10 @@ const AddForm = () => {
         </div>
         
         <div className="form-section">
-          <h3 className="text-3xl font-bold sm:text-4xl">Define fields</h3>
+          <h3 className="text-2xl font-bold sm:text-3xl">Define fields</h3>
+          {/* <div className="grid grid-cols-3 gap-4"> */}
           {rows.map((row, index) => (
-            <div key={row.id} className="form-row">
+            <div key={row.id} className="form-row grid grid-cols-3 gap-4">
               <div className="form-control">
                 <label className="label">
                   <span className="text-base label-text vc-fieldName">Name</span>
@@ -182,25 +198,29 @@ const AddForm = () => {
               </div>
               {rows.length > 1 && (
                 <div>
-                  <button onClick={() => removeRow(row.id)} className="btn btn-danger">
+                  {/* <button onClick={() => removeRow(row.id)} className="btn btn-danger">
                     Remove
+                  </button> */}
+                  <button className="btn btn-square" onClick={() => removeRow(row.id)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                   </button>
                 </div>
               )}
               {index === rows.length - 1 && (
                 <div>
-                  <button onClick={addAnotherField} className="btn btn-accent">
+                  <button onClick={addAnotherField} className="btn btn-sm btn-accent">
                     Add Another
                   </button>
                 </div>
               )}
             </div>
           ))}
+          {/* </div> */}
         </div>
                 
                 
         <div className=''>
-          <button onClick={addVeriableCredential} className="btn btn-accent">Add Verifiable Credential</button>
+          <button onClick={addVeriableCredential} className="btn btn-primary">Add Verifiable Credential</button>
         </div>
       </div>
 
