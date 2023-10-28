@@ -23,10 +23,12 @@ The API generates verifiable credentials, saves the credentials to a database an
 #### How to run
 
 - navigate to api folder
-- npm install
-- npm run build
-- npm run start
-- Invoke API using Postman or the like
+#### Commands
+- ```npm install```
+- ```npm run build```
+- ```npm run start```
+
+Invoke API using Postman or the like
 - URL will look like: http://localhost:3000/api/credentials
   - Note: The port for the url can be found in the `app.ts` file of the `src` folder of the `api` project
 
