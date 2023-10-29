@@ -3,11 +3,6 @@ import bodyParser from 'body-parser'
 import { credsRouter } from './routes/credentialsRoute.js';
 import cors from 'cors';
 
-import { ContractDeployer } from './ContractDeployer.js';
-
-const deployer = new ContractDeployer();
-deployer.deployCredential("AddReal");
-
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
 
