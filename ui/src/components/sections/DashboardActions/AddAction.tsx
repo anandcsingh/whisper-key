@@ -26,7 +26,7 @@ const AddAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
 
             <div className='modals-area'>
                 <dialog className="modal" id="add_action_modal">
-                    <form method="dialog" className="modal-box ">
+                    <form method="dialog" className="modal-box w-11/12 max-w-5xl">
                         <div className="modal-action">
                             <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                         </div>

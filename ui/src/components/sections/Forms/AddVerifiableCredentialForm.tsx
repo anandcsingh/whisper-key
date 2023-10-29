@@ -107,9 +107,16 @@ const AddForm = () => {
 
     axios.post(apiUrl, { data })
     .then(res => {
+      console.log("VC added");
       console.log(res);
       console.log(res.data);
-    });
+    })
+    .catch(err => {
+      // Handle error
+      console.log("Something went wrong.");
+      console.log(err.toJSON);
+  });
+
 
   //   let result = await client.add(studentID, rankValue, disciplineValue);
   //   console.log("result", result);
@@ -170,7 +177,7 @@ const AddForm = () => {
           <h3 className="text-2xl font-bold sm:text-3xl">Define fields</h3>
           {/* <div className="grid grid-cols-3 gap-4"> */}
           {rows.map((row, index) => (
-            <div key={row.id} className="form-row grid grid-cols-3 gap-4">
+            <div key={row.id} className="form-row grid grid-cols-4 gap-4">
               <div className="form-control">
                 <label className="label">
                   <span className="text-base label-text vc-fieldName">Name</span>
@@ -199,7 +206,7 @@ const AddForm = () => {
                 </select>
               </div>
               {rows.length > 1 && (
-                <div>
+                <div className="flex items-end">
                   {/* <button onClick={() => removeRow(row.id)} className="btn btn-danger">
                     Remove
                   </button> */}
@@ -209,7 +216,7 @@ const AddForm = () => {
                 </div>
               )}
               {index === rows.length - 1 && (
-                <div>
+                <div className="flex items-end">
                   <button onClick={addAnotherField} className="btn btn-sm btn-accent">
                     Add Another
                   </button>

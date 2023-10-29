@@ -9,7 +9,7 @@ const port = process.env.PORT || 3001; // Set your desired port
 // Middleware
 app.use(bodyParser.json());
 
-app.use(cors);
+app.use(cors());
 
 app.use('/api/credentials', credsRouter);
 
