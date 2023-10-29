@@ -9,7 +9,7 @@ const deployer = new ContractDeployer();
 deployer.deployCredential("AddReal");
 
 const app = express();
-const port = process.env.PORT || 3000; // Set your desired port
+const port = process.env.PORT || 3001; // Set your desired port
 
 // Middleware
 app.use(bodyParser.json());
