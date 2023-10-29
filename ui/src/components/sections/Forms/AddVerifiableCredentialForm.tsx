@@ -10,7 +10,7 @@ import Router from 'next/router';
 import axios from "axios";
 //import { defineComponent } from "vue";
 
-const apiUrl = "https://localhost:3000/api/credentials/GenerateCredentialFile";
+const apiUrl = "http://localhost:3001/api/credentials";
 
 const AddForm = () => {
   const addressRef = useRef(null);
@@ -88,6 +88,8 @@ const AddForm = () => {
     // console.log(credentialFields);
 
     let credentialFields = Array<Object>();
+      
+    //let vcID = crypto.randomBytes(16).toString("hex"),
     if(rows[0].name !== ""){
       rows.forEach(element => {
         credentialFields.push({name: element.name, description: "", type: element.type});
@@ -103,11 +105,11 @@ const AddForm = () => {
     //   headers: requestHeaders,
     // });
 
-    // axios.post(apiUrl, { data })
-    // .then(res => {
-    //   console.log(res);
-    //   console.log(res.data);
-    // })
+    axios.post(apiUrl, { data })
+    .then(res => {
+      console.log(res);
+      console.log(res.data);
+    });
 
   //   let result = await client.add(studentID, rankValue, disciplineValue);
   //   console.log("result", result);
@@ -155,7 +157,7 @@ const AddForm = () => {
           <label className="label">
             <span className="text-base label-text">Name</span>
           </label>
-          <input type="text" id="name" onChange={handleVCNameChange} className="input input-bordered w-full max-w-xs" placeholder="Enter a name" />
+          <input type="text" id="name" onChange={handleVCNameChange} className="input input-bordered w-full max-w-xs" placeholder="Enter verifiable credential name" />
         </div>
         <div className="form-control">
           <label className="label">
@@ -176,7 +178,7 @@ const AddForm = () => {
                 <input
                   type="text"
                   className="input input-bordered w-full max-w-xs"
-                  placeholder="Enter a description"
+                  placeholder="Enter field name."
                   value={row.name}
                   onChange={(e) => handleChange(row.id, 'name', e.target.value)}
                 />
