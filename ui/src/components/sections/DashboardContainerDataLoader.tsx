@@ -12,6 +12,7 @@ import DashboardStats from './DashboardStats';
 import { get } from 'http';
 import NotificationBox from './NotificationBox';
 import DashBoardCredentialsOwned from './DashboardCredentialsOwned';
+import DashBoardIssueCredentials from './DashbaordIssueCredentials';
 
 export interface DashboardContainerProps {
     // Define any props you want to pass to the component here
@@ -79,6 +80,11 @@ const DashboardContainerDataLoader: React.FC<DashboardContainerProps> = ({ showD
             </section>
             <section className="place-self-center lg:col-span-7 space-y-8">
                 <div className="m-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-8">
+                    <DashBoardIssueCredentials />
+                </div>
+            </section>
+            <section className="place-self-center lg:col-span-7 space-y-8">
+                <div className="m-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-8">
                     <DashBoardCredentialsOwned />
                 </div>
             </section>
@@ -96,6 +102,11 @@ const DashboardContainerDataLoader: React.FC<DashboardContainerProps> = ({ showD
                             </div>
                         }
                     </div>
+                </div>
+            </section>
+            <section className="place-self-center lg:col-span-7 space-y-8">
+                <div className="m-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+                
                 </div>
             </section>
             <DashboardStats />
