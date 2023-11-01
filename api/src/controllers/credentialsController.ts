@@ -1,6 +1,14 @@
 // controllers/credentialsController.ts
 import { Request, Response } from "express";
 import { CredentialMetadata } from "../models/CredentialMetadata.js";
+import CredentialGenerator from "../services/CredentialGenerator.js";
+import path from "path";
+import fs from 'fs';
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+
 
 
 export const generateCredentials = (req: Request, res: Response) => {
@@ -28,10 +36,17 @@ function GenerateCredentialFile(json: CredentialMetadata): string {
     // It exposes a `generateAndSave` method
     // Give it a json string and a file path as params to generate creds
     // The json string has the fields for the credentials, the file path is where the template for the Credential generation is located
+        
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    //const templatePath = path.resolve(__dirname, 'services', `CredentialTemplate.mustache`);
+    const templatePath = path.resolve('dist', 'services', `CredentialTemplate.mustache`);
+    const templateContent = fs.readFileSync(templatePath, 'utf-8');
+    
     const template = "";
-    //const generator = new CredentialGenerator();
+    const generator = new CredentialGenerator();
     // ToDo: Make generate and save accept a CredentialMetadata type and not json
-    //generator.generateAndSave(json, template);
+    generator.generateAndSave(json, templateContent);
 
     console.log("Credential generated");
 
