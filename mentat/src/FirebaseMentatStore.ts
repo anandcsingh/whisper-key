@@ -89,6 +89,7 @@ export class FirebaseMentatStore extends ZkMentatStore {
                 Field(doc.data().hash)
             );
         });
+        
         return all;
     }
     async get(key: any): Promise<IEntity | null | undefined> {

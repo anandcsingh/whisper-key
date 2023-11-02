@@ -15,7 +15,7 @@ export const generateCredentials = (req: Request, res: Response) => {
     const creds: CredentialMetadata = req.body as CredentialMetadata;
     console.log("Started generating credential");
 
-    GenerateCredentialFile(creds);
+    GenerateCredentialFile(req.body);
 
     DeployCredential("");
     console.log("Storing credential");
@@ -27,7 +27,7 @@ export const generateCredentials = (req: Request, res: Response) => {
         .send(creds);
 };
 
-function GenerateCredentialFile(json: CredentialMetadata): string {
+function GenerateCredentialFile(json: any): string {
     // Implement this method to generate the credential file based on the JSON configuration.
     // You can use the fs module to write the file to a specific location.
     // Example: fs.writeFileSync('path/to/credential/file.ts', generatedContent);
@@ -40,7 +40,8 @@ function GenerateCredentialFile(json: CredentialMetadata): string {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     //const templatePath = path.resolve(__dirname, 'services', `CredentialTemplate.mustache`);
-    const templatePath = path.resolve('dist', 'services', `CredentialTemplate.mustache`);
+    //const templatePath = path.resolve('dist', 'services', `CredentialTemplate.mustache`);
+    const templatePath = path.resolve(`public/CredentialTemplate.mustache`);
     const templateContent = fs.readFileSync(templatePath, 'utf-8');
     
     const template = "";

@@ -14,13 +14,14 @@ const port = process.env.PORT || 3001; // Set your desired port
 
 // Middleware
 app.use(bodyParser.json());
-
 app.use(cors());
 
 app.use('/api/credentials', credsRouter);
 app.get('/scripts/:name', (req, res, next) => {
     res.type('.js');
-    const templatePath = path.resolve(__dirname, 'credentials', `${req.params.name}.js`);
+    const templatePath = path.resolve(`public/credentials/${req.params.name}.js`);
+console.log(templatePath);
+    // const templatePath = path.resolve(__dirname, 'credentials', `${req.params.name}.js`);
     const templateContent = fs.readFileSync(templatePath, 'utf-8');
     res.send(templateContent);
 })
