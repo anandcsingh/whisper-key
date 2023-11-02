@@ -17,8 +17,7 @@ export default function Dashboard() {
     let tempAddress = Authentication.address ? Authentication.address : 'No address loaded';// Authentication.address;
     setAddress(tempAddress);
     setShowAddress(true);
-    let {LicenseEntity, LicenseEntityContract} =  await import('http://localhost:3001/scripts/LicenseEntityContract');
-    let licenseEntity = new LicenseEntity();
+    
     try {
       (window as any).share_address_modal.showModal();
     } catch (error) {
