@@ -4,6 +4,7 @@ import Client from 'mina-signer';
 import { AccountUpdate, Mina, PrivateKey, PublicKey } from 'o1js';
 import findPrefix from 'find-npm-prefix';
 import { get } from 'http';
+import { DeployResult } from '../models/DeployResult.js';
 export class ContractDeployer {
 
     network: any;
@@ -25,9 +26,12 @@ export class ContractDeployer {
     }
 
     async deployCredential(name: string) {
+        const result = new DeployResult();
         this.keyPair = this.client.genKeys();
         this.zkAppPrivateKey = PrivateKey.fromBase58(this.keyPair.privateKey);
         this.zkAppAddress = this.zkAppPrivateKey.toPublicKey();
+        result.privateKey = this.zkAppPrivateKey.toBase58();
+        result.publicKey = this.zkAppAddress.toBase58();
 
         const zkApp = await getContract(name);
         let isInitMethod = zkApp._methods?.some((intf) => intf.methodName === 'init');
@@ -64,14 +68,16 @@ export class ContractDeployer {
           sentResult = await this.sendGraphQL(this.graphQLUrl, zkAppMutation);
           console.log('sent transaction to GraphQL');
         }catch (error) {
+            result.error = true;
             sentResult = error;
           }
           if (!sentResult || sentResult?.kind === 'error') {
             console.log('Error sending transaction to GraphQL', sentResult);
         } else {
+            result.transactionUrl = this.getTxnUrl(this.graphQLUrl, sentResult);
             console.log(`Transaction sent to GraphQL ${this.getTxnUrl(this.graphQLUrl, sentResult)}`);
         }
-
+        return result;
     }
 
     async getTransaction(zkApp: any, verificationKey: any) {

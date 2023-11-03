@@ -25,6 +25,8 @@ export class CredentialGenerator {
           return `this.${this.name}.toBase58()`;
         } else if(this.type == "CircuitString") {
           return `this.${this.name}.toString()`;
+        } else if(this.type == "Bool") {
+          return `this.${this.name}.toBoolean()`;
         }
       }
       const renderedTemplate = mustache.render(template, jsonObject);

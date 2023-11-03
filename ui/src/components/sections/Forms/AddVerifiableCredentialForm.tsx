@@ -22,7 +22,7 @@ const AddForm = () => {
     setfieldTypeValue(event.target.value);
   };
 
-  const [rows, setRows] = useState([{ id: 1, name: '', type: 'String' }]);
+  const [rows, setRows] = useState([{ id: 1, name: '', type: 'CircuitString' }]);
   const [nextRowId, setNextRowId] = useState(2);
 
   const [vcNameValue, setVCNameValue] = useState('');
@@ -40,7 +40,7 @@ const AddForm = () => {
 
   const addAnotherField = () => {
     console.log("Adding another row to define fields...");
-    setRows([...rows, { id: nextRowId, name: '', type: 'String' }]);
+    setRows([...rows, { id: nextRowId, name: '', type: 'CircuitString' }]);
     setNextRowId(nextRowId + 1);
   };
 
@@ -66,13 +66,13 @@ const AddForm = () => {
     console.log("Field Name: ", fieldNameValue);
     console.log("Field Type: ", fieldTypeValue);
 
-    let studentID = Authentication.address;
-    console.log("studentID", studentID);
-    let client = Authentication.zkClient! as AllMaWorkerEventsClient;
-    console.log('client', client);
-    console.log('adding Verifiable Credential...', vcNameValue, vcDescriptionValue);
-    console.log(`fetching account ... ${Authentication.contractAddress} @ ${new Date().toLocaleTimeString()}}`);
-    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Fetching account, please wait this can take a few mins`, alertNeedsSpinner: true });
+    // let studentID = Authentication.address;
+    // console.log("studentID", studentID);
+    // let client = Authentication.zkClient! as AllMaWorkerEventsClient;
+    // console.log('client', client);
+    // console.log('adding Verifiable Credential...', vcNameValue, vcDescriptionValue);
+    // console.log(`fetching account ... ${Authentication.contractAddress} @ ${new Date().toLocaleTimeString()}}`);
+    // setAuthState({ ...authState, alertAvailable: true, alertMessage: `Fetching account, please wait this can take a few mins`, alertNeedsSpinner: true });
 
     // await client.fetchAccount({ publicKey: PublicKey.fromBase58(Authentication.contractAddress) });
     // setAuthState({ ...authState, alertAvailable: true, alertMessage: `Invoking contracts, please wait this can take a few mins`, alertNeedsSpinner: true });
@@ -95,26 +95,37 @@ const AddForm = () => {
         credentialFields.push({name: element.name, description: "", type: element.type});
       });
     }
-    let credentialMetaData = {name: vcNameValue, description: vcDescriptionValue, fields: credentialFields};
+    let credentialMetaData = {
+      name: vcNameValue, 
+      description: vcDescriptionValue, 
+      owner: Authentication.address ?? "2n1VVuNBQof37isET7MBTPkD5VRfE7T8xRpKtD1BAinfy1GuQWux", 
+      created: new Date().toISOString(),
+      version: "1.0",
+      fields: credentialFields
+    };
     console.log(credentialFields);
     console.log(credentialMetaData);
     const requestHeaders = { "Content-Type": "application/json" };
-    let data = JSON.stringify(credentialMetaData);
+    let data = credentialMetaData;// JSON.stringify(credentialMetaData);
+    
     console.log(data);
     // const request = await axios.post(apiUrl, data, {
     //   headers: requestHeaders,
     // });
 
-    axios.post(apiUrl, { data })
+    axios.post(apiUrl, data)
     .then(res => {
       console.log("VC added");
       console.log(res);
       console.log(res.data);
+       setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding credential please check back later`, alertNeedsSpinner: false });
+
     })
     .catch(err => {
       // Handle error
       console.log("Something went wrong.");
-      console.log(err.toJSON);
+      console.log(data);
+      console.log(err.toJSON());
   });
 
 
@@ -199,10 +210,10 @@ const AddForm = () => {
                   value={row.type}
                   onChange={(e) => handleChange(row.id, 'type', e.target.value)}
                 >
-                  <option>String</option>
-                  <option>Int</option>
-                  <option>Decimal</option>
-                  <option>Boolean</option>
+                  <option>Field</option>
+                  <option>Bool</option>
+                  <option>CircuitString</option>
+                  <option>PublicKey</option>
                 </select>
               </div>
               {rows.length > 1 && (
