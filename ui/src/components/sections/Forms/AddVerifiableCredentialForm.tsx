@@ -44,7 +44,7 @@ const AddForm = () => {
     setNextRowId(nextRowId + 1);
   };
 
-  const removeRow = (id) => {
+  const removeRow = (id: any) => {
     const updatedRows = rows.filter((row) => row.id !== id);
     setRows(updatedRows);
   };

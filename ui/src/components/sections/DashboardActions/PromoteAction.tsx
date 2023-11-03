@@ -1,4 +1,3 @@
-import Add from "@/pages/add.page";
 import { DashboardActionsProps } from "./DashboardActions";
 import PromoteForm from "../Forms/PromoteForm";
 

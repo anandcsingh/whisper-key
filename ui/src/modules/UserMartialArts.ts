@@ -68,15 +68,5 @@ export class UserMartialArts {
 
 
 
-    private async getPractioner(backingStore: FirebaseBackingStore, publicKey: string) {
-        let martialArt = await backingStore.get(PublicKey.fromBase58(publicKey));
-        if (martialArt != null) {
-        let userMartialArt = backingStore.getObjectFromStruct(martialArt!);
-
-        return userMartialArt;
-        }
-        else {
-            return null;
-        }
-    }
+  
 }

@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from '@/components/layout/AuthPage';
 import { UserMartialArts, UserMartialArt } from '@/modules/UserMartialArts';
-import Add from '@/pages/add.page';
 import AddAction from './AddAction';
 import InstructorsAction from './InstructorsAction';
 import ShareAction from './ShareAction';
