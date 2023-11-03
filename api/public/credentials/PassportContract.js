@@ -26,35 +26,41 @@ import {
     Circuit,
   } from 'o1js';
   
-export class {{name}}Entity extends Struct({
+export class PassportEntity extends Struct({
     id: Field,
     issuer: PublicKey,
     owner: PublicKey,
-    {{#fields}}
-    {{name}}: {{type}},
-    {{/fields}}
+    number: CircuitString,
+    expiryDate: CircuitString,
+    unique: Field,
+    address: PublicKey,
+    name: CircuitString,
 }) {
     toPlainObject() {
         return {
             id: Number(this.id.toBigInt()),
             issuer: this.issuer.toBase58(),
             owner: this.owner.toBase58(),
-            {{#fields}}
-            {{name}}: {{plainValue}},
-            {{/fields}}
+            number: this.number.toString(),
+            expiryDate: this.expiryDate.toString(),
+            unique: Number(this.unique.toBigInt()),
+            address: this.address.toBase58(),
+            name: this.name.toString(),
         };
     }
     hash() {
         return Poseidon.hash(this.issuer
             .toFields()
             .concat(this.owner.toFields())
-            {{#fields}}
-            .concat(this.{{name}}.toFields())
-            {{/fields}}
+            .concat(this.number.toFields())
+            .concat(this.expiryDate.toFields())
+            .concat(this.unique.toFields())
+            .concat(this.address.toFields())
+            .concat(this.name.toFields())
             );
     }
 }
-export class {{name}}Contract extends SmartContract {
+export class PassportContract extends SmartContract {
     constructor() {
         super(...arguments);
         this.mapRoot = State();
@@ -80,20 +86,20 @@ export class {{name}}Contract extends SmartContract {
 __decorate([
     state(Field),
     __metadata("design:type", Object)
-], {{name}}Contract.prototype, "mapRoot", void 0);
+], PassportContract.prototype, "mapRoot", void 0);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Field]),
     __metadata("design:returntype", void 0)
-], {{name}}Contract.prototype, "setMapRoot", null);
+], PassportContract.prototype, "setMapRoot", null);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [PublicKey,
-        {{name}}Entity,
+        PassportEntity,
         MerkleMapWitness,
         Field]),
     __metadata("design:returntype", void 0)
-], {{name}}Contract.prototype, "issueCredential", null);
-//# sourceMappingURL={{name}}Contract.js.map
+], PassportContract.prototype, "issueCredential", null);
+//# sourceMappingURL=PassportContract.js.map

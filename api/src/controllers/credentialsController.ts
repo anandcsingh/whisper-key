@@ -4,22 +4,24 @@ import { CredentialMetadata } from "../models/CredentialMetadata.js";
 import CredentialGenerator from "../services/CredentialGenerator.js";
 import path from "path";
 import fs from 'fs';
-
+import { ContractDeployer } from '../services/ContractDeployer.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { CredentialRepository } from "../services/CredentialRepository.js";
 
 
 
 
 export const generateCredentials = (req: Request, res: Response) => {
-    const creds: CredentialMetadata = req.body as CredentialMetadata;
+    const creds: CredentialMetadata = CredentialMetadata.fromJson(req.body);
     console.log("Started generating credential");
-
+   
     GenerateCredentialFile(req.body);
 
-    DeployCredential("");
+    const deployer = new ContractDeployer();
+    deployer.deployCredential(req.body.name);
     console.log("Storing credential");
-    // new CredentialRepository().AddCredential(creds);
+     new CredentialRepository().AddCredential(creds);
     console.log("Storedcredential");
 
     creds.created = new Date();

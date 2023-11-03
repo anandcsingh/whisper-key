@@ -26,35 +26,43 @@ import {
     Circuit,
   } from 'o1js';
   
-export class {{name}}Entity extends Struct({
+export class LicenseEntity extends Struct({
     id: Field,
     issuer: PublicKey,
     owner: PublicKey,
-    {{#fields}}
-    {{name}}: {{type}},
-    {{/fields}}
+    firstName: CircuitString,
+    lastName: CircuitString,
+    licenceNumber: CircuitString,
+    createdDate: CircuitString,
+    expiryDate: CircuitString,
+    class: CircuitString,
 }) {
     toPlainObject() {
         return {
             id: Number(this.id.toBigInt()),
             issuer: this.issuer.toBase58(),
             owner: this.owner.toBase58(),
-            {{#fields}}
-            {{name}}: {{plainValue}},
-            {{/fields}}
+            firstName: this.firstName.toString(),
+            lastName: this.lastName.toString(),
+            licenceNumber: this.licenceNumber.toString(),
+            createdDate: this.createdDate.toString(),
+            expiryDate: this.expiryDate.toString(),
+            class: this.class.toString(),
         };
     }
     hash() {
         return Poseidon.hash(this.issuer
             .toFields()
             .concat(this.owner.toFields())
-            {{#fields}}
-            .concat(this.{{name}}.toFields())
-            {{/fields}}
-            );
+            .concat(this.firstName.toFields())
+            .concat(this.lastName.toFields())
+            .concat(this.licenceNumber.toFields())
+            .concat(this.createdDate.toFields())
+            .concat(this.expiryDate.toFields())
+            .concat(this.class.toFields()));
     }
 }
-export class {{name}}Contract extends SmartContract {
+export class LicenseEntityContract extends SmartContract {
     constructor() {
         super(...arguments);
         this.mapRoot = State();
@@ -80,20 +88,20 @@ export class {{name}}Contract extends SmartContract {
 __decorate([
     state(Field),
     __metadata("design:type", Object)
-], {{name}}Contract.prototype, "mapRoot", void 0);
+], LicenseEntityContract.prototype, "mapRoot", void 0);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Field]),
     __metadata("design:returntype", void 0)
-], {{name}}Contract.prototype, "setMapRoot", null);
+], LicenseEntityContract.prototype, "setMapRoot", null);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [PublicKey,
-        {{name}}Entity,
+        LicenseEntity,
         MerkleMapWitness,
         Field]),
     __metadata("design:returntype", void 0)
-], {{name}}Contract.prototype, "issueCredential", null);
-//# sourceMappingURL={{name}}Contract.js.map
+], LicenseEntityContract.prototype, "issueCredential", null);
+//# sourceMappingURL=LicenseEntityContract.js.map

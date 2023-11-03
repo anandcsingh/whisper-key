@@ -18,11 +18,20 @@ export class CredentialGenerator {
       const className = jsonObject.name;
       // Render the template using Mustache.js
       //console.log(template);
+      jsonObject.plainValue = function() {
+        if(this.type == "Field") {
+          return `Number(this.${this.name}.toBigInt())`;
+        } else if(this.type == "PublicKey") {
+          return `this.${this.name}.toBase58()`;
+        } else if(this.type == "CircuitString") {
+          return `this.${this.name}.toString()`;
+        }
+      }
       const renderedTemplate = mustache.render(template, jsonObject);
       //console.log(renderedTemplate);
       // Define the path to the credentials folder relative to the current directory
       const credentialsFolderPath = path.join(__dirname, 'credentials');
-      const userFilePath = path.resolve(`public/credentials/${className}.js`);
+      const userFilePath = path.resolve(`public/credentials/${className}Contract.js`);
 
       // Define the path to the file within the credentials folder
       //const userFilePath = path.join(credentialsFolderPath, `${className}.js`);

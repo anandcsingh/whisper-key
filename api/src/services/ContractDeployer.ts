@@ -1,5 +1,5 @@
 
-import { AddReal } from './credentials/AddReal.js'
+import { AddReal } from '../credentials/AddReal.js'
 import Client from 'mina-signer';
 import { AccountUpdate, Mina, PrivateKey, PublicKey } from 'o1js';
 import findPrefix from 'find-npm-prefix';
@@ -190,10 +190,11 @@ async function getContract(name: string) {
     console.log('getContract', name);
     const DIR = await findPrefix(process.cwd());
 
-    let contractName = name;
+    let contractName = `${name}Contract`;
     let smartContractFile = `${contractName}.js`;
     let smartContractImports;
-    let smartContractImportPath = `${DIR}/dist/credentials/${smartContractFile}`;
+    let smartContractImportPath = `${DIR}/public/credentials/${smartContractFile}`;
+    console.log(smartContractImportPath);
     if (process.platform === 'win32') {
         smartContractImportPath = 'file://' + smartContractImportPath;
     }
