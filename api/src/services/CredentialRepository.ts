@@ -12,8 +12,8 @@ import {
   where,
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { ZkMentatStore } from './ZkMentatStore';
-import { FirebaseMentatStore } from './FirebaseMentatStore';
+import { ZkMentatStore } from './ZkMentatStore.js';
+import { FirebaseMentatStore } from './FirebaseMentatStore.js';
 
 export class CredentialRepository {
   config: any;
@@ -50,11 +50,12 @@ export class CredentialRepository {
   }
 
   async AddCredential(credential: CredentialMetadata): Promise<void> {
-
+    const id = `${credential.name}${credential.owner}`;
+    credential.id = id;
     const docRef = doc(
       this.database,
       this.collectionName,
-      credential.id,
+      id,
     );
     await setDoc(docRef, credential.toPlainObject());
   }

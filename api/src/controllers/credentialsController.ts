@@ -4,22 +4,24 @@ import { CredentialMetadata } from "../models/CredentialMetadata.js";
 import CredentialGenerator from "../services/CredentialGenerator.js";
 import path from "path";
 import fs from 'fs';
-
+import { ContractDeployer } from '../services/ContractDeployer.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { CredentialRepository } from "../services/CredentialRepository.js";
 
 
 
 
 export const generateCredentials = (req: Request, res: Response) => {
-    const creds: CredentialMetadata = req.body as CredentialMetadata;
+    const creds: CredentialMetadata = CredentialMetadata.fromJson(req.body);
     console.log("Started generating credential");
+   
+    GenerateCredentialFile(req.body);
 
-    GenerateCredentialFile(creds);
-
-    DeployCredential("");
+    const deployer = new ContractDeployer();
+    deployer.deployCredential(req.body.name);
     console.log("Storing credential");
-    // new CredentialRepository().AddCredential(creds);
+     new CredentialRepository().AddCredential(creds);
     console.log("Storedcredential");
 
     creds.created = new Date();
@@ -27,7 +29,7 @@ export const generateCredentials = (req: Request, res: Response) => {
         .send(creds);
 };
 
-function GenerateCredentialFile(json: CredentialMetadata): string {
+function GenerateCredentialFile(json: any): string {
     // Implement this method to generate the credential file based on the JSON configuration.
     // You can use the fs module to write the file to a specific location.
     // Example: fs.writeFileSync('path/to/credential/file.ts', generatedContent);
@@ -40,7 +42,8 @@ function GenerateCredentialFile(json: CredentialMetadata): string {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     //const templatePath = path.resolve(__dirname, 'services', `CredentialTemplate.mustache`);
-    const templatePath = path.resolve('dist', 'services', `CredentialTemplate.mustache`);
+    //const templatePath = path.resolve('dist', 'services', `CredentialTemplate.mustache`);
+    const templatePath = path.resolve(`public/CredentialTemplate.mustache`);
     const templateContent = fs.readFileSync(templatePath, 'utf-8');
     
     const template = "";

@@ -41,6 +41,7 @@ export class CredentialMetadata {
                 description: field.description,
                 type: field.type,
             });
+            console.log(field.name);
         });
         return {
             id: this.id,

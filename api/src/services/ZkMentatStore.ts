@@ -1,5 +1,5 @@
 import { MerkleMap, Field, PublicKey } from "o1js"
-import { IEntity } from "./IEntity";
+import { IEntity } from "./IEntity.js";
 
 export class MerkleMapState {
   map: MerkleMap;
