@@ -8,12 +8,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { CircuitString, Field, MerkleMap, MerkleMapWitness, Poseidon, PublicKey, SmartContract, State, Struct, method, state, } from 'o1js';
-export class User3Credentials extends Struct({
+export class License extends Struct({
     id: Field,
     issuer: PublicKey,
     owner: PublicKey,
-    Username: CircuitString
-    Password: CircuitString
+    number: CircuitString,
+    name: CircuitString,
 }) {
     toPlainObject() {
         return {
@@ -30,13 +30,10 @@ export class User3Credentials extends Struct({
     }
     hash() {
         return Poseidon.hash(this.issuer
-            .toFields()
-            .concat(this..toFields())
-                        .concat(this..toFields())
-            );
+            .toFields());
         }
 }
-export class User3CredentialsContract extends SmartContract {
+export class LicenseContract extends SmartContract {
     constructor() {
         super(...arguments);
         this.mapRoot = State();
@@ -62,20 +59,20 @@ export class User3CredentialsContract extends SmartContract {
 __decorate([
     state(Field),
     __metadata("design:type", Object)
-], User3CredentialsContract.prototype, "mapRoot", void 0);
+], LicenseContract.prototype, "mapRoot", void 0);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Field]),
     __metadata("design:returntype", void 0)
-], User3Credentials.prototype, "setMapRoot", null);
+], License.prototype, "setMapRoot", null);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [PublicKey,
-        User3Credentials,
+        License,
         MerkleMapWitness,
         Field]),
     __metadata("design:returntype", void 0)
-], User3Credentials.prototype, "issueCredential", null);
-//# sourceMappingURL=User3Credentials.js.map
+], License.prototype, "issueCredential", null);
+//# sourceMappingURL=License.js.map

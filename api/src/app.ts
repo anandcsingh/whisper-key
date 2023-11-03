@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/api/credentials', credsRouter);
-app.get('/scripts/:name', (req, res, next) => {
+app.get('/api/scripts/:name', (req, res, next) => {
     res.type('.js');
     const templatePath = path.resolve(`public/credentials/${req.params.name}.js`);
 console.log(templatePath);

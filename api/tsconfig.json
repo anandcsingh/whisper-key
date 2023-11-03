@@ -12,5 +12,4 @@
     "declaration": true,
     "sourceMap": true,
   },
-  "exclude": ["public", "node_modules"]
 }

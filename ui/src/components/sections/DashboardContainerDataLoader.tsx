@@ -35,6 +35,16 @@ const DashboardContainerDataLoader: React.FC<DashboardContainerProps> = ({ showD
     useEffect(() => {
 
         (async () => {
+
+            // let path = "'../../../public/credentials/UserCredentials.js'";
+            
+            // const {PassportCredential} = await import(/* webpackIgnore: true */'http://localhost:3001/scripts/PassportCredential');
+           
+            // let pass = new PassportCredential();
+            // pass.id = "test";
+            // console.log("DashboardContainer: PassportCredential loaded");
+            // console.log(pass.hash());
+
             console.log("DashboardContainer: useEffect loaded");
             if(!authState.userAuthenticated && showDummyData) {
                 console.log("USING DUMMY DATA!");
