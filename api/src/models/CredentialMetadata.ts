@@ -6,6 +6,9 @@ export class CredentialMetadata {
     created: Date;
     owner: string;
     fields: CredentialField[];
+    contractPrivateKey: string;
+    contractPublicKey: string;
+    transactionUrl: string;
 
     constructor(
         id: string,
@@ -37,19 +40,22 @@ export class CredentialMetadata {
         let fields: any[] = [];
         this.fields.forEach((field: CredentialField) => {
             fields.push({
-                name: field.name,
-                description: field.description,
-                type: field.type,
+                name: field.name ?? "",
+                description: field.description ?? "",
+                type: field.type ?? "",
             });
         });
         return {
-            id: this.id,
-            name: this.name,
-            description: this.description,
-            version: this.version,
-            created: this.created,
-            owner: this.owner,
+            id: this.id ?? "",
+            name: this.name ?? "",
+            description: this.description ?? "",
+            version: this.version ?? "",
+            created: this.created ?? "",
+            owner: this.owner ?? "",
             fields: fields,
+            contractPrivateKey: this.contractPrivateKey ?? "",
+            contractPublicKey: this.contractPublicKey ?? "",
+            transactionUrl: this.transactionUrl ?? "",
         };
     }
 }
