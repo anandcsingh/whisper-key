@@ -22,10 +22,7 @@ export const generateCredentials = async (req: Request, res: Response) => {
 
     const deployer = new ContractDeployer();
     const result = await deployer.deployCredential(creds.name);
-    // const result = new DeployResult();
-    // result.privateKey = "EKFFiTZhE8p9hZ7ZapMcLymtqYDaWkum5oWN2VCrZi7iQd1fanDE";
-    // result.publicKey = "B62qkQ9";
-    // result.transactionUrl = "https://results.com";
+   
     creds.contractPrivateKey = result.privateKey;
     creds.contractPublicKey = result.publicKey;
     creds.transactionUrl = result.transactionUrl;
