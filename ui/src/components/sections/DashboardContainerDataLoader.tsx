@@ -12,6 +12,7 @@ import { get } from 'http';
 import NotificationBox from './NotificationBox';
 import DashBoardCredentialsOwned from './DashboardCredentialsOwned';
 import DashBoardIssueCredentials from './DashbaordIssueCredentials';
+import { CircuitString, Field, PublicKey } from 'o1js';
 
 export interface DashboardContainerProps {
     // Define any props you want to pass to the component here
@@ -37,14 +38,22 @@ const DashboardContainerDataLoader: React.FC<DashboardContainerProps> = ({ showD
 
         (async () => {
 
-            // let path = "'../../../public/credentials/UserCredentials.js'";
+            let path = "'../../../public/credentials/PassportContract.js'";
             
-            // const {PassportCredential} = await import(/* webpackIgnore: true */'http://localhost:3001/scripts/PassportCredential');
-           
-            // let pass = new PassportCredential();
-            // pass.id = "test";
-            // console.log("DashboardContainer: PassportCredential loaded");
-            // console.log(pass.hash());
+            const {PassportEntity} = await import(/* webpackIgnore: true */'../../modules/credentials/PassportContract.js');
+           let passport = {
+            id: Field(12),
+            issuer: PublicKey.empty(),
+            owner: PublicKey.empty(),
+            number: Field(12),
+            expiryDate: CircuitString.fromString("2021-12-31"),
+            unique: Field(12),
+            address: PublicKey.empty(),
+            name: CircuitString.fromString("John Doe"),
+        }
+            let pass = new PassportEntity(passport);
+            console.log("DashboardContainer: PassportCredential loaded");
+            console.log(pass.hash());
 
             console.log("DashboardContainer: useEffect loaded");
             if(!authState.userAuthenticated && showDummyData) {

@@ -3,29 +3,22 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 // import { CredentialGenerator, CredentialRepository, CredentialMetadata } from '../../../../mentat/dist/index'
 import * as fs from 'fs';
+//import { CredentialMetadata } from '@/modules/credentials/CredentialMetadata.js';
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from "path";
+// import CredentialGenerator from '@/modules/credentials/CredentialGenerator.js';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'POST') {
         try {
-            const { method, query } = req;
-            // 1. Generate the credential file based on the JSON configuration.
-            const { json, user } = req.body;
-            const generatedCredential = GenerateCredentialFile(json);
+            
+    //const creds: CredentialMetadata = CredentialMetadata.fromJson(req.body);
+    console.log("Started generating credential");
+    //GenerateCredentialFile(creds);
 
-            // 2. Deploy the credential file (replace with your deployment logic).
-            const { filename } = query;
-            const deploymentResult = DeployCredential("");
-
-            // 3. Save metadata to Firebase database (replace with your Firebase SDK usage).
-            const { credentialName, user: metadataUser } = req.body;
-
-            // const repo = new CredentialRepository();
-            // repo.AddCredential(req.body as CredentialMetadata);
-
-            res.status(200).json({
-                message: 'Credential file generated, deployed, and metadata saved successfully',
-                deploymentResult,
-            });
+            
         } catch (error: any) {
             res.status(500).json({ error: 'Internal server error', details: error.message });
         }
@@ -43,20 +36,20 @@ function GenerateCredentialFile(json: any): string {
     // It exposes a `generateAndSave` method
     // Give it a json string and a file path as params to generate creds
     // The json string has the fields for the credentials, the file path is where the template for the Credential generation is located
+        
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    //const templatePath = path.resolve(__dirname, 'services', `CredentialTemplate.mustache`);
+    //const templatePath = path.resolve('dist', 'services', `CredentialTemplate.mustache`);
+    const templatePath = path.resolve(`public/CredentialTemplate.mustache`);
+    const templateContent = fs.readFileSync(templatePath, 'utf-8');
+    
     const template = "";
     // const generator = new CredentialGenerator();
-    // generator.generateAndSave(json, template);
+    // // ToDo: Make generate and save accept a CredentialMetadata type and not json
+    // generator.generateAndSave(json, templateContent);
 
+    console.log("Credential generated");
 
     return "Credential generated"
-}
-
-function DeployCredential(filename: string) {
-    // Implement this method to deploy the credential file.
-    // You can use a deployment script or method specific to your needs.
-}
-
-function AddFirebaseMetadata(credentialName: string, user: string) {
-    // Implement this method to add Firebase metadata.
-    // You can use Firebase Admin SDK or Firebase API to interact with Firebase.
 }
