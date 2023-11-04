@@ -35,7 +35,7 @@ const AddForm = () => {
   const handleVCDescriptionChange = async (event: any) => {
     setVCDescriptionValue(event.target.value);
   };
-  
+
 
   const addAnotherField = () => {
     console.log("Adding another row to define fields...");
@@ -59,11 +59,24 @@ const AddForm = () => {
 
     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding Verifiable Credential, please wait this can take a few mins`, alertNeedsSpinner: true });
     Router.back();
-    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     console.log("Name: ", vcNameValue);
-    console.log("Description: ", vcDescriptionValue);
-    console.log("Field Name: ", fieldNameValue);
-    console.log("Field Type: ", fieldTypeValue);
+
+
+    const { PassportEntity } = await import(/* webpackIgnore: true */vcNameValue);
+    let passport = {
+      id: Field(12),
+      issuer: PublicKey.empty(),
+      owner: PublicKey.empty(),
+      number: Field(12),
+      expiryDate: CircuitString.fromString("2021-12-31"),
+      unique: Field(12),
+      address: PublicKey.empty(),
+      name: CircuitString.fromString("John Doe"),
+    }
+    let pass = new PassportEntity(passport);
+    console.log("DashboardContainer: PassportCredential loaded");
+    console.log(pass.hash());
 
     // let studentID = Authentication.address;
     // console.log("studentID", studentID);
@@ -87,17 +100,17 @@ const AddForm = () => {
     // console.log(credentialFields);
 
     let credentialFields = Array<Object>();
-      
+
     //let vcID = crypto.randomBytes(16).toString("hex"),
-    if(rows[0].name !== ""){
+    if (rows[0].name !== "") {
       rows.forEach(element => {
-        credentialFields.push({name: element.name, description: "", type: element.type});
+        credentialFields.push({ name: element.name, description: "", type: element.type });
       });
     }
     let credentialMetaData = {
-      name: vcNameValue, 
-      description: vcDescriptionValue, 
-      owner: Authentication.address ?? "2n1VVuNBQof37isET7MBTPkD5VRfE7T8xRpKtD1BAinfy1GuQWux", 
+      name: vcNameValue,
+      description: vcDescriptionValue,
+      owner: Authentication.address ?? "2n1VVuNBQof37isET7MBTPkD5VRfE7T8xRpKtD1BAinfy1GuQWux",
       created: new Date().toISOString(),
       version: "1.0",
       fields: credentialFields
@@ -106,63 +119,63 @@ const AddForm = () => {
     console.log(credentialMetaData);
     const requestHeaders = { "Content-Type": "application/json" };
     let data = credentialMetaData;// JSON.stringify(credentialMetaData);
-    
+
     console.log(data);
     // const request = await axios.post(apiUrl, data, {
     //   headers: requestHeaders,
     // });
 
     axios.post(apiUrl, data)
-    .then(res => {
-      console.log("VC added");
-      console.log(res);
-      console.log(res.data);
-       setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding credential please check back later`, alertNeedsSpinner: false });
+      .then(res => {
+        console.log("VC added");
+        console.log(res);
+        console.log(res.data);
+        setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding credential please check back later`, alertNeedsSpinner: false });
 
-    })
-    .catch(err => {
-      // Handle error
-      console.log("Something went wrong.");
-      console.log(data);
-      console.log(err.toJSON());
-  });
-
-
-  //   let result = await client.add(studentID, rankValue, disciplineValue);
-  //   console.log("result", result);
-  //   if (result && result.success) {
-  //     console.log("result", result);
-  //     console.log("proving update transaction...");
-  //     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Proving transaction, please wait this can take a few mins`, alertNeedsSpinner: true });
-
-  //     await client.proveUpdateTransaction();
-  //     console.log("sending transaction...");
-  //     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Sending transaction, please approve the transaction on your wallet`, alertNeedsSpinner: true });
-
-  //     let hash = await client.sendTransaction();
-  //     console.log("transaction sent");
+      })
+      .catch(err => {
+        // Handle error
+        console.log("Something went wrong.");
+        console.log(data);
+        console.log(err.toJSON());
+      });
 
 
-  //     // if hash is not empty or null, then we have a transaction hash
-  //     if (hash) {
-  //       let hashStr = `https://berkeley.minaexplorer.com/transaction/${hash}`;
-  //       let hashlink = `<a href="${hashStr}" class="btn btn-sm" target="_blank">View transaction</a>`;
-  //       console.log("transaction", hashStr);
+    //   let result = await client.add(studentID, rankValue, disciplineValue);
+    //   console.log("result", result);
+    //   if (result && result.success) {
+    //     console.log("result", result);
+    //     console.log("proving update transaction...");
+    //     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Proving transaction, please wait this can take a few mins`, alertNeedsSpinner: true });
 
-  //       result = await client.updateBackingStore(disciplineValue);
-  //       console.log("result", result);
+    //     await client.proveUpdateTransaction();
+    //     console.log("sending transaction...");
+    //     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Sending transaction, please approve the transaction on your wallet`, alertNeedsSpinner: true });
 
-  //       if (result.success) {
-  //         setAuthState({ ...authState, alertAvailable: true, alertMessage: `Add martial art transaction submitted ${hashlink}`, alertNeedsSpinner: false });
-  //       }
-  //       else {
-  //         setAuthState({ ...authState, hasAlert: true, alertMessage: result.message, needsLoading: false });
-  //       }
-  //     }
-  //     else {
-  //       setAuthState({ ...authState, hasAlert: true, alertMessage: `Add martial art transaction failed, try again later`, needsLoading: false });
-  //     }
-  //   }
+    //     let hash = await client.sendTransaction();
+    //     console.log("transaction sent");
+
+
+    //     // if hash is not empty or null, then we have a transaction hash
+    //     if (hash) {
+    //       let hashStr = `https://berkeley.minaexplorer.com/transaction/${hash}`;
+    //       let hashlink = `<a href="${hashStr}" class="btn btn-sm" target="_blank">View transaction</a>`;
+    //       console.log("transaction", hashStr);
+
+    //       result = await client.updateBackingStore(disciplineValue);
+    //       console.log("result", result);
+
+    //       if (result.success) {
+    //         setAuthState({ ...authState, alertAvailable: true, alertMessage: `Add martial art transaction submitted ${hashlink}`, alertNeedsSpinner: false });
+    //       }
+    //       else {
+    //         setAuthState({ ...authState, hasAlert: true, alertMessage: result.message, needsLoading: false });
+    //       }
+    //     }
+    //     else {
+    //       setAuthState({ ...authState, hasAlert: true, alertMessage: `Add martial art transaction failed, try again later`, needsLoading: false });
+    //     }
+    //   }
   }
 
   return (
@@ -182,7 +195,7 @@ const AddForm = () => {
           </label>
           <input type="text" id="name" onChange={handleVCDescriptionChange} className="input input-bordered w-full max-w-xs" placeholder="Enter a description" />
         </div>
-        
+
         <div className="form-section">
           <h3 className="text-2xl font-bold sm:text-3xl">Define fields</h3>
           {/* <div className="grid grid-cols-3 gap-4"> */}
@@ -236,8 +249,8 @@ const AddForm = () => {
           ))}
           {/* </div> */}
         </div>
-                
-                
+
+
         <div className=''>
           <button onClick={addVeriableCredential} className="btn btn-primary">Add Verifiable Credential</button>
         </div>
