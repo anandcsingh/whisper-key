@@ -6,7 +6,6 @@ import AllMaWorkerEventsClient from "@/modules/workers/AllMaWorkerEventsClient";
 import { Bool, CircuitString, Field, PublicKey, Struct } from 'o1js';
 import { AuthContext } from "@/components/layout/AuthPage";
 import Router from 'next/router';
-// import {CredentialMetadata, CredentialField} from "../../../../../mentat/src/CredentialMetadata";
 import axios from "axios";
 //import { defineComponent } from "vue";
 

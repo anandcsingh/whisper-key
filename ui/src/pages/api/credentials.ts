@@ -1,7 +1,7 @@
 // pages/api/credentials.ts
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CredentialGenerator, CredentialRepository, CredentialMetadata } from '../../../../mentat/dist/index'
+// import { CredentialGenerator, CredentialRepository, CredentialMetadata } from '../../../../mentat/dist/index'
 import * as fs from 'fs';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -19,8 +19,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             // 3. Save metadata to Firebase database (replace with your Firebase SDK usage).
             const { credentialName, user: metadataUser } = req.body;
 
-            const repo = new CredentialRepository();
-            repo.AddCredential(req.body as CredentialMetadata);
+            // const repo = new CredentialRepository();
+            // repo.AddCredential(req.body as CredentialMetadata);
 
             res.status(200).json({
                 message: 'Credential file generated, deployed, and metadata saved successfully',
@@ -44,8 +44,8 @@ function GenerateCredentialFile(json: any): string {
     // Give it a json string and a file path as params to generate creds
     // The json string has the fields for the credentials, the file path is where the template for the Credential generation is located
     const template = "";
-    const generator = new CredentialGenerator();
-    generator.generateAndSave(json, template);
+    // const generator = new CredentialGenerator();
+    // generator.generateAndSave(json, template);
 
 
     return "Credential generated"
