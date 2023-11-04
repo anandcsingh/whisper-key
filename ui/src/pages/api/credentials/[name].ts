@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from "next/server";
 // import { CredentialGenerator, CredentialRepository, CredentialMetadata } from '../../../../mentat/dist/index'
 import * as fs from 'fs';
-import { storage, app } from './firebase';
+import { storage, app } from '../firebase';
 
 import { Storage } from "@google-cloud/storage"
 
