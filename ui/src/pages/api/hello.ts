@@ -19,10 +19,17 @@ export default function handler(
   if (!fs.existsSync(dir)){
       fs.mkdirSync(dir, { recursive: true });
   }
-  fs.writeFileSync(path.resolve(dir, 'test.txt'), 'test');
-  const result = fs.readFileSync(path.resolve(dir, 'test.txt'), 'utf-8');
 
-  res.status(200).json({ name: result });
+  
+  fs.writeFileSync(path.resolve(dir, `test${new Date().getMilliseconds()}.txt`), 'test');
+  const result = fs.readFileSync(path.resolve(dir, 'test.txt'), 'utf-8');
+  let fileResult = '';
+  fs.readdir(dir, (err, files) => {
+    files.forEach(file => {
+      fileResult += ` ${file}`;
+    });
+  });
+  res.status(200).json({ name: fileResult });
 }
   
 function getUserHome() { 
