@@ -25,34 +25,42 @@ const Authentication = {
     contractsLoader: null,
     bjjAddClient: null,
     bjjAddAddress: 'B62qkDQqHBkiL6bXWh2RU81C1fBLQqQVK3CMVmW7DAq1yiAg2QPRtdC',
+    /** @type {any} */
     setBjjAddClient: function (client) {
         this.bjjAddClient = client;
     },
     bjjPromoteClient: null,
     bjjPromoteAddress: 'B62qkDQqHBkiL6bXWh2RU81C1fBLQqQVK3CMVmW7DAq1yiAg2QPRtdC',
+    /** @type {any} */
     setBjjPromoteClient: function (client) {
         this.bjjPromoteClient = client;
     },
+    /** @type {any} */
     setZkClient: function (client) {
         this.zkClient = client;
     },
+    /** @type {any} */
     setContractsLoader: function (loader) {
         this.contractsLoader = loader;
     },
+    /** @type {any} */
     getContractsFromLoader: function () {
         return this.contractsLoader.contracts;
     },
+    /** @type {boolean} */
     loadSnarky: async function () {
         await this.zkClient.loado1js();
         await this.zkClient.setActiveInstanceToBerkeley();
         this.snarkyLoaded = true;
         return true;
     },
+    /** @type {boolean} */
     checkForWallet: async function () {
         const mina = window.mina;
         this.hasWallet = mina != null;
         return this.hasWallet;
     },
+    /** @type {boolean} */
     login: async function () {
         try {
             const mina = window.mina;
@@ -79,6 +87,7 @@ const Authentication = {
             return result;
         }
     },
+    /** @type {boolean} */
     doesAccountExist: async function () {
         const publicKey = PublicKey.fromBase58(this.address);
         const res = await this.zkClient.fetchAccount({ publicKey: publicKey });
@@ -86,6 +95,7 @@ const Authentication = {
         this.fundAccount = res.error != null;
         return !this.fundAccount;
     },
+    /** @type {boolean} */
     setupContracts: async function () {
         // this.zkClient.loadContract()
         // .then(this.zkClient.compileContract())
@@ -120,6 +130,7 @@ const Authentication = {
         return true;
 
     },
+    /** @type {boolean} */
     setupBjjAddContracts: async function () {
         await this.bjjAddClient.loadContract();
         console.log("loaded bjjAddClient contract");
@@ -130,6 +141,7 @@ const Authentication = {
         console.log("initialized bjjAddClient zkapp instance");
         return true;
     },
+    /** @type {boolean} */
     setupBjjPromoteContracts: async function () {
         
         await this.bjjPromoteClient.loadContract();
@@ -146,9 +158,11 @@ const Authentication = {
         return true;
 
     },
+    /** @type {any} */
     fetchZkappAccount: async function() {
         await this.zkClient.fetchAccount({ publicKey: this.contractAddress });
     },
+    /** @type {any} */
     getNum: async function () {
         if (this.hasBeenSetup) {
             //const zkappPublicKey = PublicKey.fromBase58('B62qqEme9EYMj3KC4vSXij2vAwt8qxLiKLsrHPprQeYXXmjTFUH16wF');
@@ -162,6 +176,7 @@ const Authentication = {
         }
     },
     address: '',
+    /** @type {string} */
     getShortAddress: function () {
         return this.address.substring(0, 5) + "..." + this.address.substring(this.address.length - 5, this.address.length);
     }

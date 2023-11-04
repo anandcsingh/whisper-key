@@ -6,7 +6,6 @@ import { UserMartialArts, UserMartialArt } from '@/modules/UserMartialArts';
 import DashboardProfile from './DashboardProfile';
 import DashboardActions from './DashboardActions/DashboardActions';
 import InstructorMartialArts from './InstructorMartialArts';
-import LineagePage from './LineagePage';
 import DashboardLineageHero from './DashboardLineageHero';
 import DashboardStats from './DashboardStats';
 import { get } from 'http';

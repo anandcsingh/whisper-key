@@ -6,7 +6,7 @@ import Router from 'next/router';
 import { useContext, useState } from "react";
 import { PublicKey } from "o1js";
 
-const PromoteForm = () => {
+const RevokeForm = () => {
     const [authState, setAuthState] = useContext(AuthContext);
     const [disciplineValue, setDisciplineValue] = useState('');
     const handleDiscipleineChange = async (event: any) => {
@@ -81,7 +81,7 @@ const PromoteForm = () => {
   
     return (
         <div>
-            <h2 className='text-3xl font-bold sm:text-4xl'>Revoke your student's rank</h2>
+            <h2 className='text-3xl font-bold sm:text-4xl'>Revoke your student&apos;s rank</h2>
                   <div className='divider'></div>
                   <div className='grid grid-cols-1 space-y-6'>
 
@@ -127,4 +127,4 @@ const PromoteForm = () => {
                 </div>
     );
 }
-export default PromoteForm;
+export default RevokeForm;

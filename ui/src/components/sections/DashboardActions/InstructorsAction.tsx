@@ -1,4 +1,3 @@
-import InstructorsDen from "@/pages/instructorsden.page";
 import { DashboardActionsProps } from "./DashboardActions";
 import InstructorMartialArts from "../InstructorMartialArts";
 
@@ -37,7 +36,6 @@ const InstructorsAction: React.FC<DashboardActionsProps> = ({ isInstructor, disc
                                 <div className="modal-action">
                                     <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                                 </div>
-                                {/* <InstructorsDen /> */}
                                 <InstructorMartialArts martialArts={disciplines} />
                             </form>
                             <form method="dialog" className="modal-backdrop">

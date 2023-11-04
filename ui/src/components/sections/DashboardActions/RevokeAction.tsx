@@ -1,4 +1,3 @@
-import Add from "@/pages/add.page";
 import { DashboardActionsProps } from "./DashboardActions";
 import RevokeForm from "../Forms/RevokeForm";
 
@@ -21,7 +20,7 @@ const RevokeAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
                         <h2 className="mt-2 font-bold">Revoke</h2>
 
                         <p className="hidden sm:mt-1 sm:block sm:text-sm sm:text-gray-600">
-                            Revoke an existing student's rank.
+                            Revoke an existing student&apos;s rank.
                         </p>
                     </a>
 
