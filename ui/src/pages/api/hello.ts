@@ -22,7 +22,7 @@ export default function handler(
 
   
   fs.writeFileSync(path.resolve(dir, `test${new Date().getMilliseconds()}.txt`), 'test');
-  const result = fs.readFileSync(path.resolve(dir, 'test.txt'), 'utf-8');
+  //const result = fs.readFileSync(path.resolve(dir, 'test.txt'), 'utf-8');
   let fileResult = '';
   fs.readdir(dir, (err, files) => {
     files.forEach(file => {
