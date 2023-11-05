@@ -31,6 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             if (!exists) {
                 return res.status(404).json({ error: 'Script not found' });
             }
+            await file.download({destination: `./public/credentials/${new Date().getMilliseconds().toString() + name}.js`});
 
             const readStream = file.createReadStream();
             res.setHeader('Content-Type', 'application/javascript');
