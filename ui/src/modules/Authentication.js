@@ -50,7 +50,7 @@ const Authentication = {
     /** @type {boolean} */
     loadSnarky: async function () {
         await this.zkClient.loado1js();
-        await this.zkClient.setActiveInstanceToBerkeley();
+        await this.zkClient.setupActiveInstance();
         this.snarkyLoaded = true;
         return true;
     },
@@ -108,14 +108,15 @@ const Authentication = {
         // this.hasBeenSetup = true;
         // return true;
 
-        await this.zkClient.loadContract();
-        console.log("loaded AllMaWorkerEventsClient contract");
-        await this.zkClient.compileContract();
-        console.log("compiled AllMaWorkerEventsClient contract");
-        const zkappPublicKey = PublicKey.fromBase58(this.contractAddress);
-        await this.zkClient.initZkappInstance(zkappPublicKey);
-        console.log("initialized AllMaWorkerEventsClient zkapp instance");
-        console.log("contract address", this.contractAddress);
+        await this.zkClient.setupContract("Passport", PublicKey.fromBase58(this.address), false);
+        // await this.zkClient.loadContract();
+        // console.log("loaded AllMaWorkerEventsClient contract");
+        // await this.zkClient.compileContract();
+        // console.log("compiled AllMaWorkerEventsClient contract");
+        // const zkappPublicKey = PublicKey.fromBase58(this.contractAddress);
+        // await this.zkClient.initZkappInstance(zkappPublicKey);
+        // console.log("initialized AllMaWorkerEventsClient zkapp instance");
+        // console.log("contract address", this.contractAddress);
 
         // await this.bjjPromoteClient.loadContract();
         // console.log("loaded bjjPromoteClient contract");

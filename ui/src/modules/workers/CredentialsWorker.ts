@@ -10,7 +10,7 @@ import {
   Bool,
   AccountUpdate,
 } from 'o1js'
-
+import { CredentialProxy } from '../PassportContract';
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
@@ -77,21 +77,39 @@ const functions = {
 
     }
   },
+  fetchAccount: async (args: { publicKey58: string }) => {
+    console.log("fetching account AllMartialArtsEvents from worker:", args.publicKey58);
+
+    if (!localBlockchainSetup.useLocal) {
+      console.log("fetching account AllMartialArtsEvents:", args.publicKey58);
+      console.log("fetch @ ", new Date().toLocaleTimeString());
+      const publicKey = PublicKey.fromBase58(args.publicKey58);
+      let fetch = await fetchAccount({ publicKey });
+      console.log("fetched @ ", new Date().toLocaleTimeString());
+      return fetch;
+    } else {
+      console.log("no fetching using local blockchain");
+      return {error:null};
+    }
+
+  },
   setupContract: async (args: { name: string, owner: PublicKey, useProofs: boolean }) => {
 
     //const { CredentialProxy } = await import(/* webpackIgnore: true */ `../../../public/credentials/${args.name}Contract.js`);
-    const { CredentialProxy } = await import(`../../../public/credentials/PassportContract.js`);
+    const path = `../../../../credentials/PassportContract.js`;
+    //const { CredentialProxy } = await import(/* webpackIgnore: true */path);
 
    
-
-    const contractAddress = PublicKey.empty();// pull from credential repo
+    // lookup address from credentials repo
+    const contractAddress = PublicKey.fromBase58("B62qobwMt5468aAB64Z55ADbBQy8NKVAYnwoWdWGnBKvwEsMX5Ncegt");//PublicKey.empty();// pull from credential repo
     state.credentialProxy = new CredentialProxy(contractAddress, args.name, args.owner, args.useProofs);
     state.credentialName = args.name;
     state.owner = args.owner;
     state.credentialsRepository = {};
-
+    console.log("contract setup");
+    console.log("contract root:", JSON.stringify(await state.credentialProxy.getStorageRoot()))
     if (!args.useProofs) {
-      state.credentialProxy.deployLocal(localBlockchainSetup);
+      //state.credentialProxy.deployLocal(localBlockchainSetup);
     }
 
   },

@@ -8,6 +8,7 @@ import Router from 'next/router';
 import { useEffect, useState, createContext } from "react";
 import Snackbar from '../../modules/Snackbar'
 import AllMaWorkerEventsClient from '../../modules/workers/AllMaWorkerEventsClient'
+import CredentialsWorkerClient from '../../modules/workers/CredentialsWorkerClient'
 
 import {
   PublicKey,
@@ -65,7 +66,7 @@ const AuthPage = ({ validate, children }) => {
       if (!Authentication.loggedIn) {
         if (!state.hasBeenSetup) {
           console.log("setting up");
-          const allWorkerClient = new AllMaWorkerEventsClient();
+          const allWorkerClient = new CredentialsWorkerClient();
           //const allWorkerClient = new AllMaWorkerClient();
           //const zkappWorkerClient = new RankedBjjWorkerClient();
           Authentication.setZkClient(allWorkerClient);

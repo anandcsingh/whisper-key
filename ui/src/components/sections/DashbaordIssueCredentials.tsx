@@ -6,6 +6,11 @@ import { AuthContext } from '@/components/layout/AuthPage';
 
 
 const DashBoardIssueCredentials = () => {
+
+    const issueVeriableCredential = async (event: any) => {
+
+    }
+
     let licenseCredentialFields = [{name: "Full Name", type: "string"}, {name: "Permit Number", type: "string"}];
     let licenseCredentialMetaData = {name: "License", description: "Ministry of Works and Transport License VC", fields: licenseCredentialFields};
 
@@ -38,6 +43,9 @@ const DashBoardIssueCredentials = () => {
                                 </select>
                             </div>
                         </div>
+                        <div className=''>
+          <button onClick={issueVeriableCredential} className="btn btn-primary">Issue Verifiable Credential</button>
+        </div>
                     </form>
                     <form method="dialog" className="modal-backdrop">
                         <button>close</button>

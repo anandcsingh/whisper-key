@@ -13,9 +13,25 @@ export default class CredentialsWorkerClient {
 
   // ---------------------------------------------------------------------------------------
 
+  loado1js() {
+    return this._call('loado1js', {});
+  }
 
-  setupContract(name: string, owner: PublicKey) {
-    return this._call('setupContract',{ name, owner });
+  setupLocalBlockchain() {
+    
+  }
+
+  setupActiveInstance() {
+    return this._call('setupActiveInstance', {});
+  }
+
+  fetchAccount({ publicKey }: { publicKey: PublicKey }): ReturnType<typeof fetchAccount> {
+    const result = this._call('fetchAccount', { publicKey58: publicKey.toBase58() });
+    return (result as ReturnType<typeof fetchAccount>);
+  }
+
+  setupContract(name: string, owner: PublicKey, useProofs: boolean) {
+    return this._call('setupContract',{ name, owner, useProofs });
   }
 
   async getStorageRoot(): Promise<Field> {
