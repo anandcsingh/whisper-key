@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { CredentialRepository } from "../services/CredentialRepository.js";
 import { DeployResult } from "../models/DeployResult.js";
+import { CredentialsPipeline } from "../services/CredentialsPipeline.js";
 
 
 
@@ -17,17 +18,23 @@ export const generateCredentials = async (req: Request, res: Response) => {
     console.log(req.body);
 
     const creds: CredentialMetadata = CredentialMetadata.fromJson(req.body);
+    creds.created = new Date();
+    new CredentialsPipeline().run(creds);
+
+    res.status(200)
+        .send(creds);
+    return;
     console.log("Started generating credential");
     GenerateCredentialFile(creds);
 
     const deployer = new ContractDeployer();
     const result = await deployer.deployCredential(creds.name);
-   
+
     creds.contractPrivateKey = result.privateKey;
     creds.contractPublicKey = result.publicKey;
     creds.transactionUrl = result.transactionUrl;
     console.log("Storing credential");
-     new CredentialRepository().AddCredential(creds);
+    new CredentialRepository().AddCredential(creds);
     console.log("Storedcredential");
 
     creds.created = new Date();
@@ -44,14 +51,14 @@ function GenerateCredentialFile(json: any): string {
     // It exposes a `generateAndSave` method
     // Give it a json string and a file path as params to generate creds
     // The json string has the fields for the credentials, the file path is where the template for the Credential generation is located
-        
+
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     //const templatePath = path.resolve(__dirname, 'services', `CredentialTemplate.mustache`);
     //const templatePath = path.resolve('dist', 'services', `CredentialTemplate.mustache`);
     const templatePath = path.resolve(`public/CredentialTemplate.mustache`);
     const templateContent = fs.readFileSync(templatePath, 'utf-8');
-    
+
     const template = "";
     const generator = new CredentialGenerator();
     // ToDo: Make generate and save accept a CredentialMetadata type and not json

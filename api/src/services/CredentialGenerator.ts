@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 export class CredentialGenerator {
-  generateAndSave(jsonObject: any, template: string): void {
+  generateAndSave(jsonObject: any, template: string): string {
     try {
       // Parse the JSON string to get className
 
@@ -47,6 +47,7 @@ export class CredentialGenerator {
       fs.writeFileSync(userFilePath, renderedTemplate);
 
       console.log(`File saved as ${userFilePath}`);
+      return userFilePath;
     } catch (error) {
       console.error('An error occurred:', error);
     }

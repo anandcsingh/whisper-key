@@ -20,9 +20,11 @@ export class ContractDeployer {
 
         this.network = 'testnet';
         this.client = new Client({ network: this.network });
-        this.feePayerPrivateKey = PrivateKey.fromBase58("EKFFiTZhE8p9hZ7ZapMcLymtqYDaWkum5oWN2VCrZi7iQd1fanDE");
+        this.feePayerPrivateKey = PrivateKey.fromBase58("EKFFiTZhE8p9hZ7ZapMcLymtqYDaWkum5oWN2VCrZi7iQd1fanDE"); //B62qjZTHE1egoVSbWiAXHWnwKkPrCLaBGB7U1vMYXE8nG4KHWPVf6nq
+        //this.feePayerPrivateKey = PrivateKey.fromBase58("EKEaxBppkxKjn7a9rRVCxFsuGur9Xqy6KKVYE9jA4qeRvYA5fzix");//B62qpcuTN9rFhdfkHyZmttMzHqnteygvpPbg3WAdGhb3eZCnHE4DCcZ
         this.feePayerPublicKey = this.feePayerPrivateKey.toPublicKey();
         this.graphQLUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
+        //this.graphQLUrl = "https://api.minascan.io/node/berkeley/v1/graphql";
     }
 
     async deployCredential(name: string) {
