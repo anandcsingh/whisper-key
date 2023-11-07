@@ -12,6 +12,8 @@ import {
   where,
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
+import { ZkMentatStore } from './ZkMentatStore.js';
+import { FirebaseMentatStore } from './FirebaseMentatStore.js';
 
 export class CredentialRepository {
   config: any;
@@ -48,8 +50,40 @@ export class CredentialRepository {
   }
 
   async AddCredential(credential: CredentialMetadata): Promise<void> {
-    const docRef = doc(this.database, this.collectionName);
-    const data = credential;
-    await setDoc(docRef, credential);
+    const id = `${credential.name}${credential.owner}`;
+    credential.id = id;
+    const docRef = doc(
+      this.database,
+      this.collectionName,
+      id,
+    );
+    await setDoc(docRef, credential.toPlainObject());
+  }
+
+  async GetCredential(id: string): Promise<CredentialMetadata | undefined> {
+    const docRef = doc(this.database, this.collectionName, id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        return docSnap.data() as CredentialMetadata;
+    } else {
+        return undefined;
+    }
+  }
+
+  async GetCredentials(): Promise<CredentialMetadata[]> {
+    const maQuery = query(
+      collection(this.database, this.collectionName),
+    );
+    const querySnapshot = await getDocs(maQuery);
+    const credentials: CredentialMetadata[] = [];
+    querySnapshot.forEach((doc) => {
+      const credential = doc.data() as CredentialMetadata;
+      credentials.push(credential);
+    });
+    return credentials;
+  }
+
+  GetCredentialStore(name: string): ZkMentatStore {
+    return new FirebaseMentatStore(name, 'id', this.config);
   }
 }

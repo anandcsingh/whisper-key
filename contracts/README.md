@@ -1,4 +1,4 @@
-# Mina zkApp: Whisper Key
+# Mina zkApp: Afi
 
 This template uses TypeScript.
 

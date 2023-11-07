@@ -1,27 +1,52 @@
 import * as fs from 'fs';
-import * as Mustache from 'mustache';
+import mustache from "mustache"
+import path from 'path';
+import { CredentialMetadata } from './CredentialMetadata';
 
-class CredentialGenerator {
-  generateAndSave(jsonString: string, template: string): void {
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+export class CredentialGenerator {
+  generateAndSave(jsonObject: any, template: string): void {
     try {
-      // Parse the JSON string to get ClassName
-      const className = "UserCredentials";
+      // Parse the JSON string to get className
 
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = dirname(__filename);
+      console.log(__dirname);
+
+      const className = jsonObject.name;
       // Render the template using Mustache.js
-      const renderedTemplate = Mustache.render(template, jsonString);
-
-      // Create the credentials directory if it doesn't exist
-      if (!fs.existsSync('credentials')) {
-        fs.mkdirSync('credentials');
+      //console.log(template);
+      jsonObject.plainValue = function() {
+        if(this.type == "Field") {
+          return `Number(this.${this.name}.toBigInt())`;
+        } else if(this.type == "PublicKey") {
+          return `this.${this.name}.toBase58()`;
+        } else if(this.type == "CircuitString") {
+          return `this.${this.name}.toString()`;
+        } else if(this.type == "Bool") {
+          return `this.${this.name}.toBoolean()`;
+        }
       }
+      const renderedTemplate = mustache.render(template, jsonObject);
+      //console.log(renderedTemplate);
+      // Define the path to the credentials folder relative to the current directory
+      const credentialsFolderPath = path.join(__dirname, 'credentials');
+      const userFilePath = path.resolve(`public/credentials/${className}Contract.js`);
 
-      // Generate the TypeScript file name based on ClassName
-      const fileName = `credentials/${className}.ts`;
+      // Define the path to the file within the credentials folder
+      //const userFilePath = path.join(credentialsFolderPath, `${className}.js`);
+
+      // Create the file if it doesn't already exist
+      // if (!fs.existsSync(`${userFilePath}`)) {
+      //   fs.writeFileSync(`${userFilePath}`, "");
+      // }
 
       // Write the rendered template to the TypeScript file
-      fs.writeFileSync(fileName, renderedTemplate);
+      fs.writeFileSync(userFilePath, renderedTemplate);
 
-      console.log(`File saved as ${fileName}`);
+      console.log(`File saved as ${userFilePath}`);
     } catch (error) {
       console.error('An error occurred:', error);
     }
@@ -33,8 +58,10 @@ class CredentialGenerator {
       const jsonContent = fs.readFileSync(jsonFilePath, 'utf-8');
       const templateContent = fs.readFileSync(templateFilePath, 'utf-8');
 
+      let jsonObj = JSON.parse(jsonContent) as CredentialMetadata;
+
       // Call generateAndSave with the content from files
-      this.generateAndSave(jsonContent, templateContent);
+      this.generateAndSave(jsonObj, templateContent);
     } catch (error) {
       console.error('An error occurred:', error);
     }
