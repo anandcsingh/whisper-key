@@ -10,16 +10,22 @@ import { dirname } from 'path';
 import { CredentialRepository } from "../services/CredentialRepository.js";
 import { DeployResult } from "../models/DeployResult.js";
 import { CredentialsPipeline } from "../services/CredentialsPipeline.js";
-
-
+import { CredentialGenerationPipeline } from '../../../contracts/build/src/Pipeline/CredentialGenerationPipeline.js'
+ 
 
 
 export const generateCredentials = async (req: Request, res: Response) => {
     console.log(req.body);
 
+
     const creds: CredentialMetadata = CredentialMetadata.fromJson(req.body);
     creds.created = new Date();
-    new CredentialsPipeline().run(creds);
+
+    const pipeline = new CredentialGenerationPipeline();
+    pipeline.initDefault();
+    pipeline.run(creds);
+
+    //new CredentialsPipeline().run(creds);
 
     res.status(200)
         .send(creds);

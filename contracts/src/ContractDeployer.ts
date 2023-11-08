@@ -1,7 +1,7 @@
 
 import Client from 'mina-signer';
 import { AccountUpdate, Mina, PrivateKey, PublicKey } from 'o1js';
-import findPrefix from 'find-npm-prefix';
+const findPrefix = require('find-npm-prefix');
 import { get } from 'http';
 import { DeployResult } from './DeployResult.js';
 export class ContractDeployer {
@@ -19,9 +19,11 @@ export class ContractDeployer {
 
         this.network = 'testnet';
         this.client = new Client({ network: this.network });
-        this.feePayerPrivateKey = PrivateKey.fromBase58("EKFFiTZhE8p9hZ7ZapMcLymtqYDaWkum5oWN2VCrZi7iQd1fanDE");
+        this.feePayerPrivateKey = PrivateKey.fromBase58("EKFFiTZhE8p9hZ7ZapMcLymtqYDaWkum5oWN2VCrZi7iQd1fanDE"); //B62qjZTHE1egoVSbWiAXHWnwKkPrCLaBGB7U1vMYXE8nG4KHWPVf6nq
+        //this.feePayerPrivateKey = PrivateKey.fromBase58("EKEaxBppkxKjn7a9rRVCxFsuGur9Xqy6KKVYE9jA4qeRvYA5fzix");//B62qpcuTN9rFhdfkHyZmttMzHqnteygvpPbg3WAdGhb3eZCnHE4DCcZ
         this.feePayerPublicKey = this.feePayerPrivateKey.toPublicKey();
         this.graphQLUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
+        //this.graphQLUrl = "https://api.minascan.io/node/berkeley/v1/graphql";
     }
 
     async deployCredential(name: string) {
@@ -33,7 +35,7 @@ export class ContractDeployer {
         result.publicKey = this.zkAppAddress.toBase58();
 
         const zkApp = await getContract(name);
-        let isInitMethod = zkApp._methods?.some((intf) => intf.methodName === 'init');
+        let isInitMethod = zkApp._methods?.some((intf: any) => intf.methodName === 'init');
         // compute a hash of the contract's circuit to determine if 'zkapp.compile' should re-run or cached verfification key can be used
         let currentDigest = await zkApp.digest(this.zkAppAddress);
         console.log('compiling');
@@ -95,7 +97,7 @@ export class ContractDeployer {
         };
     }
 
-    getTxnUrl(graphQLUrl, txn) {
+    getTxnUrl(graphQLUrl: string, txn: any) {
         const MINASCAN_BASE_URL = `https://minascan.io/berkeley/zk-transaction/`;
         const MINA_EXPLORER_BASE_URL = `https://berkeley.minaexplorer.com/transaction/`;
         const explorers = [MINASCAN_BASE_URL, MINA_EXPLORER_BASE_URL];
@@ -122,7 +124,7 @@ export class ContractDeployer {
         return `${txnBaseUrl}${txn.data.sendZkapp.zkapp.hash}`;
       }
 
-    sendZkAppQuery(accountUpdatesJson) {
+    sendZkAppQuery(accountUpdatesJson: any) {
         return `
         mutation {
           sendZkapp(input: {
@@ -139,7 +141,7 @@ export class ContractDeployer {
           }
         }`;
       }
-      removeJsonQuotes(json) {
+      removeJsonQuotes(json: any) {
         // source: https://stackoverflow.com/a/65443215
         let cleaned = JSON.stringify(JSON.parse(json), null, 2);
         return cleaned.replace(/^[\t ]*"[^:\n\r]+(?<!\\)":/gm, (match) =>
@@ -147,7 +149,7 @@ export class ContractDeployer {
         );
       }
 
-    getAccountQuery(publicKey) {
+    getAccountQuery(publicKey: any) {
         return `
         query {
           account(publicKey: "${publicKey}") {
@@ -156,7 +158,7 @@ export class ContractDeployer {
         }`;
     }
 
-    async sendGraphQL(graphQLUrl, query) {
+    async sendGraphQL(graphQLUrl: string, query: any) {
         const controller = new AbortController();
         const timer = setTimeout(() => {
             controller.abort();
