@@ -44,8 +44,8 @@ const DashBoardIssueCredentials = () => {
                             </div>
                         </div>
                         <div className=''>
-          <button onClick={issueVeriableCredential} className="btn btn-primary">Issue Verifiable Credential</button>
-        </div>
+                            <button onClick={issueVeriableCredential} className="btn btn-primary">Issue Verifiable Credential</button>
+                        </div>
                     </form>
                     <form method="dialog" className="modal-backdrop">
                         <button>close</button>

@@ -21,7 +21,7 @@ const AddForm = () => {
     setfieldTypeValue(event.target.value);
   };
 
-  const [rows, setRows] = useState([{ id: 1, name: '', type: 'CircuitString' }]);
+  const [rows, setRows] = useState([{ id: 1, name: '', type: '' }]);
   const [nextRowId, setNextRowId] = useState(2);
 
   const [vcNameValue, setVCNameValue] = useState('');
@@ -39,7 +39,7 @@ const AddForm = () => {
 
   const addAnotherField = () => {
     console.log("Adding another row to define fields...");
-    setRows([...rows, { id: nextRowId, name: '', type: 'CircuitString' }]);
+    setRows([...rows, { id: nextRowId, name: '', type: '' }]);
     setNextRowId(nextRowId + 1);
   };
 
