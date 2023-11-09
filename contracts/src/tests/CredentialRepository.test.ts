@@ -16,10 +16,10 @@ let repo = new CredentialRepository();
 let credential = new CredentialMetadata(
   'Test',
   'Test',
+  'Test',
   '1.0',
   new Date(),
   'Test',
-  'Test',
-  'Test'
+  [],
 );
 await repo.AddCredential(credential);
