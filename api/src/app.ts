@@ -21,7 +21,6 @@ app.use(cors());
 
 app.use('/api/credentials', credsRouter);
 
-
 app.get('/api/scripts/:name', (req, res, next) => {
     res.type('.js');
     const templatePath = path.resolve(`public/credentials/${req.params.name}Contract.js`);
@@ -41,7 +40,9 @@ app.get('/timereal', async (req, res, next) => {
     res.send("ok");
 });
 app.get('/real', async (req, res, next) => {
-   
+   // Get data from client 
+   // can we sign this data and verify the authenticity of the data?
+   // sign with private key on the browser, send message to api public verfify
 let proofsEnabled = true;
 let deployerAccount: PublicKey,
   deployerKey: PrivateKey,

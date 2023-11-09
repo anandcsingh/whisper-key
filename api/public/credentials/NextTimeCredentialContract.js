@@ -8,14 +8,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Field, MerkleMap, MerkleMapWitness, PublicKey, SmartContract, State, method, state, CircuitString, Struct, Poseidon, Mina, fetchAccount, AccountUpdate, } from 'o1js';
-export class {{name}}Entity extends Struct({
+export class NextTimeCredentialEntity extends Struct({
     id: Field,
     credentialType: CircuitString,
     issuer: PublicKey,
     owner: PublicKey,
-    {{#fields}}
-    {{name}}: {{type}},
-    {{/fields}}
+    Next: CircuitString,
+    Time: CircuitString,
 }) {
     toPlainObject() {
         return {
@@ -23,20 +22,18 @@ export class {{name}}Entity extends Struct({
             credentialType: this.credentialType.toString(),
             issuer: this.issuer.toBase58(),
             owner: this.owner.toBase58(),
-            {{#fields}}
-            {{name}}: {{plainValue}},
-            {{/fields}}
+            Next: this.Next.toString(),
+            Time: this.Time.toString(),
         };
     }
     static fromPlainObject(obj) {
-        return new {{name}}Entity({
+        return new NextTimeCredentialEntity({
             id: Field(obj.id),
             credentialType: CircuitString.fromString(obj.credentialType),
             issuer: PublicKey.fromBase58(obj.issuer),
             owner: PublicKey.fromBase58(obj.owner),
-            {{#fields}}
-            {{name}}: {{provableValue}},
-            {{/fields}}
+            Next: CircuitString.fromString(obj.Next),
+            Time: CircuitString.fromString(obj.Time),
         });
     }
     hash() {
@@ -44,13 +41,12 @@ export class {{name}}Entity extends Struct({
             .concat(this.credentialType.toFields())
             .concat(this.issuer.toFields())
             .concat(this.owner.toFields())
-            {{#fields}}
-            .concat(this.{{name}}.toFields())
-            {{/fields}}
+            .concat(this.Next.toFields())
+            .concat(this.Time.toFields())
             );
     }
 }
-export class {{name}}Contract extends SmartContract {
+export class NextTimeCredentialContract extends SmartContract {
     constructor() {
         super(...arguments);
         this.mapRoot = State();
@@ -77,22 +73,22 @@ export class {{name}}Contract extends SmartContract {
 __decorate([
     state(Field),
     __metadata("design:type", Object)
-], {{name}}Contract.prototype, "mapRoot", void 0);
+], NextTimeCredentialContract.prototype, "mapRoot", void 0);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Field]),
     __metadata("design:returntype", void 0)
-], {{name}}Contract.prototype, "setMapRoot", null);
+], NextTimeCredentialContract.prototype, "setMapRoot", null);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [PublicKey,
-        {{name}}Entity,
+        NextTimeCredentialEntity,
         MerkleMapWitness,
         Field]),
     __metadata("design:returntype", void 0)
-], {{name}}Contract.prototype, "issueCredential", null);
+], NextTimeCredentialContract.prototype, "issueCredential", null);
 export class CredentialProxy {
     constructor(contractAddress, credentialName, owner, proofsEnabled) {
         this.useLocal = false;
@@ -101,13 +97,13 @@ export class CredentialProxy {
         this.owner = owner;
         this.proofsEnabled = proofsEnabled;
         this.contractAddress = contractAddress;
-        this.contractType = {{name}}Contract;
+        this.contractType = NextTimeCredentialContract;
         if (this.proofsEnabled) {
             console.log("compiling contract @", new Date().toISOString());
             this.contractType.compile();
             console.log("compiled contract @", new Date().toISOString());
         }
-        this.zkApp = new {{name}}Contract(this.contractAddress);
+        this.zkApp = new NextTimeCredentialContract(this.contractAddress);
     }
     async getStorageRoot() {
         if (!this.useLocal)
@@ -125,7 +121,7 @@ export class CredentialProxy {
     async issueCredential(owner, credential, merkleStore) {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
-        const entity = {{name}}Entity.fromPlainObject(credential);
+        const entity = NextTimeCredentialEntity.fromPlainObject(credential);
         entity.id = Field(merkleStore.nextID);
         let hash = entity.hash();
         merkleStore.map.set(entity.id, hash);

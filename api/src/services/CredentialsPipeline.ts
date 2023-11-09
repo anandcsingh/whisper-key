@@ -15,9 +15,9 @@ export class CredentialsPipeline {
   
   public async run(creds: CredentialMetadata) {
     const file = this.generateCredentialFile(creds);
-    await this.bundleCredential(file, creds);
+    //await this.bundleCredential(file, creds);
     await this.storeCredentialMetaData(creds);
-    await this.storeContractFile(creds);
+    //await this.storeContractFile(creds);
     await this.DeployToNetwork(creds);
   }
   storeContractFile(creds: CredentialMetadata) {
@@ -85,7 +85,7 @@ export class CredentialsPipeline {
         console.error(err);
       }
       else {
-        this.storeContractBundle(creds);
+        //this.storeContractBundle(creds);
       }
       console.log(stats.toString());
     });

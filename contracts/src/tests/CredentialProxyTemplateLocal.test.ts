@@ -10,7 +10,7 @@ import { Field, Mina, PrivateKey, PublicKey, AccountUpdate, MerkleMap, CircuitSt
 
 let proofsEnabled = false;
 
-describe('CredentialProxyTemplate', () => {
+describe('CredentialProxyTemplateLocal', () => {
   let deployerAccount: PublicKey,
     deployerKey: PrivateKey,
     senderAccount: PublicKey,

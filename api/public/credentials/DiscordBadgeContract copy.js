@@ -8,14 +8,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Field, MerkleMap, MerkleMapWitness, PublicKey, SmartContract, State, method, state, CircuitString, Struct, Poseidon, Mina, fetchAccount, AccountUpdate, } from 'o1js';
-export class {{name}}Entity extends Struct({
+export class DiscordBadgeEntity extends Struct({
     id: Field,
     credentialType: CircuitString,
     issuer: PublicKey,
     owner: PublicKey,
-    {{#fields}}
-    {{name}}: {{type}},
-    {{/fields}}
+    BadgeName: CircuitString,
+    DiscordID: CircuitString,
 }) {
     toPlainObject() {
         return {
@@ -23,20 +22,18 @@ export class {{name}}Entity extends Struct({
             credentialType: this.credentialType.toString(),
             issuer: this.issuer.toBase58(),
             owner: this.owner.toBase58(),
-            {{#fields}}
-            {{name}}: {{plainValue}},
-            {{/fields}}
+            BadgeName: this.BadgeName.toString(),
+            DiscordID: this.DiscordID.toString(),
         };
     }
     static fromPlainObject(obj) {
-        return new {{name}}Entity({
+        return new DiscordBadgeEntity({
             id: Field(obj.id),
             credentialType: CircuitString.fromString(obj.credentialType),
             issuer: PublicKey.fromBase58(obj.issuer),
             owner: PublicKey.fromBase58(obj.owner),
-            {{#fields}}
-            {{name}}: {{provableValue}},
-            {{/fields}}
+            BadgeName: CircuitString.fromString(obj.BadgeName),
+            DiscordID: CircuitString.fromString(obj.DiscordID),
         });
     }
     hash() {
@@ -44,13 +41,12 @@ export class {{name}}Entity extends Struct({
             .concat(this.credentialType.toFields())
             .concat(this.issuer.toFields())
             .concat(this.owner.toFields())
-            {{#fields}}
-            .concat(this.{{name}}.toFields())
-            {{/fields}}
+            .concat(this.BadgeName.toFields())
+            .concat(this.DiscordID.toFields())
             );
     }
 }
-export class {{name}}Contract extends SmartContract {
+export class DiscordBadgeContract extends SmartContract {
     constructor() {
         super(...arguments);
         this.mapRoot = State();
@@ -77,37 +73,35 @@ export class {{name}}Contract extends SmartContract {
 __decorate([
     state(Field),
     __metadata("design:type", Object)
-], {{name}}Contract.prototype, "mapRoot", void 0);
+], DiscordBadgeContract.prototype, "mapRoot", void 0);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Field]),
     __metadata("design:returntype", void 0)
-], {{name}}Contract.prototype, "setMapRoot", null);
+], DiscordBadgeContract.prototype, "setMapRoot", null);
 __decorate([
     method,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [PublicKey,
-        {{name}}Entity,
+        DiscordBadgeEntity,
         MerkleMapWitness,
         Field]),
     __metadata("design:returntype", void 0)
-], {{name}}Contract.prototype, "issueCredential", null);
+], DiscordBadgeContract.prototype, "issueCredential", null);
 export class CredentialProxy {
     constructor(contractAddress, credentialName, owner, proofsEnabled) {
         this.useLocal = false;
-        this.fee = 100000000;
         this.credentialName = credentialName;
         this.owner = owner;
         this.proofsEnabled = proofsEnabled;
         this.contractAddress = contractAddress;
-        this.contractType = {{name}}Contract;
-        if (this.proofsEnabled) {
-            console.log("compiling contract @", new Date().toISOString());
+        this.contractType = DiscordBadgeContract;
+        console.log("compiling contract @", new Date().toISOString());
+        if (this.proofsEnabled)
             this.contractType.compile();
-            console.log("compiled contract @", new Date().toISOString());
-        }
-        this.zkApp = new {{name}}Contract(this.contractAddress);
+        console.log("compiled contract @", new Date().toISOString());
+        this.zkApp = new DiscordBadgeContract(this.contractAddress);
     }
     async getStorageRoot() {
         if (!this.useLocal)
@@ -117,7 +111,7 @@ export class CredentialProxy {
     async setStorageRoot(storageRoot, sender) {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
-        const transaction = await Mina.transaction({ sender, fee: this.fee }, () => {
+        const transaction = await Mina.transaction({ sender }, () => {
             this.zkApp.setMapRoot(storageRoot);
         });
         return transaction;
@@ -125,14 +119,15 @@ export class CredentialProxy {
     async issueCredential(owner, credential, merkleStore) {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
-        const entity = {{name}}Entity.fromPlainObject(credential);
+        //this.zkApp = new DiscordBadgeContract(this.contractAddress);
+        const entity = DiscordBadgeEntity.fromPlainObject(credential);
         entity.id = Field(merkleStore.nextID);
         let hash = entity.hash();
+        console.log("hash:", hash.toString());
         merkleStore.map.set(entity.id, hash);
         const witness = merkleStore.map.getWitness(entity.id);
-        const currentRoot = await this.getStorageRoot();
-        const transaction = await Mina.transaction({ sender: entity.issuer, fee: this.fee }, () => {
-            this.zkApp.issueCredential(owner, entity, witness, currentRoot);
+        const transaction = await Mina.transaction({ sender: entity.issuer }, () => {
+            this.zkApp.issueCredential(owner, entity, witness, this.zkApp.mapRoot.get());
         });
         return {
             transaction: transaction,
@@ -141,6 +136,7 @@ export class CredentialProxy {
     }
     async deployLocal(minaLocal, deployer, zkAppPrivateKey, useLocal) {
         this.useLocal = useLocal;
+        let zkAppAddress = zkAppPrivateKey.toPublicKey();
         let deployerPublic = deployer.toPublicKey();
         const txn = await minaLocal.transaction(deployerPublic, () => {
             AccountUpdate.fundNewAccount(deployerPublic);

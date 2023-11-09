@@ -10,7 +10,155 @@ import { dirname } from 'path';
 import { CredentialRepository } from "../services/CredentialRepository.js";
 import { DeployResult } from "../models/DeployResult.js";
 import { CredentialsPipeline } from "../services/CredentialsPipeline.js";
+import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, fetchAccount } from "o1js";
+import { CredentialProxy, FreeCredentialContract, FreeCredentialEntity } from '../../public/credentials/FreeCredentialContract.js';
 
+export const issueCredentialViaProxy = async (req: Request, res: Response) => {
+    const cred = req.body;
+
+    try {
+    //const templatePath = path.resolve(`public/credentials/${req.params.name}Contract.js`);
+
+     // Get data from client 
+   // can we sign this data and verify the authenticity of the data?
+   // sign with private key on the browser, send message to api public verfify
+let proofsEnabled = true;
+let deployerAccount: PublicKey,
+  deployerKey: PrivateKey,
+  senderAccount: PublicKey,
+  senderKey: PrivateKey,
+  zkAppAddress: PublicKey,
+  zkAppPrivateKey: PrivateKey,
+  local: any;
+
+
+const Berkeley = Mina.Network(
+  'https://proxy.berkeley.minaexplorer.com/graphql'
+);
+console.log('Berkeley Instance Created');
+Mina.setActiveInstance(Berkeley);
+senderKey = PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
+senderAccount = senderKey.toPublicKey();
+const repo = new CredentialRepository();
+const credMetadata = await repo.GetCredential(req.params.name);
+console.log("credMetadata:", credMetadata);
+zkAppAddress = PublicKey.fromBase58(credMetadata.contractPublicKey);
+
+//zkAppAddress = PublicKey.fromBase58("B62qmVJRKong9PuMagoWGDmPjSdmSkjPhW2R3ZyB8nZswiSAxcua5H8");
+await fetchAccount({ publicKey: zkAppAddress });
+const path = `../../../public/credentials/${req.params.name}Contract.js`
+// const path = `../../public/credentials/FreeCredentialContract.js`
+const { CredentialProxy } = await import(/* webpackIgnore: true */path);
+console.log("Dyanmic proxy loaded");
+console.log("path:", path); 
+const proxy = new CredentialProxy(zkAppAddress, req.params.name, senderAccount, proofsEnabled);
+
+console.log("senderAccount:", senderAccount.toBase58());
+const map = new MerkleMap();
+const entity = {
+  id: 1,
+  credentialType: 'Test',
+  owner: "B62qqzMHkbogU9gnQ3LjrKomimsXYt4qHcXc8Cw4aX7tok8DjuDsAzx",
+  issuer: senderAccount.toBase58(),
+  Username: 'Test',
+  Password: 'Test',
+};
+
+
+const merkleStore = {
+  nextID: 2,
+  map: map,
+};
+const currentRoot = proxy.getStorageRoot();
+
+await fetchAccount({ publicKey: zkAppAddress });
+console.log("Issuing via proxy for", req.params.name, "contract");
+console.log("entity:", cred);
+const txn = await proxy.issueCredential(senderAccount, cred, merkleStore);
+await txn.transaction.prove();
+let result = await txn.transaction.sign([senderKey]).send();
+console.log("Issued via proxy");
+
+
+console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash()}`);
+res.send("ok");
+    }
+    catch (e) {
+        res.status(500).send(e.message);
+    }
+
+}
+
+export const issueCredential = async (req: Request, res: Response) => {
+    const cred = req.body;
+    const templatePath = path.resolve(`public/credentials/${req.params.name}Contract.js`);
+
+    // Get data from client 
+   // can we sign this data and verify the authenticity of the data?
+   // sign with private key on the browser, send message to api public verfify
+let proofsEnabled = true;
+let deployerAccount: PublicKey,
+  deployerKey: PrivateKey,
+  senderAccount: PublicKey,
+  senderKey: PrivateKey,
+  zkAppAddress: PublicKey,
+  zkAppPrivateKey: PrivateKey,
+  zkApp: FreeCredentialContract,
+  local: any;
+if (proofsEnabled) await FreeCredentialContract.compile();
+
+
+const Berkeley = Mina.Network(
+  'https://proxy.berkeley.minaexplorer.com/graphql'
+);
+console.log('Berkeley Instance Created');
+Mina.setActiveInstance(Berkeley);
+senderKey = PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
+senderAccount = senderKey.toPublicKey();
+
+zkAppAddress = PublicKey.fromBase58("B62qmVJRKong9PuMagoWGDmPjSdmSkjPhW2R3ZyB8nZswiSAxcua5H8");
+await fetchAccount({ publicKey: zkAppAddress });
+
+zkApp = new FreeCredentialContract(zkAppAddress);
+
+console.log("senderAccount:", senderAccount.toBase58());
+const map = new MerkleMap();
+const entity = new FreeCredentialEntity({
+  id: Field(1),
+  credentialType: CircuitString.fromString('Test'),
+  owner: PublicKey.fromBase58("B62qqzMHkbogU9gnQ3LjrKomimsXYt4qHcXc8Cw4aX7tok8DjuDsAzx"),
+  issuer: senderAccount,
+  Username: CircuitString.fromString('Test'),
+  Password: CircuitString.fromString('Test'),
+});
+
+
+const merkleStore = {
+  nextID: 2,
+  map: map,
+};
+const currentRoot = zkApp.mapRoot.get();
+
+await fetchAccount({ publicKey: zkAppAddress });
+entity.id = Field(merkleStore.nextID);
+let hash = entity.hash();
+
+merkleStore.map.set(entity.id, hash);
+const transactionFee = 100_000_000;
+console.log("fee:", transactionFee);
+const witness = merkleStore.map.getWitness(entity.id);
+const transaction = await Mina.transaction({ sender: entity.issuer, fee: transactionFee }, () => {
+  zkApp.issueCredential(senderAccount, entity, witness, currentRoot);
+});
+
+console.log("proving transaction");
+await transaction.prove();
+console.log("signing transaction");
+let result = await transaction.sign([senderKey]).send();
+
+console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash()}`);
+res.send("ok");
+}
 
 export const getCredentials = async (req: Request, res: Response) => {
 

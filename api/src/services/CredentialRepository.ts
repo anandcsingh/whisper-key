@@ -50,7 +50,7 @@ export class CredentialRepository {
   }
 
   async AddCredential(credential: CredentialMetadata): Promise<void> {
-    const id = `${credential.name}${credential.owner}`;
+    const id = `${credential.name}`;
     credential.id = id;
     const docRef = doc(
       this.database,

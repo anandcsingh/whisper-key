@@ -96,17 +96,15 @@ __decorate([
 export class CredentialProxy {
     constructor(contractAddress, credentialName, owner, proofsEnabled) {
         this.useLocal = false;
-        this.fee = 100000000;
         this.credentialName = credentialName;
         this.owner = owner;
         this.proofsEnabled = proofsEnabled;
         this.contractAddress = contractAddress;
         this.contractType = {{name}}Contract;
-        if (this.proofsEnabled) {
-            console.log("compiling contract @", new Date().toISOString());
+        //console.log("compiling contract @", new Date().toISOString());
+        if (this.proofsEnabled)
             this.contractType.compile();
-            console.log("compiled contract @", new Date().toISOString());
-        }
+        //console.log("compiled contract @", new Date().toISOString());
         this.zkApp = new {{name}}Contract(this.contractAddress);
     }
     async getStorageRoot() {
@@ -117,7 +115,7 @@ export class CredentialProxy {
     async setStorageRoot(storageRoot, sender) {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
-        const transaction = await Mina.transaction({ sender, fee: this.fee }, () => {
+        const transaction = await Mina.transaction({ sender }, () => {
             this.zkApp.setMapRoot(storageRoot);
         });
         return transaction;
@@ -125,14 +123,15 @@ export class CredentialProxy {
     async issueCredential(owner, credential, merkleStore) {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
+        //this.zkApp = new {{name}}Contract(this.contractAddress);
         const entity = {{name}}Entity.fromPlainObject(credential);
         entity.id = Field(merkleStore.nextID);
         let hash = entity.hash();
+        console.log("hash:", hash.toString());
         merkleStore.map.set(entity.id, hash);
         const witness = merkleStore.map.getWitness(entity.id);
-        const currentRoot = await this.getStorageRoot();
-        const transaction = await Mina.transaction({ sender: entity.issuer, fee: this.fee }, () => {
-            this.zkApp.issueCredential(owner, entity, witness, currentRoot);
+        const transaction = await Mina.transaction({ sender: entity.issuer }, () => {
+            this.zkApp.issueCredential(owner, entity, witness, this.zkApp.mapRoot.get());
         });
         return {
             transaction: transaction,
@@ -141,6 +140,7 @@ export class CredentialProxy {
     }
     async deployLocal(minaLocal, deployer, zkAppPrivateKey, useLocal) {
         this.useLocal = useLocal;
+        let zkAppAddress = zkAppPrivateKey.toPublicKey();
         let deployerPublic = deployer.toPublicKey();
         const txn = await minaLocal.transaction(deployerPublic, () => {
             AccountUpdate.fundNewAccount(deployerPublic);
