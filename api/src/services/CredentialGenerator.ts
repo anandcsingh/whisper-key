@@ -29,6 +29,17 @@ export class CredentialGenerator {
           return `this.${this.name}.toBoolean()`;
         }
       }
+      jsonObject.provableValue = function() {
+        if(this.type == "Field") {
+          return `Field(obj.${this.name})`;
+        } else if(this.type == "PublicKey") {
+          return `PublicKey.fromBase58(obj.${this.name})`;
+        } else if(this.type == "CircuitString") {
+          return `CircuitString.fromString(obj.${this.name})`;
+        } else if(this.type == "Bool") {
+          return `Bool(${this.name})`;
+        }
+      }
       const renderedTemplate = mustache.render(template, jsonObject);
       //console.log(renderedTemplate);
       // Define the path to the credentials folder relative to the current directory
