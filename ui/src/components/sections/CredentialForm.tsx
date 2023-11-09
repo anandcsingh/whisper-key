@@ -37,7 +37,7 @@ const  CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) 
     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Issuing Verifiable Credential, please wait this can take a few mins`, alertNeedsSpinner: true });
     Router.back();
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-    Authentication.zkClient.issueCredential(state.formData, credentialMetadata);
+    // Authentication.zkClient.issueCredential(state.formData, credentialMetadata);
 
   };
 
