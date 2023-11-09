@@ -17,8 +17,8 @@ export class CredentialsPipeline {
     const file = this.generateCredentialFile(creds);
     await this.bundleCredential(file, creds);
     await this.storeCredentialMetaData(creds);
-    this.storeContractFile(creds);
-    this.DeployToNetwork(creds);
+    await this.storeContractFile(creds);
+    await this.DeployToNetwork(creds);
   }
   storeContractFile(creds: CredentialMetadata) {
     
