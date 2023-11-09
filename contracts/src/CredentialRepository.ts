@@ -1,4 +1,4 @@
-import { CredentialMetadata } from './CredentialMetadata';
+import { CredentialMetadata } from './CredentialMetadata.js';
 import {
   collection,
   deleteDoc,
@@ -12,6 +12,8 @@ import {
   where,
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
+import { ZkMentatStore } from './ZkMentatStore.js';
+import { FirebaseMentatStore } from './FirebaseMentatStore.js';
 
 export class CredentialRepository {
   config: any;
@@ -21,12 +23,12 @@ export class CredentialRepository {
 
   constructor() {
     this.config = {
-      apiKey: 'AIzaSyBIJmplBy5lylYZo9_D7WX18_seBKnzSF0',
-      authDomain: 'rankproof-cohort1.firebaseapp.com',
-      projectId: 'rankproof-cohort1',
-      storageBucket: 'rankproof-cohort1.appspot.com',
-      messagingSenderId: '988704691374',
-      appId: '1:988704691374:web:e57bebd121bef8b2fdc93f',
+      apiKey: "AIzaSyCLf7YUCTyPN9spPSmbzwxFpxSLfz7Mqoc",
+      authDomain: "whisper-key.firebaseapp.com",
+      projectId: "whisper-key",
+      storageBucket: "whisper-key.appspot.com",
+      messagingSenderId: "1097281157212",
+      appId: "1:1097281157212:web:e9c42bc24d566fd269ce99"
     };
     this.app = initializeApp(this.config);
     this.database = getFirestore(this.app);
@@ -48,8 +50,40 @@ export class CredentialRepository {
   }
 
   async AddCredential(credential: CredentialMetadata): Promise<void> {
-    const docRef = doc(this.database, this.collectionName);
-    const data = credential;
-    await setDoc(docRef, credential);
+    const id = `${credential.name}${credential.owner}`;
+    credential.id = id;
+    const docRef = doc(
+      this.database,
+      this.collectionName,
+      id,
+    );
+    await setDoc(docRef, credential.toPlainObject());
+  }
+
+  async GetCredential(id: string): Promise<CredentialMetadata | undefined> {
+    const docRef = doc(this.database, this.collectionName, id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        return docSnap.data() as CredentialMetadata;
+    } else {
+        return undefined;
+    }
+  }
+
+  async GetCredentials(): Promise<CredentialMetadata[]> {
+    const maQuery = query(
+      collection(this.database, this.collectionName),
+    );
+    const querySnapshot = await getDocs(maQuery);
+    const credentials: CredentialMetadata[] = [];
+    querySnapshot.forEach((doc) => {
+      const credential = doc.data() as CredentialMetadata;
+      credentials.push(credential);
+    });
+    return credentials;
+  }
+
+  GetCredentialStore(name: string): ZkMentatStore {
+    return new FirebaseMentatStore(name, 'id', this.config);
   }
 }
