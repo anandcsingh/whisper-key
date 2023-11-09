@@ -111,21 +111,23 @@ const AddForm = () => {
     // const request = await axios.post(apiUrl, data, {
     //   headers: requestHeaders,
     // });
+    axios.post(apiUrl, data);
+    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding credential please check back later`, alertNeedsSpinner: false });
 
-    axios.post(apiUrl, data)
-    .then(res => {
-      console.log("VC added");
-      console.log(res);
-      console.log(res.data);
-       setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding credential please check back later`, alertNeedsSpinner: false });
+    // axios.post(apiUrl, data)
+    // .then(res => {
+    //   console.log("VC added");
+    //   console.log(res);
+    //   console.log(res.data);
+    //    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding credential please check back later`, alertNeedsSpinner: false });
 
-    })
-    .catch(err => {
-      // Handle error
-      console.log("Something went wrong.");
-      console.log(data);
-      console.log(err.toJSON());
-  });
+    // })
+    // .catch(err => {
+    //   // Handle error
+    //   console.log("Something went wrong.");
+    //   console.log(data);
+    //   console.log(err.toJSON());
+  // });
 
 
   //   let result = await client.add(studentID, rankValue, disciplineValue);

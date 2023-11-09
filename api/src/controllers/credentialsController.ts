@@ -19,7 +19,7 @@ export const generateCredentials = async (req: Request, res: Response) => {
 
     const creds: CredentialMetadata = CredentialMetadata.fromJson(req.body);
     creds.created = new Date();
-    new CredentialsPipeline().run(creds);
+    await new CredentialsPipeline().run(creds);
 
     res.status(200)
         .send(creds);
