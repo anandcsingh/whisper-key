@@ -11,7 +11,7 @@ import {
   AccountUpdate,
 } from 'o1js'
 import { CredentialProxy } from '../DiscordBadgeContract';
-import {CredentialRepository} from '../../../../contracts/build/src/CredentialRepository'
+//import {CredentialRepository} from '../../../../contracts/build/src/CredentialRepository'
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ const functions = {
     // lookup address from credentials repo
     let contractAddress = PublicKey.fromBase58("B62qpsNhMkUqtpdsdUyNURPa7Z9p4YB7mSaxFWk4bi5NobfBhttk8u2");//PublicKey.empty();// pull from credential repo
     if(localBlockchainSetup.useLocal) contractAddress = PrivateKey.random().toPublicKey();
-    state.mentatStore = new CredentialRepository().GetCredentialStore(args.name);
+    //state.mentatStore = new CredentialRepository().GetCredentialStore(args.name);
     state.credentialProxy = new CredentialProxy(contractAddress, args.name, args.owner, args.useProofs);
     state.credentialName = args.name;
     state.owner = args.owner;
