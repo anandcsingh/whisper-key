@@ -10,29 +10,19 @@ import {
 } from 'o1js';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ContractDeployer } from '../ContractDeployer';
 
 let proofsEnabled = false;
 
 describe('DeployCredential', () => {
-  let deployerAccount: PublicKey,
-    deployerKey: PrivateKey,
-    senderAccount: PublicKey,
-    senderKey: PrivateKey,
-    zkAppAddress: PublicKey,
-    zkAppPrivateKey: PrivateKey;
+  
 
-  beforeEach(() => {
-    const Local = Mina.LocalBlockchain({ proofsEnabled });
-    Mina.setActiveInstance(Local);
-    ({ privateKey: deployerKey, publicKey: deployerAccount } =
-      Local.testAccounts[0]);
-    ({ privateKey: senderKey, publicKey: senderAccount } =
-      Local.testAccounts[1]);
-  });
+  it('can deploy', async () => {
+    const deployer = new ContractDeployer();
+    const tr = await deployer.deployCredential("DiscordBadge");
+    console.log(tr.transactionUrl)
 
-  it('can find current directory', async () => {
-    console.log('Current directory:', path.resolve(process.cwd()));
-    //const data = fs.readFileSync(path.resolve(process.cwd(), 'settings.json'), { encoding: 'utf8', flag: 'r' });
+
     expect(true).toBeTruthy();
   });
 });

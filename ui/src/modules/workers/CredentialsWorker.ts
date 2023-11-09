@@ -10,7 +10,8 @@ import {
   Bool,
   AccountUpdate,
 } from 'o1js'
-import { CredentialProxy } from '../PassportContract';
+import { CredentialProxy } from '../DiscordBadgeContract';
+import {CredentialRepository} from '../../../../contracts/build/src/CredentialRepository'
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
@@ -101,9 +102,9 @@ const functions = {
 
    
     // lookup address from credentials repo
-    let contractAddress = PublicKey.fromBase58("B62qrn4MaMNfrDFVohUdGjxzAMWxMRGCFMadtA3S2RKCm8emK4HrcXu");//PublicKey.empty();// pull from credential repo
+    let contractAddress = PublicKey.fromBase58("B62qpsNhMkUqtpdsdUyNURPa7Z9p4YB7mSaxFWk4bi5NobfBhttk8u2");//PublicKey.empty();// pull from credential repo
     if(localBlockchainSetup.useLocal) contractAddress = PrivateKey.random().toPublicKey();
-
+    state.mentatStore = new CredentialRepository().GetCredentialStore(args.name);
     state.credentialProxy = new CredentialProxy(contractAddress, args.name, args.owner, args.useProofs);
     state.credentialName = args.name;
     state.owner = args.owner;
@@ -144,14 +145,19 @@ const functions = {
   },
 
   issueCredential: async (args: { credential: any }): Promise<ActionResult> => {
+    console.log("issueCredential");
+    args.credential.credentialType = state.credentialName;
+    console.log("credential:", args.credential);
+    console.log(state.mentatStore);
     let backingStore = state.mentatStore;
     const merkleStore = await backingStore.getMerkleMap();
+    console.log("merkleStore:", merkleStore);
     const contractRoot = await functions.getStorageRootField();
 
     const rootsVerified = await functions.rootsVerified({ merkleStore: merkleStore, contractRoot: contractRoot });
     if (!rootsVerified.success) return rootsVerified;
 
-    const result = state.credentialProxy.issueCredential(args.credential);
+    const result = state.credentialProxy.issueCredential(args.credential.owner, args.credential, merkleStore);
     state.transaction = result.transaction;
     state.pendingEntity = result.pendingEntity;
     return {

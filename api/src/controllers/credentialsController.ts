@@ -12,7 +12,12 @@ import { DeployResult } from "../models/DeployResult.js";
 import { CredentialsPipeline } from "../services/CredentialsPipeline.js";
 
 
+export const getCredentials = async (req: Request, res: Response) => {
 
+    const creds = await new CredentialRepository().GetCredentials();
+    res.status(200)
+        .send(creds);
+}
 
 export const generateCredentials = async (req: Request, res: Response) => {
     console.log(req.body);

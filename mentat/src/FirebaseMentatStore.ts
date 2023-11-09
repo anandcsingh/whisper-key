@@ -11,7 +11,7 @@ import {
     setDoc,
     where,
 } from 'firebase/firestore';
-import { ZkMentatStore } from './ZkMentatStore';
+import { ZkMentatStore } from './ZkMentatStore.js';
 import { initializeApp } from "firebase/app";
 import { IEntity } from './IEntity.js';
 
@@ -89,7 +89,6 @@ export class FirebaseMentatStore extends ZkMentatStore {
                 Field(doc.data().hash)
             );
         });
-        
         return all;
     }
     async get(key: any): Promise<IEntity | null | undefined> {

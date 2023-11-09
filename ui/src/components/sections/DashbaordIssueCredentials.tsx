@@ -1,7 +1,7 @@
 import Authentication from '@/modules/Authentication';
 import { useEffect, useState, useContext, Component, ChangeEvent } from "react";
 import { AuthContext } from '@/components/layout/AuthPage';
-import { CredentialMetadata } from '../../../../mentat/src/CredentialMetadata';
+import { CredentialMetadata, CredentialField } from '../../modules/CredentialMetadata';
 import CredentialForm from './CredentialForm';
 import QRCodeScanner from '../QRCodeScanner';
 
@@ -24,11 +24,38 @@ const DashBoardIssueCredentials = () => {
         ]
     } as CredentialMetadata;
 
-    
+    let discordBadge = CredentialMetadata.fromJson({
+        "owner": "B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5",
+        "issuer": "B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5",
+        "contractPublicKey": "B62qpsNhMkUqtpdsdUyNURPa7Z9p4YB7mSaxFWk4bi5NobfBhttk8u2",
+        "version": "1.0",
+        "id": "DiscordBadgeB62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5",
+        "description": "A badge from discord",
+        "contractPrivateKey": "EKDycXGqQFxFgWs9hbhAKtMkTGZMSzqTirKbXa7AVNkWu3pD1Q2E",
+        "name": "DiscordBadge",
+        "transactionUrl": "https://berkeley.minaexplorer.com/transaction/5JuGpfXGY3AFa4oWHueLocQHab6dxfu7at3WpSKxsQQoMPcfYsCV",
+        "created": {
+            "seconds": 1699539688,
+            "nanoseconds": 46000000
+        },
+        "fields": [
+            {
+                "name": "BadgeName",
+                "type": "CircuitString",
+                "description": ""
+            },
+            {
+                "description": "",
+                "name": "DiscordID",
+                "type": "CircuitString"
+            }
+        ]
+    });
     let credentialMetaDataList: CredentialMetadata[] = [];
     credentialMetaDataList.push(licenseCredentialMetaData);
     credentialMetaDataList.push(degreeCredentialMetaData);
     credentialMetaDataList.push(passport);
+    credentialMetaDataList.push(discordBadge);
 
     const [selectedCredential, setSelectedCredential] = useState<CredentialMetadata | null>(null);
 

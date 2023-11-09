@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent, Component, useContext, useState } from 'react';
-import { CredentialMetadata, CredentialField } from '../../../../mentat/src/CredentialMetadata';
+import { CredentialMetadata, CredentialField } from '../../modules/CredentialMetadata';
+
 import QRCodeScanner from '../QRCodeScanner';
 import Authentication from '@/modules/Authentication';
 import { AuthContext } from "@/components/layout/AuthPage";
