@@ -36,7 +36,7 @@ const state = {
 }
 
 const localBlockchainSetup = {
-  useLocal: true,
+  useLocal: false,
   localBlockchain: null as null | any,
   deployer: null as null | PrivateKey,
   issuer: null as null | PrivateKey,
@@ -101,15 +101,17 @@ const functions = {
 
    
     // lookup address from credentials repo
-    const contractAddress = PublicKey.fromBase58("B62qobwMt5468aAB64Z55ADbBQy8NKVAYnwoWdWGnBKvwEsMX5Ncegt");//PublicKey.empty();// pull from credential repo
+    let contractAddress = PublicKey.fromBase58("B62qrn4MaMNfrDFVohUdGjxzAMWxMRGCFMadtA3S2RKCm8emK4HrcXu");//PublicKey.empty();// pull from credential repo
+    if(localBlockchainSetup.useLocal) contractAddress = PrivateKey.random().toPublicKey();
+
     state.credentialProxy = new CredentialProxy(contractAddress, args.name, args.owner, args.useProofs);
     state.credentialName = args.name;
     state.owner = args.owner;
     state.credentialsRepository = {};
     console.log("contract setup");
     console.log("contract root:", JSON.stringify(await state.credentialProxy.getStorageRoot()))
-    if (!args.useProofs) {
-      //state.credentialProxy.deployLocal(localBlockchainSetup);
+    if (localBlockchainSetup.useLocal) {
+      state.credentialProxy.deployLocal(localBlockchainSetup.localBlockchain, localBlockchainSetup.deployer!, contractAddress, localBlockchainSetup.useLocal);
     }
 
   },
