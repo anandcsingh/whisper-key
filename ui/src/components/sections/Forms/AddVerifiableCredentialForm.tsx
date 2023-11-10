@@ -9,8 +9,6 @@ import Router from 'next/router';
 import axios from "axios";
 //import { defineComponent } from "vue";
 
-const apiUrl = "http://localhost:3001/api/credentials";
-
 const AddForm = () => {
   const addressRef = useRef(null);
   const [authState, setAuthState] = useContext(AuthContext);
@@ -111,7 +109,10 @@ const AddForm = () => {
     // const request = await axios.post(apiUrl, data, {
     //   headers: requestHeaders,
     // });
-    axios.post(apiUrl, data);
+    
+const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}`;
+
+    axios.post(apiUrl, data).catch((err) => { console.log(err); });
     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding credential please check back later`, alertNeedsSpinner: false });
 
     // axios.post(apiUrl, data)

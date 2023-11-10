@@ -71,10 +71,10 @@ export class CredentialRepository {
     }
   }
 
-  async GetCredentials(issuedBy: string): Promise<CredentialMetadata[]> {
+  async GetCredentials(createdBy: string): Promise<CredentialMetadata[]> {
     const maQuery = query(
       collection(this.database, this.collectionName),
-      where('owner', '==', issuedBy),
+      where('owner', '==', createdBy),
       orderBy('id')
     );
     const querySnapshot = await getDocs(maQuery);

@@ -5,9 +5,8 @@ import { AuthContext } from '@/components/layout/AuthPage';
 import { CredentialMetadata, CredentialField } from '../../modules/CredentialMetadata';
 import axios from "axios";
 
-//console.log("api URL : " + Authentication.address ? Authentication.address : "No address loaded");
 const DashBoardCredentialsOwnedGrid = () => {
-    const apiURL = "http://localhost:3001/api/credentials/owned/";
+    const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/owned/${Authentication.address}`;
 
     const requestHeaders = { "Content-Type": "application/json" };
     let ownedCredentials: CredentialMetadata[] = [];

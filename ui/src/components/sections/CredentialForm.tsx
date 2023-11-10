@@ -46,7 +46,7 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
   };
 
   const fetchData = (formData: any) => {
-    const apiUrl = process.env.NEXT_PUBLIC_CREDENTIALS_API_ISSUE + `${credentialMetadata.name}`;
+    const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/issue/${credentialMetadata.name}`;
     if (!apiUrl) {
       throw new Error('API URL not defined in environment variables.');
     }
@@ -58,7 +58,11 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
       },
       body: JSON.stringify(formData)
     };
-    const response = fetch(apiUrl, requestOptions);
+    try {
+    const response = fetch(apiUrl, requestOptions).catch((err: any) => console.error('Error trying to fetch Credential Metadata', err));
+    } catch (error) {
+      console.error('Error trying to fetch Credential Metadata', error);
+    }
   }
 
   const renderFormField = (field: CredentialField) => {

@@ -185,10 +185,10 @@ export const issueCredential = async (req: Request, res: Response) => {
     res.send("ok");
 }
 
-export const getIssuedCredentials = async (req: Request, res: Response) => {
-    const issuedBy = req.params.address;
-    console.log("Getting credentials for", issuedBy);
-    const creds = await new CredentialRepository().GetCredentials(issuedBy);
+export const getCreatedCredentials = async (req: Request, res: Response) => {
+    const createdBy = req.params.address;
+    console.log("Getting credentials for", createdBy);
+    const creds = await new CredentialRepository().GetCredentials(createdBy);
     res.status(200)
         .send(creds);
 }

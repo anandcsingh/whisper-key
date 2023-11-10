@@ -25,17 +25,23 @@ const DashBoardIssueCredentials = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const credsApi: string = (process.env.NEXT_PUBLIC_CREDENTIALS_API_GET_ALL as string);
+                const credsApi = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/created/${Authentication.address}`;
+
                 console.log('credsAPi: ', credsApi)
                 if(!credsApi){
                     throw new Error('API URL not defined in environment variables.');
-                }          
-                // const response = await fetch(credsApi);
-                // const result = await response.json();
+                }    
+                let result = [];
+                try      {
+                const response = await fetch(credsApi);
+                 result = await response.json();
+            } catch (error) {
+                console.error('Error trying to fetch Credential Metadata', error);
+            }
 
-                // let creds : CredentialMetadata[] = result as CredentialMetadata[];
+                let creds : CredentialMetadata[] = result as CredentialMetadata[];
  let passport = {
-        name: "Passport",
+        name: "DummyPassportCredential",
         owner: "3e42",
         fields:[
             {  description: "", name: "number", type: "CircuitString"},
@@ -45,8 +51,8 @@ const DashBoardIssueCredentials = () => {
             { description: "", name: "name", type: "CircuitString"}
         ]
     } as CredentialMetadata;
-
-                setCredentialMetaDataList([passport]);
+    creds.push(passport);
+                setCredentialMetaDataList(creds);
             } catch (error) {
                 console.error('Error trying to fetch Credential Metadata', error);
             }
