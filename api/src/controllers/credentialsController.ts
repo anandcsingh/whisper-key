@@ -10,12 +10,23 @@ import { dirname } from 'path';
 import { CredentialRepository } from "../services/CredentialRepository.js";
 import { DeployResult } from "../models/DeployResult.js";
 import { CredentialsPipeline } from "../services/CredentialsPipeline.js";
-import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, fetchAccount } from "o1js";
+import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, Signature, fetchAccount } from "o1js";
 import { CredentialProxy, FreeCredentialContract, FreeCredentialEntity } from '../../public/credentials/FreeCredentialContract.js';
-
+import crypto from 'crypto';
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
-    const cred = req.body;
     const name = req.params.name;
+    const cred = req.body.data;
+    const receivedHash = req.body.hash;
+    const signedResult = req.body.signResult;
+
+    const jsonString = JSON.stringify(cred);
+    const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
+    console.log("serverHash:", serverHash);
+    console.log("receivedHash:", receivedHash);
+
+    const signature = Signature.fromJSON(signedResult);
+    // const verify = signature.verify(cred.issuer, [Field(serverHash)]);
+    // console.log("verify:", verify);
     try {
         //const templatePath = path.resolve(`public/credentials/${req.params.name}Contract.js`);
 
@@ -90,7 +101,16 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
 }
 
 export const issueCredential = async (req: Request, res: Response) => {
-    const cred = req.body;
+    const cred = req.body.data;
+    const receivedHash = req.body.hash;
+    const signedResult = req.body.signResult;
+
+    const jsonString = JSON.stringify(cred);
+    const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
+    console.log("serverHash:", serverHash);
+    console.log("receivedHash:", receivedHash);
+    
+
     const templatePath = path.resolve(`public/credentials/${req.params.name}Contract.js`);
 
     // Get data from client 
