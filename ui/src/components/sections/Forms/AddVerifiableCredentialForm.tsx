@@ -212,8 +212,8 @@ const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}`;
                   value={row.type}
                   onChange={(e) => handleChange(row.id, 'type', e.target.value)}
                 >
+                  <option>Select a type</option>
                   <option>Field</option>
-                  <option>Bool</option>
                   <option>CircuitString</option>
                   <option>PublicKey</option>
                 </select>
