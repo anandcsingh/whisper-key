@@ -84,6 +84,6 @@ export class CredentialRepository {
   }
 
   GetCredentialStore(name: string): ZkMentatStore {
-    return new FirebaseMentatStore(name, 'id', this.config);
+    return new FirebaseMentatStore(name, 'owner', this.config);
   }
 }
