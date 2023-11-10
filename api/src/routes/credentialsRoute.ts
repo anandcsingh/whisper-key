@@ -1,10 +1,11 @@
 // routes/credentialsRoute.ts
 import express from 'express';
-import { generateCredentials, getCredentials, issueCredential, issueCredentialViaProxy } from '../controllers/credentialsController.js';
+import { generateCredentials, getIssuedCredentials, getOwnedCredentials, issueCredentialViaProxy } from '../controllers/credentialsController.js';
 import { get } from 'http';
 
 export const credsRouter = express.Router();
 
 credsRouter.post('/', generateCredentials);
-credsRouter.get('/', getCredentials);
-credsRouter.get('/issue/:name', issueCredentialViaProxy);
+credsRouter.get('/issued/:address', getIssuedCredentials);
+credsRouter.post('/issue/:name', issueCredentialViaProxy);
+credsRouter.get('/owned/:address', getOwnedCredentials);

@@ -60,7 +60,7 @@ export class FirebaseMentatStore extends ZkMentatStore {
         });
     }
 
-    async getAll<T>(): Promise<Map<any, IEntity>> {
+    async getAll(): Promise<Map<any, IEntity>> {
         let all = new Map<any, IEntity>();
 
         const maQuery = query(

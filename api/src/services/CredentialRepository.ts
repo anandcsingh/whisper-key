@@ -16,6 +16,7 @@ import { ZkMentatStore } from './ZkMentatStore.js';
 import { FirebaseMentatStore } from './FirebaseMentatStore.js';
 
 export class CredentialRepository {
+  
   config: any;
   app: any;
   database: any;
@@ -70,9 +71,11 @@ export class CredentialRepository {
     }
   }
 
-  async GetCredentials(): Promise<CredentialMetadata[]> {
+  async GetCredentials(issuedBy: string): Promise<CredentialMetadata[]> {
     const maQuery = query(
       collection(this.database, this.collectionName),
+      where('owner', '==', issuedBy),
+      orderBy('id')
     );
     const querySnapshot = await getDocs(maQuery);
     const credentials: CredentialMetadata[] = [];
@@ -83,7 +86,52 @@ export class CredentialRepository {
     return credentials;
   }
 
+  async GetAllCredentials(): Promise<CredentialMetadata[]> {
+    const maQuery = query(
+      collection(this.database, this.collectionName),
+      orderBy('id')
+    );
+    const querySnapshot = await getDocs(maQuery);
+    const credentials: CredentialMetadata[] = [];
+    querySnapshot.forEach((doc) => {
+      const credential = doc.data() as CredentialMetadata;
+      credentials.push(credential);
+    });
+    return credentials;
+  }
+
+  async GetOwnedCredentials(owner: string) {
+    // saddest method of all time
+    // gett all the credentials
+    // filter by owner
+    const creds = [];
+    const all = await this.GetAllCredentials();
+    console.log("number of creds", all.length)
+    for (let i = 0; i < all.length; i++) {
+      const credentialMetadata = all[i];
+      console.log(credentialMetadata.name);
+      const store = this.GetCredentialStore(credentialMetadata.name);
+      const allIsssued = (await store.getAll()) as any;
+      console.log("number of issued", allIsssued.length)
+      for(let j = 0; j < allIsssued.length; j++) {
+        const issued = allIsssued[j];
+        console.log(issued.owner);
+        if(issued.owner === owner) {
+          creds.push(credentialMetadata);
+        }
+
+        console.log("done", credentialMetadata.name);
+
+      }
+      return creds;
+    }
+
+
+
+    throw new Error("Method not implemented.");
+}
+
   GetCredentialStore(name: string): ZkMentatStore {
-    return new FirebaseMentatStore(name, 'id', this.config);
+    return new FirebaseMentatStore(name, 'owner', this.config);
   }
 }
