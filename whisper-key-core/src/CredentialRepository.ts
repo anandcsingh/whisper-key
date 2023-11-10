@@ -105,8 +105,6 @@ export class CredentialRepository {
     // filter by owner
     const creds: any = [];
     const all = await this.GetAllCredentials();
-    console.log("number of creds", all.length)
-
     
     for (let i = 0; i < all.length; i++) {
       const credentialMetadata = all[i];
