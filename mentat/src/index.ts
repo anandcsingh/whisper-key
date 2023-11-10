@@ -1,6 +1,0 @@
-export { CredentialGenerator } from './CredentialGenerator'
-export { CredentialMetadata, CredentialField } from './CredentialMetadata'
-export { CredentialRepository } from './CredentialRepository'
-export { FirebaseMentatStore } from './FirebaseMentatStore'
-export { IEntity } from './IEntity'
-export { ZkMentatStore } from './ZkMentatStore'
