@@ -11,7 +11,7 @@ export interface DashboardContainerProps {
 const DashboardContainer: React.FC<DashboardContainerProps> = ({ showDummyData, dummyDataIsInstructor }) => {
 
     const [authState, _]  = useContext(AuthContext);
-    const [creator, setCreator] = useState<boolean | null>(null);
+    const [creator, setCreator] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState(true);
   
     useEffect(() => {
@@ -58,7 +58,7 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({ showDummyData, 
                 You selected: {creator === null ? 'No selection yet' : creator ? 'Creator' : 'Owner'}
             </p> */}
         </div>
-        <DashboardContainerDataLoader showDummyData={showDummyData} dummyDataIsInstructor={dummyDataIsInstructor} /> 
+        <DashboardContainerDataLoader showDummyData={showDummyData} dummyDataIsInstructor={dummyDataIsInstructor} creator={creator}/> 
         </>
 
     );

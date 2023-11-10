@@ -7,8 +7,9 @@ import { UserMartialArts, UserMartialArt } from '@/modules/UserMartialArts';
 interface DashboardProfileProps {
   // Define any props you want to pass to the component here
   disciplines: Array<UserMartialArt>;
+  creator: boolean;
 }
-const DashboardProfile: React.FC<DashboardProfileProps> = ({ disciplines }) => {
+const DashboardProfile: React.FC<DashboardProfileProps> = ({ disciplines, creator }) => {
 
   const verifiedClass = "card w-96 bg-yellow-300 text-primary-content";
   const unVerifiedClass = "card w-96 bg-zinc-300 text-primary-content";
@@ -65,7 +66,7 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ disciplines }) => {
       {/* Content */}
       <div className="relative">
         <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold mb-1">
-          Good afternoon, { authState.userAuthenticated && shortName() } 👋
+          Good afternoon {creator ? "Creator" : "Owner"}, { authState.userAuthenticated && shortName() } 👋
         </h1>
         <p className="dark:text-indigo-200 pb-2">Create your Verified Credentials...</p>
 
