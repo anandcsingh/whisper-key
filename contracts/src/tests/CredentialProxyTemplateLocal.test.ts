@@ -114,7 +114,7 @@ describe('CredentialProxyTemplateLocal', () => {
     const currentRoot = (await proxy.getStorageRoot()).toString();
 
     // update transaction
-    const txn = await proxy.issueCredential(senderAccount, entity.toPlainObject(), merkleStore);
+    const txn = await proxy.issueCredential(senderAccount, senderAccount, entity.toPlainObject(), merkleStore);
     await txn.transaction.prove();
     await txn.transaction.sign([senderKey]).send();
 

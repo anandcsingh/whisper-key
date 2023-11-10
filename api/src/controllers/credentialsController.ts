@@ -89,8 +89,11 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         await fetchAccount({ publicKey: zkAppAddress });
         console.log("Issuing via proxy for", req.params.name, "contract");
         console.log("entity:", cred);
+        console.log("merkleStore next ID:", merkleStore.nextID);
         const txn = await proxy.issueCredential(senderAccount, cred, merkleStore);
+        console.log("proving transaction");
         await txn.transaction.prove();
+            console.log("signing transaction");
         let result = await txn.transaction.sign([senderKey]).send();
         console.log("Issued via proxy");
         //console.log("entity", txn.pendingEntity);
