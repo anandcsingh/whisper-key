@@ -6,57 +6,6 @@ import CredentialForm from './CredentialForm';
 import QRCodeScanner from '../QRCodeScanner';
 
 const DashBoardIssueCredentials = () => {
-    // let licenseCredentialFields = [{ name: "Full Name", type: "string" }, { name: "Permit Number", type: "string" }];
-    // let licenseCredentialMetaData = { name: "License", description: "Ministry of Works and Transport License VC", fields: licenseCredentialFields } as CredentialMetadata;
-
-    // let degreeCredentialFields = [{ name: "Full Name", type: "string" }, { name: "Degree", type: "string" }];
-    // let degreeCredentialMetaData = { name: "Degree", description: "UWI Degree VC", fields: degreeCredentialFields } as CredentialMetadata;
-
-    // let passport = {
-    //     name: "Passport",
-    //     owner: "3e42",
-    //     fields:[
-    //         {  description: "", name: "number", type: "CircuitString"},
-    //         { description: "", name: "expiryDate", type: "CircuitString"},
-    //         { description: "", name: "unique", type: "Field"},
-    //         { description: "", name: "address", type: "PublicKey"},
-    //         { description: "", name: "name", type: "CircuitString"}
-    //     ]
-    // } as CredentialMetadata;
-
-    // let discordBadge = CredentialMetadata.fromJson({
-    //     "owner": "B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5",
-    //     "issuer": "B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5",
-    //     "contractPublicKey": "B62qpsNhMkUqtpdsdUyNURPa7Z9p4YB7mSaxFWk4bi5NobfBhttk8u2",
-    //     "version": "1.0",
-    //     "id": "DiscordBadgeB62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5",
-    //     "description": "A badge from discord",
-    //     "contractPrivateKey": "EKDycXGqQFxFgWs9hbhAKtMkTGZMSzqTirKbXa7AVNkWu3pD1Q2E",
-    //     "name": "DiscordBadge",
-    //     "transactionUrl": "https://berkeley.minaexplorer.com/transaction/5JuGpfXGY3AFa4oWHueLocQHab6dxfu7at3WpSKxsQQoMPcfYsCV",
-    //     "created": {
-    //         "seconds": 1699539688,
-    //         "nanoseconds": 46000000
-    //     },
-    //     "fields": [
-    //         {
-    //             "name": "BadgeName",
-    //             "type": "CircuitString",
-    //             "description": ""
-    //         },
-    //         {
-    //             "description": "",
-    //             "name": "DiscordID",
-    //             "type": "CircuitString"
-    //         }
-    //     ]
-    // });
-    // let credentialMetaDataListOg: CredentialMetadata[] = [];
-    // credentialMetaDataListOg.push(licenseCredentialMetaData);
-    // credentialMetaDataListOg.push(degreeCredentialMetaData);
-    // credentialMetaDataListOg.push(passport);
-    // credentialMetaDataListOg.push(discordBadge);
-
     const [selectedCredential, setSelectedCredential] = useState<CredentialMetadata | null>(null);
     const [credentialMetaDataList, setCredentialMetaDataList] = useState<CredentialMetadata[]>([]);
 
