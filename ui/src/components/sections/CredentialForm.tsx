@@ -33,13 +33,27 @@ const  CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) 
     state.formData.issuer = Authentication.address; // the credential owner is issuing the credential
     // Process the form data, you can access it from this.state.formData
     console.log('Form Data:', state.formData);
-    // TODO: Smooze method goes here
     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Issuing Verifiable Credential, please wait this can take a few mins`, alertNeedsSpinner: true });
     Router.back();
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-    // Authentication.zkClient.issueCredential(state.formData, credentialMetadata);
-
+    fetchData(state.formData);
   };
+
+  const fetchData = (formData : any) => {
+    const apiUrl = process.env.NEXT_PUBLIC_CREDENTIALS_API_ISSUE + `${credentialMetadata.name}`;
+    if(!apiUrl){
+      throw new Error('API URL not defined in environment variables.');
+    }
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        // You can add other headers here if needed
+      },
+      body: JSON.stringify(formData)
+    };
+    const response = fetch(apiUrl, requestOptions);
+  }
 
   const renderFormField = (field: CredentialField) => {
     const { name } = field;

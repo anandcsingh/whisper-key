@@ -7,4 +7,4 @@ export const credsRouter = express.Router();
 
 credsRouter.post('/', generateCredentials);
 credsRouter.get('/', getCredentials);
-credsRouter.get('/issue/:name', issueCredentialViaProxy);
+credsRouter.post('/issue/:name', issueCredentialViaProxy);
