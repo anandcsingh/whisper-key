@@ -28,7 +28,7 @@ const  CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) 
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     state.formData.issuer = Authentication.address; // the credential owner is issuing the credential
     // Process the form data, you can access it from this.state.formData
@@ -36,7 +36,14 @@ const  CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) 
     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Issuing Verifiable Credential, please wait this can take a few mins`, alertNeedsSpinner: true });
     Router.back();
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-    fetchData(state.formData);
+    const signResult = await (window as any).mina
+    ?.signJsonMessage({
+      message: state.formData
+    })
+    .catch((err: any) => err);
+
+console.log(signResult)
+    //fetchData(state.formData);
   };
 
   const fetchData = (formData : any) => {

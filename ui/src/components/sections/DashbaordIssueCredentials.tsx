@@ -30,11 +30,23 @@ const DashBoardIssueCredentials = () => {
                 if(!credsApi){
                     throw new Error('API URL not defined in environment variables.');
                 }          
-                const response = await fetch(credsApi);
-                const result = await response.json();
+                // const response = await fetch(credsApi);
+                // const result = await response.json();
 
-                let creds : CredentialMetadata[] = result as CredentialMetadata[];
-                setCredentialMetaDataList(creds);
+                // let creds : CredentialMetadata[] = result as CredentialMetadata[];
+ let passport = {
+        name: "Passport",
+        owner: "3e42",
+        fields:[
+            {  description: "", name: "number", type: "CircuitString"},
+            { description: "", name: "expiryDate", type: "CircuitString"},
+            { description: "", name: "unique", type: "Field"},
+            { description: "", name: "address", type: "PublicKey"},
+            { description: "", name: "name", type: "CircuitString"}
+        ]
+    } as CredentialMetadata;
+
+                setCredentialMetaDataList([passport]);
             } catch (error) {
                 console.error('Error trying to fetch Credential Metadata', error);
             }
