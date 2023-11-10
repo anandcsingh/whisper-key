@@ -10,7 +10,7 @@ const DashBoardCredentialsOwnedGrid = () => {
 
     const requestHeaders = { "Content-Type": "application/json" };
     let ownedCredentials: CredentialMetadata[] = [];
-    axios.get(apiURL + Authentication.address)
+    axios.get(apiURL)
         .then(function (response) {
             // handle success
             console.log("Credentials/Owned - Success");
