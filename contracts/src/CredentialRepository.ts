@@ -1,4 +1,4 @@
-import { CredentialMetadata } from './CredentialMetadata.js';
+import { CredentialMetadata } from './CredentialMetadata';
 import {
   collection,
   deleteDoc,
@@ -16,6 +16,7 @@ import { ZkMentatStore } from './ZkMentatStore.js';
 import { FirebaseMentatStore } from './FirebaseMentatStore.js';
 
 export class CredentialRepository {
+  
   config: any;
   app: any;
   database: any;
@@ -50,7 +51,7 @@ export class CredentialRepository {
   }
 
   async AddCredential(credential: CredentialMetadata): Promise<void> {
-    const id = `${credential.name}${credential.owner}`;
+    const id = `${credential.name}`;
     credential.id = id;
     const docRef = doc(
       this.database,
@@ -70,7 +71,22 @@ export class CredentialRepository {
     }
   }
 
-  async GetCredentials(): Promise<CredentialMetadata[]> {
+  async GetCredentials(issuedBy: string): Promise<CredentialMetadata[]> {
+    const maQuery = query(
+      collection(this.database, this.collectionName),
+      where('owner', '==', issuedBy),
+      orderBy('id')
+    );
+    const querySnapshot = await getDocs(maQuery);
+    const credentials: CredentialMetadata[] = [];
+    querySnapshot.forEach((doc) => {
+      const credential = doc.data() as CredentialMetadata;
+      credentials.push(credential);
+    });
+    return credentials;
+  }
+
+  async GetAllCredentials(): Promise<CredentialMetadata[]> {
     const maQuery = query(
       collection(this.database, this.collectionName),
     );
@@ -83,7 +99,31 @@ export class CredentialRepository {
     return credentials;
   }
 
+  async GetOwnedCredentials(owner: string) {
+    // saddest method of all time
+    // gett all the credentials
+    // filter by owner
+    const creds: any = [];
+    const all = await this.GetAllCredentials();
+    console.log("number of creds", all.length)
+
+    
+    for (let i = 0; i < all.length; i++) {
+      const credentialMetadata = all[i];
+      console.log(credentialMetadata.name);
+      const store = this.GetCredentialStore(credentialMetadata.name);
+      const allIsssued = (await store.getAll());
+      allIsssued.forEach((value, key) => {
+        if((value as any).owner === owner) {
+          creds.push(value);
+        }
+      });
+      
+    }
+    return creds;
+}
+
   GetCredentialStore(name: string): ZkMentatStore {
-    return new FirebaseMentatStore(name, 'id', this.config);
+    return new FirebaseMentatStore(name, 'owner', this.config);
   }
 }

@@ -50,7 +50,7 @@ export class CredentialsPipeline {
   async DeployToNetwork(creds: CredentialMetadata) {
     console.log("Deploying to network");
     const deployer = new ContractDeployer();
-    const result = await deployer.deployCredential(creds.name);
+    const result = await deployer.deployCredential(creds.name, "");
 
     creds.contractPrivateKey = result.privateKey;
     creds.contractPublicKey = result.publicKey;

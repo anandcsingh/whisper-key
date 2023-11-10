@@ -6,7 +6,7 @@ import CredentialGenerator from "../CredentialGenerator.js";
 import webpack from "webpack";
 
 export class BundleFileStep implements IPipelineStep {
-
+  name: string = "BundleFileStep";
     async run(context: CredentialGenerationContext): Promise<void> {
         console.log("Bundling credential");
     const config = {

@@ -7,26 +7,31 @@ import fs from 'fs';
 import { ContractDeployer } from '../services/ContractDeployer.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { CredentialRepository } from "../services/CredentialRepository.js";
+// import { CredentialRepository } from "../services/CredentialRepository.js";
 import { DeployResult } from "../models/DeployResult.js";
 import { CredentialsPipeline } from "../services/CredentialsPipeline.js";
 import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, Signature, fetchAccount } from "o1js";
 import { CredentialProxy, FreeCredentialContract, FreeCredentialEntity } from '../../public/credentials/FreeCredentialContract.js';
 import crypto from 'crypto';
+import { CredentialGenerationPipeline,  CredentialRepository } from "contract-is-key";
+
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const name = req.params.name;
     const cred = req.body.data;
     const receivedHash = req.body.hash;
     const signedResult = req.body.signResult;
 
-    const jsonString = JSON.stringify(cred);
-    const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
-    console.log("serverHash:", serverHash);
-    console.log("receivedHash:", receivedHash);
-
-    const signature = Signature.fromJSON(signedResult);
-    // const verify = signature.verify(cred.issuer, [Field(serverHash)]);
+    if(receivedHash != null && signedResult != null) {
+        const jsonString = JSON.stringify(cred);
+        const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
+        console.log("serverHash:", serverHash);
+        console.log("receivedHash:", receivedHash);
+        const signature = Signature.fromJSON(signedResult);
+        // const verify = signature.verify(cred.issuer, [Field(serverHash)]);
     // console.log("verify:", verify);
+        }
+
+    
     try {
         //const templatePath = path.resolve(`public/credentials/${req.params.name}Contract.js`);
 
@@ -201,7 +206,14 @@ export const generateCredentials = async (req: Request, res: Response) => {
 
     const creds: CredentialMetadata = CredentialMetadata.fromJson(req.body);
     creds.created = new Date();
-    await new CredentialsPipeline().run(creds);
+
+    const pipeline = new CredentialGenerationPipeline();
+    pipeline.initDefault();
+    // pipeline.context.saveFilesPath = path.resolve('public', 'credentials');
+    // pipeline.context.templatePath = path.resolve('public', 'CredentialTemplate.mustache');
+    pipeline.run(creds);
+
+    //await new CredentialsPipeline().run(creds);
 
     res.status(200)
         .send(creds);

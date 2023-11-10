@@ -19,7 +19,7 @@ describe('DeployCredential', () => {
 
   it('can deploy', async () => {
     const deployer = new ContractDeployer();
-    const tr = await deployer.deployCredential("DiscordBadge");
+    const tr = await deployer.deployCredential("DiscordBadge", "");
     console.log(tr.transactionUrl)
 
 

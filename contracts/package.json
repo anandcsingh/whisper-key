@@ -1,6 +1,6 @@
 {
-  "name": "whisper-key",
-  "version": "0.1.0",
+  "name": "contract-is-key",
+  "version": "0.1.6",
   "description": "",
   "author": "",
   "license": "Apache-2.0",
@@ -11,8 +11,8 @@
     "zkapp"
   ],
   "type": "module",
-  "main": "build/src/index.js",
-  "types": "build/src/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc",
     "buildw": "tsc --watch",
@@ -37,7 +37,7 @@
     "typescript": "^4.7.2"
   },
   "peerDependencies": {
-    "o1js": "0.14.*"
+    "o1js": "^0.13.1"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.5.0",

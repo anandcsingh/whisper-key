@@ -6,6 +6,7 @@ import CredentialGenerator from "../CredentialGenerator.js";
 import { CredentialRepository } from "../CredentialRepository.js";
 
 export class StoreMetadataStep implements IPipelineStep {
+    name: string = "StoreMetadataStep";
 
     async run(context: CredentialGenerationContext): Promise<void> {
         console.log("Storing credential");
