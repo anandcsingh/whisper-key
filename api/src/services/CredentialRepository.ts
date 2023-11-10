@@ -89,7 +89,6 @@ export class CredentialRepository {
   async GetAllCredentials(): Promise<CredentialMetadata[]> {
     const maQuery = query(
       collection(this.database, this.collectionName),
-      orderBy('id')
     );
     const querySnapshot = await getDocs(maQuery);
     const credentials: CredentialMetadata[] = [];
@@ -107,28 +106,21 @@ export class CredentialRepository {
     const creds = [];
     const all = await this.GetAllCredentials();
     console.log("number of creds", all.length)
+
+    
     for (let i = 0; i < all.length; i++) {
       const credentialMetadata = all[i];
       console.log(credentialMetadata.name);
       const store = this.GetCredentialStore(credentialMetadata.name);
-      const allIsssued = (await store.getAll()) as any;
-      console.log("number of issued", allIsssued.length)
-      for(let j = 0; j < allIsssued.length; j++) {
-        const issued = allIsssued[j];
-        console.log(issued.owner);
-        if(issued.owner === owner) {
-          creds.push(credentialMetadata);
+      const allIsssued = (await store.getAll());
+      allIsssued.forEach((value, key) => {
+        if((value as any).owner === owner) {
+          creds.push(value);
         }
-
-        console.log("done", credentialMetadata.name);
-
-      }
-      return creds;
+      });
+      
     }
-
-
-
-    throw new Error("Method not implemented.");
+    return creds;
 }
 
   GetCredentialStore(name: string): ZkMentatStore {
