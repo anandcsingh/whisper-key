@@ -1,4 +1,6 @@
-import { CredentialProxy, DiscordBadgeContract, DiscordBadgeEntity } from '../../public/credentials/DiscordBadgeContract';
+// import { CredentialProxy, DiscordBadgeContract, DiscordBadgeEntity } from '../../public/credentials/DiscordBadgeContract';
+import { CredentialProxy, DiscordBadgeContract, DiscordBadgeEntity } from './DiscordBadgeContract.js';
+
 import { Field, Mina, PrivateKey, PublicKey, AccountUpdate, MerkleMap, CircuitString } from 'o1js';
 
 /*

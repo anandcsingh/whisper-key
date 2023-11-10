@@ -1,7 +1,8 @@
 
 import Client from 'mina-signer';
 import { AccountUpdate, Mina, PrivateKey, PublicKey } from 'o1js';
-const findPrefix = require('find-npm-prefix');
+//const findPrefix = require('find-npm-prefix');
+import path from 'path';
 import { get } from 'http';
 import { DeployResult } from './DeployResult.js';
 export class ContractDeployer {
@@ -26,7 +27,7 @@ export class ContractDeployer {
         //this.graphQLUrl = "https://api.minascan.io/node/berkeley/v1/graphql";
     }
 
-    async deployCredential(name: string) {
+    async deployCredential(name: string, smartContractBasePath: string) {
         const result = new DeployResult();
         this.keyPair = this.client.genKeys();
         this.zkAppPrivateKey = PrivateKey.fromBase58(this.keyPair.privateKey);
@@ -34,7 +35,7 @@ export class ContractDeployer {
         result.privateKey = this.zkAppPrivateKey.toBase58();
         result.publicKey = this.zkAppAddress.toBase58();
 
-        const zkApp = await getContract(name);
+        const zkApp = await getContract(name, smartContractBasePath);
         let isInitMethod = zkApp._methods?.some((intf: any) => intf.methodName === 'init');
         // compute a hash of the contract's circuit to determine if 'zkapp.compile' should re-run or cached verfification key can be used
         let currentDigest = await zkApp.digest(this.zkAppAddress);
@@ -193,14 +194,15 @@ export class ContractDeployer {
 
 }
 
-async function getContract(name: string) {
+async function getContract(name: string, smartContractBasePath: string) {
     console.log('getContract', name);
-    const DIR = await findPrefix(process.cwd());
 
     let contractName = `${name}Contract`;
     let smartContractFile = `${contractName}.js`;
     let smartContractImports;
-    let smartContractImportPath = `${DIR}/public/credentials/${smartContractFile}`;
+    //let smartContractImportPath = `${DIR}/public/credentials/${smartContractFile}`;
+    let smartContractImportPath = path.resolve(smartContractBasePath, smartContractFile);
+
     console.log(smartContractImportPath);
     if (process.platform === 'win32') {
         smartContractImportPath = 'file://' + smartContractImportPath;

@@ -11,6 +11,8 @@ export class CredentialGenerator {
     try {
       // Parse the JSON string to get className
 
+      console.log("Generating credential file from npm package");
+
       const __filename = fileURLToPath(import.meta.url);
       const __dirname = dirname(__filename);
       console.log(__dirname);

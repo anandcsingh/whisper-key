@@ -13,6 +13,7 @@ export class CredentialGenerationPipeline {
     initDefault(): void {
         this.context.cloudStorage = new ContractCloudStorage();
         this.context.templatePath = path.resolve(`public/CredentialTemplate.mustache`);
+        this.context.saveFilesPath = path.resolve(`public/credentials`);
 
         this.addStep(new CreateFileStep());
         this.addStep(new BundleFileStep());
@@ -25,21 +26,23 @@ export class CredentialGenerationPipeline {
     }
 
     async run(credential: CredentialMetadata): Promise<void> {
-        const context = new CredentialGenerationContext();
-        context.credential = credential;
+        console.log("Running pipeline");
+        this.context.credential = credential;
         for (let step of this.steps) {
-            await step.run(context);
+            await step.run(this.context);
         }
     }
 }
 
 export interface IPipelineStep {
+    name: string;
     run(context: CredentialGenerationContext): Promise<void>;
 }
 
 export class CredentialGenerationContext {
     credential: CredentialMetadata;
     generatedFile: string;
+    saveFilesPath: string;
     templatePath: any;
     cloudStorage: ContractCloudStorage;
   bundledFile: any;

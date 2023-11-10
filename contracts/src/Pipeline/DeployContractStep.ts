@@ -7,11 +7,12 @@ import { CredentialRepository } from "../CredentialRepository.js";
 import { ContractDeployer } from "../ContractDeployer.js";
 
 export class DeployContractStep implements IPipelineStep {
+    name: string = "DeployContractStep";
 
     async run(context: CredentialGenerationContext): Promise<void> {
         console.log("Deploying to network");
         const deployer = new ContractDeployer();
-        const result = await deployer.deployCredential(context.credential.name);
+        const result = await deployer.deployCredential(context.credential.name,context.saveFilesPath);
     
         context.credential.contractPrivateKey = result.privateKey;
         context.credential.contractPublicKey = result.publicKey;

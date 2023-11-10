@@ -5,6 +5,7 @@ export class CredentialMetadata {
     version: string;
     created: Date;
     owner: string;
+    issuer: string;
     fields: CredentialField[];
     contractPrivateKey: string;
     contractPublicKey: string;
@@ -17,7 +18,11 @@ export class CredentialMetadata {
         version: string,
         created: Date,
         owner: string,
+        issuer: string,
         fields: CredentialField[],
+        contractPrivateKey: string,
+        contractPublicKey: string,
+        transactionUrl: string,
     ) {
         this.id = id;
         this.name = name;
@@ -25,7 +30,11 @@ export class CredentialMetadata {
         this.version = version;
         this.created = created;
         this.owner = owner;
+        this.issuer = issuer;
         this.fields = fields;
+        this.contractPrivateKey = contractPrivateKey;
+        this.contractPublicKey = contractPublicKey;
+        this.transactionUrl = transactionUrl;
     }
 
     static fromJson(json: any): CredentialMetadata {
@@ -33,7 +42,7 @@ export class CredentialMetadata {
         json.fields.forEach((field: any) => {
             fields.push(new CredentialField(field.name, field.description, field.type));
         });
-        return new CredentialMetadata(json.id, json.name, json.description, json.version, json.created, json.owner, fields);
+        return new CredentialMetadata(json.id, json.name, json.description, json.version, json.created, json.owner, json.issuer, fields, json.contractPrivateKey, json.contractPublicKey, json.transactionUrl);
     }
 
     toPlainObject(): any {

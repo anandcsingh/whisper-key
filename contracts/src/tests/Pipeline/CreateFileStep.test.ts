@@ -13,7 +13,7 @@ import { CreateFileStep } from '../../Pipeline/CreateFileStep';
 import { CredentialGenerationContext } from '../../Pipeline/CredentialGenerationPipeline';
 import {jest} from '@jest/globals';
 import path from 'path';
-jest.useFakeTimers()
+// jest.useFakeTimers()
 describe('CreateFileStep', () => {
  
   it('can create file from json', async () => {
@@ -36,6 +36,7 @@ describe('CreateFileStep', () => {
    const context = new CredentialGenerationContext();
    context.credential = creds;
    context.templatePath = path.resolve('templates/CredentialTemplate.mustache');
+   context.saveFilesPath = path.resolve('./credentials');
     expect(creds).toBeDefined();
     await step.run(context);
     expect(context.generatedFile).toBeDefined();

@@ -1,12 +1,39 @@
-import { CreateFileStep } from './Pipeline/CreateFileStep';
-import { BundleFileStep } from './Pipeline/BundleFileStep';
-import { StoreMetadataStep } from './Pipeline/StoreMetadataStep';
-import { DeployContractStep } from './Pipeline/DeployContractStep';
-import { CredentialGenerationPipeline } from './Pipeline/CredentialGenerationPipeline';
-import { ContractDeployer } from './ContractDeployer';
-export {CreateFileStep}
-export {BundleFileStep}
-export {StoreMetadataStep}
-export {DeployContractStep}
-export {CredentialGenerationPipeline}
-export {ContractDeployer}
+
+// Contract creation pipeline
+import { CredentialGenerationPipeline } from './Pipeline/CredentialGenerationPipeline.js';
+import { IPipelineStep } from './Pipeline/CredentialGenerationPipeline.js';
+import { CredentialGenerationContext } from './Pipeline/CredentialGenerationPipeline.js';
+import { CreateFileStep } from './Pipeline/CreateFileStep.js';
+import { BundleFileStep } from './Pipeline/BundleFileStep.js';
+import { StoreMetadataStep } from './Pipeline/StoreMetadataStep.js';
+import { DeployContractStep } from './Pipeline/DeployContractStep.js';
+import { ContractCloudStorage } from './Pipeline/ContractCloudStorage.js';
+
+
+export { CredentialGenerationPipeline }
+export { IPipelineStep }
+export { CredentialGenerationContext }
+export { CreateFileStep }
+export { BundleFileStep }
+export { StoreMetadataStep }
+export { DeployContractStep }
+export { ContractCloudStorage }
+
+//  Data storage
+import { CredentialMetadata } from './CredentialMetadata.js';
+import { CredentialField } from './CredentialMetadata.js';
+import { CredentialRepository } from './CredentialRepository.js';
+import { ZkMentatStore } from './ZkMentatStore.js';
+import { FirebaseMentatStore } from './FirebaseMentatStore.js';
+import { IEntity } from './IEntity.js';
+
+export { CredentialMetadata }
+export { CredentialField }
+export { CredentialRepository }
+export { ZkMentatStore }
+export { FirebaseMentatStore }
+export { IEntity }
+
+
+
+

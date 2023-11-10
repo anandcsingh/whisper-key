@@ -1,0 +1,20 @@
+{
+  "name": "whisper-key-framework",
+  "version": "1.0.0",
+  "description": "A framework built using o1js for managing and sharing confidential information. WKF will manage creating verifiable credentials, encrypting VCs by issuers using the owner's public key. Storing the VC for the owner. Facilitates decrypting sharing only data the owner wants to with third party verifiers and contracts.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc"
+  },
+  "author": "",
+  "license": "APACHE 2.0",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "o1js": "^0.14.1"
+  }
+}
