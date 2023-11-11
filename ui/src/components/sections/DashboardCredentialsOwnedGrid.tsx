@@ -6,16 +6,26 @@ import { CredentialMetadata, CredentialField } from '../../modules/CredentialMet
 import axios from "axios";
 
 const DashBoardCredentialsOwnedGrid = () => {
+
+    const [owned, setOwned] = useState({
+        credentials: [] as any
+    });
+
+    useEffect(() => {
+
+        (async () => {
     const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/owned/${Authentication.address}`;
 
     const requestHeaders = { "Content-Type": "application/json" };
     let ownedCredentials: CredentialMetadata[] = [];
-    axios.get(apiURL + Authentication.address)
+    axios.get(apiURL)
         .then(function (response) {
             // handle success
             console.log("Credentials/Owned - Success");
             console.log(response);
-            ownedCredentials = response.data;
+            ownedCredentials = response!.data! as CredentialMetadata[];
+            setOwned({ ...owned, credentials: ownedCredentials });
+
             console.log("owned Credentials:" + ownedCredentials);
         })
         .catch(function (error) {
@@ -25,6 +35,12 @@ const DashBoardCredentialsOwnedGrid = () => {
         .finally(function () {
             // always executed
         });
+
+
+
+        })();
+
+    }, []);
 
 
 
@@ -45,15 +61,15 @@ const DashBoardCredentialsOwnedGrid = () => {
 
     return(
         <div className="relative bg-indigo-200 dark:bg-indigo-500 p-4 sm:p-6 rounded-sm overflow-hidden">
-            {ownedCredentials.length === 0 ? (
+            {owned.credentials.length === 0 ? (
                 <div className="text-center text-gray-600">You currently own 0 credentials.</div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {ownedCredentials.map((credential, index) => (
+                    {owned.credentials.map((credential: any, index: number) => (
                         <div key={index} className="bg-white p-4 shadow-lg rounded-md">
-                            <h3 className="text-xl font-semibold">{credential.name}</h3>
+                            <h3 className="text-xl font-semibold">{credential.credentialType}</h3>
                             <p className="text-gray-600">{credential.description}</p>
-                            <button className="btn btn-sm btn-primary">View License</button>
+                            <button className="btn btn-sm btn-primary">View Credential</button>
                         </div>
                     ))}
                 </div>

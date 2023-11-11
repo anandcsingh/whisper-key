@@ -1,19 +1,10 @@
 // controllers/credentialsController.ts
 import { Request, Response } from "express";
-import { CredentialMetadata } from "../models/CredentialMetadata.js";
-import CredentialGenerator from "../services/CredentialGenerator.js";
 import path from "path";
-import fs from 'fs';
-import { ContractDeployer } from '../services/ContractDeployer.js';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-// import { CredentialRepository } from "../services/CredentialRepository.js";
-import { DeployResult } from "../models/DeployResult.js";
-import { CredentialsPipeline } from "../services/CredentialsPipeline.js";
 import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, Signature, fetchAccount } from "o1js";
 import { CredentialProxy, FreeCredentialContract, FreeCredentialEntity } from '../../public/credentials/FreeCredentialContract.js';
 import crypto from 'crypto';
-import { CredentialGenerationPipeline,  CredentialRepository } from "contract-is-key";
+import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata } from "contract-is-key";
 
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const name = req.params.name;
@@ -21,31 +12,26 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const receivedHash = req.body.hash;
     const signedResult = req.body.signResult;
 
-    if(receivedHash != null && signedResult != null) {
-        const jsonString = JSON.stringify(cred);
-        const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
-        console.log("serverHash:", serverHash);
-        console.log("receivedHash:", receivedHash);
-        const signature = Signature.fromJSON(signedResult);
-        // const verify = signature.verify(cred.issuer, [Field(serverHash)]);
-    // console.log("verify:", verify);
+    if (receivedHash != null && signedResult != null) {
+        const enableSignature = false;
+        if (enableSignature) {
+            const jsonString = JSON.stringify(cred);
+            const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
+            console.log("serverHash:", serverHash);
+            console.log("receivedHash:", receivedHash);
+            const signature = Signature.fromJSON(signedResult);
+            const verify = signature.verify(cred.issuer, [Field(serverHash)]);
+            console.log("verify:", verify);
         }
+    }
 
-    
+
     try {
-        //const templatePath = path.resolve(`public/credentials/${req.params.name}Contract.js`);
 
-        // Get data from client 
-        // can we sign this data and verify the authenticity of the data?
-        // sign with private key on the browser, send message to api public verfify
-        let proofsEnabled = true;
-        let deployerAccount: PublicKey,
-            deployerKey: PrivateKey,
+        let proofsEnabled = true,
             senderAccount: PublicKey,
             senderKey: PrivateKey,
-            zkAppAddress: PublicKey,
-            zkAppPrivateKey: PrivateKey,
-            local: any;
+            zkAppAddress: PublicKey;
 
 
         const Berkeley = Mina.Network(
@@ -53,7 +39,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         );
         console.log('Berkeley Instance Created');
         Mina.setActiveInstance(Berkeley);
-        senderKey = PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
+        senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
         senderAccount = senderKey.toPublicKey();
         const repo = new CredentialRepository();
         const credMetadata = await repo.GetCredential(name);
@@ -84,8 +70,8 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         //   return;   
         // }
         console.log("senderAccount:", senderAccount.toBase58());
-      
-        
+
+
         await fetchAccount({ publicKey: zkAppAddress });
         console.log("Issuing via proxy for", req.params.name, "contract");
         console.log("entity:", cred);
@@ -114,7 +100,7 @@ export const issueCredential = async (req: Request, res: Response) => {
     const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
     console.log("serverHash:", serverHash);
     console.log("receivedHash:", receivedHash);
-    
+
 
     const templatePath = path.resolve(`public/credentials/${req.params.name}Contract.js`);
 
@@ -209,66 +195,10 @@ export const generateCredentials = async (req: Request, res: Response) => {
 
     const pipeline = new CredentialGenerationPipeline();
     pipeline.initDefault();
-    // pipeline.context.saveFilesPath = path.resolve('public', 'credentials');
-    // pipeline.context.templatePath = path.resolve('public', 'CredentialTemplate.mustache');
     pipeline.run(creds);
-
-    //await new CredentialsPipeline().run(creds);
 
     res.status(200)
         .send(creds);
     return;
-    console.log("Started generating credential");
-    GenerateCredentialFile(creds);
-
-    const deployer = new ContractDeployer();
-    const result = await deployer.deployCredential(creds.name);
-
-    creds.contractPrivateKey = result.privateKey;
-    creds.contractPublicKey = result.publicKey;
-    creds.transactionUrl = result.transactionUrl;
-    console.log("Storing credential");
-    new CredentialRepository().AddCredential(creds);
-    console.log("Storedcredential");
-
-    creds.created = new Date();
-    res.status(200)
-        .send(creds);
+    
 };
-
-function GenerateCredentialFile(json: any): string {
-    // Implement this method to generate the credential file based on the JSON configuration.
-    // You can use the fs module to write the file to a specific location.
-    // Example: fs.writeFileSync('path/to/credential/file.ts', generatedContent);
-
-    // Access the CredentialGenerator file in the contracts project
-    // It exposes a `generateAndSave` method
-    // Give it a json string and a file path as params to generate creds
-    // The json string has the fields for the credentials, the file path is where the template for the Credential generation is located
-
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    //const templatePath = path.resolve(__dirname, 'services', `CredentialTemplate.mustache`);
-    //const templatePath = path.resolve('dist', 'services', `CredentialTemplate.mustache`);
-    const templatePath = path.resolve(`public/CredentialTemplate.mustache`);
-    const templateContent = fs.readFileSync(templatePath, 'utf-8');
-
-    const template = "";
-    const generator = new CredentialGenerator();
-    // ToDo: Make generate and save accept a CredentialMetadata type and not json
-    generator.generateAndSave(json, templateContent);
-
-    console.log("Credential generated");
-
-    return "Credential generated"
-}
-
-function DeployCredential(filename: string) {
-    // Implement this method to deploy the credential file.
-    // You can use a deployment script or method specific to your needs.
-}
-
-function AddFirebaseMetadata(credentialName: string, user: string) {
-    // Implement this method to add Firebase metadata.
-    // You can use Firebase Admin SDK or Firebase API to interact with Firebase.
-}

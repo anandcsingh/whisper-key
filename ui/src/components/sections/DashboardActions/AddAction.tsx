@@ -19,7 +19,7 @@ const AddAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
                 <h2 className="mt-2 font-bold">Add</h2>
 
                 <p className="hidden sm:mt-1 sm:block sm:text-sm sm:text-gray-600">
-                    Start your journey in a new Martial Art.
+                    Create Verifiable Credential
                 </p>
             </a>
 

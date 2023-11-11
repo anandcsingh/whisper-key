@@ -87,6 +87,7 @@ export class CredentialRepository {
   }
 
   async GetAllCredentials(): Promise<CredentialMetadata[]> {
+    console.log("Getting all credentials for new npm package");
     const maQuery = query(
       collection(this.database, this.collectionName),
     );
@@ -105,12 +106,9 @@ export class CredentialRepository {
     // filter by owner
     const creds: any = [];
     const all = await this.GetAllCredentials();
-    console.log("number of creds", all.length)
-
     
     for (let i = 0; i < all.length; i++) {
       const credentialMetadata = all[i];
-      console.log(credentialMetadata.name);
       const store = this.GetCredentialStore(credentialMetadata.name);
       const allIsssued = (await store.getAll());
       allIsssued.forEach((value, key) => {

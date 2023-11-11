@@ -6,7 +6,6 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { ContractDeployer } from './services/ContractDeployer.js';
 import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, fetchAccount } from 'o1js';
 import { DiscordBadgeContract, DiscordBadgeEntity } from '../public/credentials/DiscordBadgeContract.js';
 
@@ -28,17 +27,8 @@ app.get('/api/scripts/:name', (req, res, next) => {
     res.send(templateContent);
 })
 
-app.get('/api/deploydiscord', async (req, res, next) => {
-    const deployer = new ContractDeployer();
-    const tr = await deployer.deployCredential("DiscordBadge");
-    console.log(tr.transactionUrl);
-    res.send(tr.transactionUrl);
-})
 
 
-app.get('/timereal', async (req, res, next) => {
-    res.send("ok");
-});
 app.get('/real', async (req, res, next) => {
    // Get data from client 
    // can we sign this data and verify the authenticity of the data?
