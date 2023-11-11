@@ -8,7 +8,7 @@ A platform where Verifiable Credential Issuers can create new types of credentia
 
 ## Architecture
 
-![](C:\Users\asingh\Downloads\Whisper Key High Level.png)
+![](docs/Whisper Key High Level.png)
 
 Whisper Key consists of 3 major components: a front-end for visually designing and issuing credentials. An API that generates those credentials in the form of smart contract code and dynamic interaction code. It also provides access to data stored in off-chain storage. An NPM package containing a pipeline for dynamically generating smart contracts, proxy code to dynamically invoke smart contract code and a simple off-chain storage library.
 
