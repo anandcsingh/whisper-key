@@ -13,7 +13,7 @@ Whisper Key consists of 3 major components: a front-end for visually designing a
 
 ### Whisper UI
 
-The Whisper UI application is the hub of the Whisper Key ecosystem, it allows end users to design credentials capturing the data they need and issue them directly to their customers. Whisper UI generates a form dynamically based on the design of the credential. This allows Issuers to initiate transactions to any type of credential without having to write code. 
+The Whisper UI application is the hub of the Whisper Key ecosystem, it allows end users to design credentials capturing the data they need and issue them directly to their customers. Whisper UI generates a form dynamically based on the design of the credential. This allows Issuers to initiate transactions to any type of credential without having to write code. The Whisper UI is currently hosted at [**https://whisper-key-ui.onrender.com/whisper-key/**](https://whisper-key-ui.onrender.com/whisper-key/)
 
 #### Features
 
@@ -44,7 +44,7 @@ Navigate to the ui folder and run the following commands
 
 ### Whisper API
 
-The Whisper API is the workhorse of the Whisper Key ecosystem. The API has 3 major functions
+The Whisper API is the workhorse of the Whisper Key ecosystem. The API is currently hosted at [**https://whisper-key-api.onrender.com/**](https://whisper-key-api.onrender.com/). The API has 3 major functions
 
 * Generate and Deploy new credential contracts based on user input
 * Issue new credentials via invocations of Whisper Key deployed credential contracts
@@ -86,6 +86,10 @@ Navigate to the ui folder and run the following commands
 
 The Whisper Key Core NPM Package is deployed to NPM named `contract-is-key`.  The package brings together several features of Whisper Key that each  have merit on their own. The can be independently developed in the future.
 
+#### Credential Repository
+
+The Credential Repository manages storing metadata about contracts and the details of issued contracts. All credential details are stored in a Firebase collection called CredentialMetadata. This store the definition of the credential data structure as well as other information. When the first credential of a certain type is issued a new collection for that type is created and managed via a Zero Knowledge Database called ZK Mentat DB
+
 #### ZK Mentat DB
 
 This is a simple Zero Knowledge Database that allows you to store a Merkle Map root on-chain while preserving the data in a data store of your choice. Currently the package has a Firebase backed version of the DB. But you can extend the `ZkMentatStore` abstract class to roll your own implementation. The class structure is below
@@ -106,3 +110,27 @@ This is a simple Zero Knowledge Database that allows you to store a Merkle Map r
 
 `}`
 
+#### Credential Pipeline
+
+The credential pipeline allows you to independently create steps in processing and generating a credential. You can define a single step in its own class and add it to the pipeline. The pipeline will run the tasks in the order you specify while keeping track of important artifacts. Example usage is below
+
+`const creds: CredentialMetadata = CredentialMetadata.fromJson(req.body);`
+
+  `const pipeline = new CredentialGenerationPipeline();`
+
+  `pipeline.initDefault();`
+
+  `pipeline.addStep(new BundleFileStep());`
+
+  `pipeline.run(creds);`
+
+There are currently 4 implemented steps in the pipeline
+
+1. CreateFileStep - generates a new Contract, data Struct and Proxy interactor
+2. BundleFileStep - webpacks the contract and its associated code
+3. StoreMetadataStep - using ZK Mentat Store for credential data storage
+4. DeployContractStep - takes the newly generated contract and deploys it to Mina
+
+#### Credential Proxy
+
+Since the contracts we interact with are dynamic, currently only data they prove is dynamic. So we can have contracts that store different types of information We needed a uniform way to interact with any generated contract. A new Credential Proxy class is generated along with a new contract. The details of the types are hidden behind a common interface `issueCredential()`. Based on the name of the credential we want to issue a specific Credential Proxy will be loaded that knows the details of the contract and its accompanying data structure.
