@@ -13,7 +13,7 @@ Whisper Key consists of 3 major components: a front-end for visually designing a
 
 ### Whisper UI
 
-The Whisper UI application is the hub of the Whisper Key ecosystem, it allows end users to design credentials capturing the data they need and issue them directly to their customers. Whisper UI generates a form dynamically based on the design of the credential. This allows Issuers to initiate transactions to any type of credential without having to write code. The Whisper UI is currently hosted at [**https://whisper-key-ui.onrender.com/whisper-key/**](https://whisper-key-ui.onrender.com/whisper-key/)
+The Whisper UI application is the hub of the Whisper Key ecosystem, it allows end users to design credentials capturing the data they need and issue them directly to their customers. Whisper UI generates a form dynamically based on the design of the credential. This allows Issuers to initiate transactions to any type of credential without having to write code. The Whisper UI is currently hosted at [**https://whisper-key-ui.onrender.com/whisper-key/**](https://whisper-key-ui.onrender.com/whisper-key/), note the interactions may take a long time as contracts are being compiled on a small instance.
 
 #### Features
 
@@ -48,7 +48,7 @@ The Whisper API is the workhorse of the Whisper Key ecosystem. The API is curren
 
 * Generate and Deploy new credential contracts based on user input
 * Issue new credentials via invocations of Whisper Key deployed credential contracts
-* Retrieve and send data to the off-chain storage solution ZkMentat
+* Retrieve and send data to the off-chain storage solution ZK Mentat Store
 
 The API supports the following endpoints
 
@@ -64,7 +64,7 @@ The API supports the following endpoints
 * NodeJS
 * ExpressJS
 * o1js
-* ZK Mentat DB
+* ZK Mentat Store
 
 #### How to run
 
@@ -81,6 +81,7 @@ Navigate to the ui folder and run the following commands
 #### Known Issues
 
 * Currently only the  FEE_PAYER account can issue credentials, this can be fixed as we go forward. For now set the FEE_PAYER to the Issuer's Private Key
+* Unable to parse signed transactions from the client at this time, verifying the data on the server was disabled, The signature is serialized by the Whisper UI and sent to the API but not used.
 
 ### Whisper Key Core NPM Package
 
@@ -88,9 +89,9 @@ The Whisper Key Core NPM Package is deployed to NPM named `contract-is-key`.  Th
 
 #### Credential Repository
 
-The Credential Repository manages storing metadata about contracts and the details of issued contracts. All credential details are stored in a Firebase collection called CredentialMetadata. This store the definition of the credential data structure as well as other information. When the first credential of a certain type is issued a new collection for that type is created and managed via a Zero Knowledge Database called ZK Mentat DB
+The Credential Repository manages storing metadata about contracts and the details of issued contracts. All credential details are stored in a Firebase collection called CredentialMetadata. This store the definition of the credential data structure as well as other information. When the first credential of a certain type is issued a new collection for that type is created and managed via a Zero Knowledge Database called ZK Mentat Store
 
-#### ZK Mentat DB
+#### ZK Mentat Store
 
 This is a simple Zero Knowledge Database that allows you to store a Merkle Map root on-chain while preserving the data in a data store of your choice. Currently the package has a Firebase backed version of the DB. But you can extend the `ZkMentatStore` abstract class to roll your own implementation. The class structure is below
 
@@ -134,3 +135,6 @@ There are currently 4 implemented steps in the pipeline
 #### Credential Proxy
 
 Since the contracts we interact with are dynamic, currently only data they prove is dynamic. So we can have contracts that store different types of information We needed a uniform way to interact with any generated contract. A new Credential Proxy class is generated along with a new contract. The details of the types are hidden behind a common interface `issueCredential()`. Based on the name of the credential we want to issue a specific Credential Proxy will be loaded that knows the details of the contract and its accompanying data structure.
+
+All together that's **Whisper Key** the Hub for Verifiable Credentials with enhanced privacy utilizing Mina and Zero Knowledge proofs and hopefully our entrance into the Spacing Guild 😎
+
