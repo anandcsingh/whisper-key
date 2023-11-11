@@ -82,6 +82,7 @@ Navigate to the ui folder and run the following commands
 
 * Currently only the  FEE_PAYER account can issue credentials, this can be fixed as we go forward. For now set the FEE_PAYER to the Issuer's Private Key
 * Unable to parse signed transactions from the client at this time, verifying the data on the server was disabled, The signature is serialized by the Whisper UI and sent to the API but not used.
+* Firebase SDK sometimes disconnects and the action needs to be run again
 
 ### Whisper Key Core NPM Package
 
@@ -135,6 +136,14 @@ There are currently 4 implemented steps in the pipeline
 #### Credential Proxy
 
 Since the contracts we interact with are dynamic, currently only data they prove is dynamic. So we can have contracts that store different types of information We needed a uniform way to interact with any generated contract. A new Credential Proxy class is generated along with a new contract. The details of the types are hidden behind a common interface `issueCredential()`. Based on the name of the credential we want to issue a specific Credential Proxy will be loaded that knows the details of the contract and its accompanying data structure.
+
+## Future Features
+
+- Encrypt Owner's data such that only they can decrypt it, this was supposed to be a main feature but encountered issues using the encryption library
+- Allow the Owner to choose to store their credential on their device encrypted at rest
+- Allow the Issuer to directly send the deploy transaction instead of using Whisper API
+- API for letting others download generated contract files (it is there now not tested @ /api/scripts/:name)
+- Contemplate the usage of a Whisper Key Oracle when attempting to verify a credential
 
 All together that's **Whisper Key** the Hub for Verifiable Credentials with enhanced privacy utilizing Mina and Zero Knowledge proofs and hopefully our entrance into the Spacing Guild 😎
 
