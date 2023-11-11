@@ -174,10 +174,9 @@ export const issueCredential = async (req: Request, res: Response) => {
 export const getCreatedCredentials = async (req: Request, res: Response) => {
     const createdBy = req.params.address;
     console.log("Getting credentials for", createdBy);
-    //const creds = await new CredentialRepository().GetCredentials(createdBy);
+    const creds = await new CredentialRepository().GetCredentials(createdBy);
     res.status(200)
-    .send([]);
-        //.send(creds);
+        .send(creds);
 }
 
 export const getOwnedCredentials = async (req: Request, res: Response) => {
