@@ -13,6 +13,7 @@ import NotificationBox from './NotificationBox';
 import DashBoardCredentialsOwned from './DashboardCredentialsOwned';
 import DashBoardIssueCredentials from './DashbaordIssueCredentials';
 import DashBoardCredentialsOwnedGrid from './DashboardCredentialsOwnedGrid';
+import DashboardCredentialsCreated from './DashboardCredentialsCreated';
 
 export interface DashboardContainerProps {
     // Define any props you want to pass to the component here
@@ -95,12 +96,13 @@ const DashboardContainerDataLoader: React.FC<DashboardContainerProps> = ({ showD
                     <DashBoardIssueCredentials />
                 </div>
             </section>)}
-            {!creator &&(
+            
             <section className="place-self-center lg:col-span-7 space-y-8">
                 <div className="m-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-8">
-                    <DashBoardCredentialsOwnedGrid />
+                    {creator ? <DashboardCredentialsCreated /> : <DashBoardCredentialsOwnedGrid />}
+                    
                 </div>
-            </section>)}
+            </section>
             <section className="place-self-center lg:col-span-7 space-y-8">
                 <div className="m-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
 
