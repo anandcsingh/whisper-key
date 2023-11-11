@@ -6,6 +6,7 @@ import { CredentialMetadata, CredentialField } from '../../modules/CredentialMet
 import axios from "axios";
 
 const DashboardCredentialsCreated = () => {
+
     const [created, setCreated] = useState({
         credentials: [] as any
     });
@@ -20,7 +21,7 @@ const DashboardCredentialsCreated = () => {
     axios.get(apiURL)
         .then(function (response) {
             // handle success
-            console.log("Get Credentials Created - Success");
+            console.log("Get Credentials created - Success");
             console.log(response);
             createdCredentials = response!.data! as CredentialMetadata[];
             setCreated({ ...created, credentials: createdCredentials });
@@ -44,7 +45,7 @@ const DashboardCredentialsCreated = () => {
     return(
         <div className="relative bg-indigo-200 dark:bg-indigo-500 p-4 sm:p-6 rounded-sm overflow-hidden">
             {created.credentials.length === 0 ? (
-                <div className="text-center text-gray-600">You currently 0 credentials created.</div>
+                <div className="text-center text-gray-600">You currently have 0 created credentials created.</div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {created.credentials.map((credential: any, index: number) => (
@@ -58,7 +59,6 @@ const DashboardCredentialsCreated = () => {
             )}
         </div>
     );
-
 }
 
-export default DashboardCredentialsCreated();
+export default DashboardCredentialsCreated;
