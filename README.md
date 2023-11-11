@@ -44,34 +44,65 @@ Navigate to the ui folder and run the following commands
 
 ### Whisper API
 
-The Whisper API is the workhorse of the Whisper Key ecosystem. 
+The Whisper API is the workhorse of the Whisper Key ecosystem. The API has 3 major functions
 
-### Features can include
+* Generate and Deploy new credential contracts based on user input
+* Issue new credentials via invocations of Whisper Key deployed credential contracts
+* Retrieve and send data to the off-chain storage solution ZkMentat
 
-- As an Issuer based on user input automatically generate the definition of a credential and the supporting smart contract to create its proof
-- Search for existing credential types
-- As an Issuer issue a Verifiable Credential to an Owner
-- As an Owner store your Verifiable Credential securely
-- As an Owner choose what data you are willing to share with which Verifier
-- As a Verifier prove an Owner meets criteria outlined in a smart contract
-- An API that allows integration of third-party systems acting as any or all actors Issuers, Owners and Verifiers
+The API supports the following endpoints
 
-### API
+| VERB | Path                                | Description                                                  |
+| ---- | ----------------------------------- | ------------------------------------------------------------ |
+| POST | '/api/credentials'                  | Given a contract definition  generates and deploys a new contract based on the data |
+| GET  | '/api/credentials/created/:address' | Returns all the credentials generated and deployed by a given wallet address |
+| POST | '/api/credentials/issue/:name'      | Issues a new named credential to a given owner with its detail in the body of the request |
+| GET  | '/api/credentials/owned/:address'   | Returns all the credentials and Owner has been issued regardless of the Issuer |
 
-The API generates verifiable credentials, saves the credentials to a database and deploys the credentials
+#### Technology
+
+* NodeJS
+* ExpressJS
+* o1js
+* ZK Mentat DB
 
 #### How to run
 
-- navigate to api folder
-#### Commands
-- ```npm install```
-- ```npm run build```
-- ```npm run start```
+Set the following environment variable to point the the api. for example
 
-Invoke API using Postman or the like
-- URL will look like: http://localhost:3000/api/credentials
-  - Note: The port for the url can be found in the `app.ts` file of the `src` folder of the `api` project
+`FEE_PAYER=[Private Key of Payer]`
 
-#### Sample json
+Navigate to the ui folder and run the following commands
 
-`{ "name": "License", "fields":[ { "name": "number", "type": "CircuitString"}, { "name": "name", "type": "CircuitString"} ] }`
+`npm install && npm run build`
+
+`npm run start`
+
+#### Known Issues
+
+* Currently only the  FEE_PAYER account can issue credentials, this can be fixed as we go forward. For now set the FEE_PAYER to the Issuer's Private Key
+
+### Whisper Key Core NPM Package
+
+The Whisper Key Core NPM Package is deployed to NPM named `contract-is-key`.  The package brings together several features of Whisper Key that each  have merit on their own. The can be independently developed in the future.
+
+#### ZK Mentat DB
+
+This is a simple Zero Knowledge Database that allows you to store a Merkle Map root on-chain while preserving the data in a data store of your choice. Currently the package has a Firebase backed version of the DB. But you can extend the `ZkMentatStore` abstract class to roll your own implementation. The class structure is below
+
+`export abstract class ZkMentatStore  {`
+
+ `async getMerkleMap(): Promise<MerkleMapState> { ... }`
+
+ `abstract getAll(): Promise<Map<any, IEntity>>;`
+
+ `abstract getAllHashes(): Promise<Map<any, Field>>;`
+
+ `abstract get(key: any): Promise<IEntity | undefined | null>;`
+
+ `abstract upsert(entity: IEntity): Promise<void>;`
+
+ `abstract clearStore(): Promise<void>;`
+
+`}`
+
