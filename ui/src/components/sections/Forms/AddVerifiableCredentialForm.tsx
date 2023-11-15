@@ -63,30 +63,10 @@ const AddForm = () => {
     console.log("Field Name: ", fieldNameValue);
     console.log("Field Type: ", fieldTypeValue);
 
-    // let studentID = Authentication.address;
-    // console.log("studentID", studentID);
-    // let client = Authentication.zkClient! as AllMaWorkerEventsClient;
-    // console.log('client', client);
-    // console.log('adding Verifiable Credential...', vcNameValue, vcDescriptionValue);
-    // console.log(`fetching account ... ${Authentication.contractAddress} @ ${new Date().toLocaleTimeString()}}`);
-    // setAuthState({ ...authState, alertAvailable: true, alertMessage: `Fetching account, please wait this can take a few mins`, alertNeedsSpinner: true });
 
-    // await client.fetchAccount({ publicKey: PublicKey.fromBase58(Authentication.contractAddress) });
-    // setAuthState({ ...authState, alertAvailable: true, alertMessage: `Invoking contracts, please wait this can take a few mins`, alertNeedsSpinner: true });
-
-    // console.log(`fetching account done ${Authentication.contractAddress} @ ${new Date().toLocaleTimeString()}`);
-
-    // let credentialFields = Array<CredentialField>();
-    // if(rows[0].name !== ""){
-    //   rows.forEach(element => {
-    //     credentialFields.push(new CredentialField(element.name, "", element.type));
-    //   });
-    // }
-    // console.log(credentialFields);
 
     let credentialFields = Array<Object>();
       
-    //let vcID = crypto.randomBytes(16).toString("hex"),
     if(rows[0].name !== ""){
       rows.forEach(element => {
         credentialFields.push({name: element.name, description: "", type: element.type});
@@ -112,61 +92,15 @@ const AddForm = () => {
     
     const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}`;
 
-    axios.post(apiUrl, data).catch((err) => { console.log(err); });
-    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding credential please check back later`, alertNeedsSpinner: false });
-
-    // axios.post(apiUrl, data)
-    // .then(res => {
-    //   console.log("VC added");
-    //   console.log(res);
-    //   console.log(res.data);
-    //    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Adding credential please check back later`, alertNeedsSpinner: false });
-
-    // })
-    // .catch(err => {
-    //   // Handle error
-    //   console.log("Something went wrong.");
-    //   console.log(data);
-    //   console.log(err.toJSON());
-  // });
-
-
-  //   let result = await client.add(studentID, rankValue, disciplineValue);
-  //   console.log("result", result);
-  //   if (result && result.success) {
-  //     console.log("result", result);
-  //     console.log("proving update transaction...");
-  //     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Proving transaction, please wait this can take a few mins`, alertNeedsSpinner: true });
-
-  //     await client.proveUpdateTransaction();
-  //     console.log("sending transaction...");
-  //     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Sending transaction, please approve the transaction on your wallet`, alertNeedsSpinner: true });
-
-  //     let hash = await client.sendTransaction();
-  //     console.log("transaction sent");
-
-
-  //     // if hash is not empty or null, then we have a transaction hash
-  //     if (hash) {
-  //       let hashStr = `https://berkeley.minaexplorer.com/transaction/${hash}`;
-  //       let hashlink = `<a href="${hashStr}" class="btn btn-sm" target="_blank">View transaction</a>`;
-  //       console.log("transaction", hashStr);
-
-  //       result = await client.updateBackingStore(disciplineValue);
-  //       console.log("result", result);
-
-  //       if (result.success) {
-  //         setAuthState({ ...authState, alertAvailable: true, alertMessage: `Add martial art transaction submitted ${hashlink}`, alertNeedsSpinner: false });
-  //       }
-  //       else {
-  //         setAuthState({ ...authState, hasAlert: true, alertMessage: result.message, needsLoading: false });
-  //       }
-  //     }
-  //     else {
-  //       setAuthState({ ...authState, hasAlert: true, alertMessage: `Add martial art transaction failed, try again later`, needsLoading: false });
-  //     }
-  //   }
-  }
+    axios.post(apiUrl, data)
+    .then(res => {
+        console.log("VC added");
+        console.log(res);
+        let transactionLink = `<a href="${res.data.transactionUrl}" class="btn btn-sm" target="_blank">View transaction</a>`;
+         setAuthState({ ...authState, alertAvailable: true, alertMessage: `Credential created ${transactionLink}`, alertNeedsSpinner: false });
+      })
+    .catch((err) => { console.log(err); });
+  }       
 
   return (
     <div>

@@ -86,6 +86,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         res.send("ok");
     }
     catch (e) {
+        console.log("Error:", e);
         res.status(500).send(e.message);
     }
 
@@ -195,7 +196,7 @@ export const generateCredentials = async (req: Request, res: Response) => {
 
     const pipeline = new CredentialGenerationPipeline();
     pipeline.initDefault();
-    pipeline.run(creds);
+    await pipeline.run(creds);
 
     res.status(200)
         .send(creds);
