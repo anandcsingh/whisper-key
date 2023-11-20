@@ -83,7 +83,12 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         backingStore.upsert(txn.pendingEntity!);
 
         console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash()}`);
-        res.send("ok");
+        res.send( {
+            success: true,
+            message: "Credential issued",
+            transactionHash: result.hash(),
+            transactionUrl: `https://berkeley.minaexplorer.com/transaction/${result.hash()}`,
+        });
     }
     catch (e) {
         console.log("Error:", e);

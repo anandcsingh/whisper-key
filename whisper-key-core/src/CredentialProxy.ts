@@ -157,9 +157,9 @@ export class CredentialProxy {
 
         if (!this.useLocal) await fetchAccount({ publicKey: this.contractAddress });
 
+        credential.id = merkleStore.nextID;
         const entity: PassportEntity = PassportEntity.fromPlainObject(credential);
         
-        entity.id = Field(merkleStore.nextID);
         let hash = entity.hash();
         merkleStore.map.set(entity.id, hash);
         const witness = merkleStore.map.getWitness(entity.id);

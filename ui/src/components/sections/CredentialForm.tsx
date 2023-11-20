@@ -32,6 +32,7 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     state.formData.issuer = Authentication.address; // the credential owner is issuing the credential
+    state.formData.credentialType = credentialMetadata.name;
     // Process the form data, you can access it from this.state.formData
     console.log('Form Data:', state.formData);
     setAuthState({ ...authState, alertAvailable: true, alertMessage: `Issuing Verifiable Credential, please wait this can take a few mins`, alertNeedsSpinner: true });
@@ -59,7 +60,15 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
       body: JSON.stringify(formData)
     };
     try {
-    const response = fetch(apiUrl, requestOptions).catch((err: any) => console.error('Error trying to fetch Credential Metadata', err));
+
+    const response = fetch(apiUrl, requestOptions)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+          let transactionLink = `<a href="${data.transactionUrl}" class="btn btn-sm" target="_blank">View transaction</a>`;
+           setAuthState({ ...authState, alertAvailable: true, alertMessage: `Credential issued ${transactionLink}`, alertNeedsSpinner: false });
+        })
+    .catch((err: any) => console.error('Error trying to fetch Credential Metadata', err));
     } catch (error) {
       console.error('Error trying to fetch Credential Metadata', error);
     }
