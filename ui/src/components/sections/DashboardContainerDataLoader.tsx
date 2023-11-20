@@ -109,7 +109,7 @@ const DashboardContainerDataLoader: React.FC<DashboardContainerProps> = ({ showD
                     <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-2 lg:items-center lg:gap-x-16">
                         {/* <DashboardLineageHero /> */}
                         
-                        {disciplinesLoaded && <DashboardActions isInstructor={isInstructor} disciplines={disciplines} />}
+                        {disciplinesLoaded && <DashboardActions isInstructor={isInstructor} disciplines={disciplines} creator={creator}/>}
                         {!disciplinesLoaded &&
                             <div className='m-auto'>
                                 <span className="loading loading-dots loading-lg"></span>
