@@ -41,6 +41,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         Mina.setActiveInstance(Berkeley);
         senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
         senderAccount = senderKey.toPublicKey();
+        console.log("senderAccount:", senderAccount.toBase58());
         const repo = new CredentialRepository();
         const credMetadata = await repo.GetCredential(name);
 
