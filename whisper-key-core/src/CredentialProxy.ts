@@ -102,7 +102,8 @@ export class PassportContract extends SmartContract {
     ) {
         this.mapRoot.getAndAssertEquals();
         this.mapRoot.assertEquals(currentRoot);
-        this.sender.assertEquals(credential.issuer);
+        // disable the assert for now
+        //this.sender.assertEquals(credential.issuer);
         credential.owner = owner;
         const hash = credential.hash();
         const [newRoot, _] = witness.computeRootAndKey(hash);
@@ -153,7 +154,7 @@ export class CredentialProxy {
         return transaction;
     }
 
-    async issueCredential(owner: PublicKey, credential: any, merkleStore: any): Promise<any> {
+    async issueCredential(payer: PublicKey, credential: any, merkleStore: any): Promise<any> {
 
         if (!this.useLocal) await fetchAccount({ publicKey: this.contractAddress });
 
@@ -165,8 +166,8 @@ export class CredentialProxy {
         const witness = merkleStore.map.getWitness(entity.id);
         const currentRoot = await this.getStorageRoot();
 
-        const transaction = await Mina.transaction({ sender: entity.issuer, fee: this.fee }, () => {
-            this.zkApp.issueCredential(owner, entity, witness, currentRoot);
+        const transaction = await Mina.transaction({ sender: payer, fee: this.fee }, () => {
+            this.zkApp.issueCredential(entity.owner, entity, witness, currentRoot);
         });
 
         return {

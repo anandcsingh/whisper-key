@@ -121,7 +121,6 @@ describe('CredentialProxyTemplateLocal', () => {
     const updatedRoot = (await proxy.getStorageRoot()).toString();
 
     expect(currentRoot).not.toEqual(updatedRoot);
-    entity.owner = senderAccount;
     entity.id = Field(merkleStore.nextID);
     console.log("hash:", entity.hash().toString());
     const updatedWitness = map.getWitness(entity.id);
