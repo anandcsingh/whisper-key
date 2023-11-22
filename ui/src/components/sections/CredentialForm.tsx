@@ -74,19 +74,91 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     }
   }
 
+  // const renderFormField = (field: CredentialField) => {
+  //   const { name } = field;
+  //   return (
+  //     <div key={name} className="form-control">
+  //       <label className="label">
+  //         <span className="text-base label-text">{name}</span>
+  //       </label>
+  //       <input type="text" id={name} name={name} onChange={handleInputChange} className="input input-bordered w-full max-w-xs" placeholder={"Enter " + name} />
+  //     </div>
+  //   );
+  // }
+
   const renderFormField = (field: CredentialField) => {
-    const { name } = field;
+    const {name, type} = field;
+
+    let inputElement;
+    switch(type){
+      case 'PublicKey':
+        inputElement = (
+          <div className="join">
+            <QRCodeScanner uniqueID="promote-form-scan" className="btn join-item" />
+            <input id='owner' name="owner" onChange={handleInputChange} className="input input-bordered join-item " />
+          </div>
+        );
+        break;
+        case 'CircuitString':
+          inputElement = (
+            <input
+              type="text"
+              id={name}
+              name={name}
+              onChange={handleInputChange}
+              className="input input-bordered w-full max-w-xs"
+              placeholder={"Enter " + name}
+            />
+          );
+          break;
+        case 'Field':
+          inputElement = (
+            <input
+              type="number"
+              id={name}
+              name={name}
+              onChange={handleInputChange}
+              className="input input-bordered w-full max-w-xs"
+              placeholder={"Enter " + name}
+            />
+          );
+          break;
+        case 'Bool':
+          inputElement = (
+            <input
+              type="checkbox"
+              id={name}
+              name={name}
+              onChange={handleInputChange}
+              className="input-checkbox"
+            />
+          );
+          break;
+        default:
+          inputElement = (
+            <input
+              type="text"
+              id={name}
+              name={name}
+              onChange={handleInputChange}
+              className="input input-bordered w-full max-w-xs"
+              placeholder={"Enter " + name}
+            />
+          );
+          break;
+    }
+
     return (
       <div key={name} className="form-control">
         <label className="label">
           <span className="text-base label-text">{name}</span>
         </label>
-        <input type="text" id={name} name={name} onChange={handleInputChange} className="input input-bordered w-full max-w-xs" placeholder={"Enter " + name} />
+        {inputElement}
       </div>
     );
+  };
 
 
-  }
   return (
     <div className='grid grid-cols-1 space-y-6'>
       <h2 className='text-2xl font-bold sm:text-2xl'>Verifiable Credential Details</h2>
