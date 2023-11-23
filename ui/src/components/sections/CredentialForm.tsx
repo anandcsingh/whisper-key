@@ -151,7 +151,7 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     return (
       <div key={name} className="form-control">
         <label className="label">
-          <span className="text-base label-text">{name}</span>
+          <span className="text-base label-text">{name} (Type: {type})</span>
         </label>
         {inputElement}
       </div>
