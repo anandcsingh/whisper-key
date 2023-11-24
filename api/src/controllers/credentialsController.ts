@@ -84,7 +84,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         backingStore.upsert(txn.pendingEntity!);
 
         console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash()}`);
-        res.send( {
+        res.send({
             success: true,
             message: "Credential issued",
             transactionHash: result.hash(),
@@ -194,6 +194,24 @@ export const getOwnedCredentials = async (req: Request, res: Response) => {
         .send(creds);
 }
 
+/**
+ * @swagger
+ * /:
+ *   post:
+ *     summary: Create new credential
+ *     description: Create a new credential
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *     responses:
+ *       '201':
+ *         description: Credential created successfully
+ *         content:
+ *           application/json:
+ *       '400':
+ *         description: Invalid data
+ */
 export const generateCredentials = async (req: Request, res: Response) => {
     console.log(req.body);
 
@@ -207,5 +225,5 @@ export const generateCredentials = async (req: Request, res: Response) => {
     res.status(200)
         .send(creds);
     return;
-    
+
 };
