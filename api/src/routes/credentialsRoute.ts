@@ -13,6 +13,32 @@ import { get } from 'http';
 
 /**
  * @swagger
+ * /:
+ *   post:
+ *     summary: Generate credentials
+ *     description: Generate credentials using provided data
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Credentials generated successfully
+ *       '400':
+ *         description: Bad request. Invalid data provided.
+ *       '500':
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /created/:address:
  *   get:
  *     description: Get credential for address
@@ -51,7 +77,6 @@ import { get } from 'http';
  */
 
 export const credsRouter = express.Router();
-
 
 credsRouter.post('/', generateCredentials);
 
