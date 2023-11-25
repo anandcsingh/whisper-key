@@ -194,24 +194,6 @@ export const getOwnedCredentials = async (req: Request, res: Response) => {
         .send(creds);
 }
 
-/**
- * @swagger
- * /:
- *   post:
- *     summary: Create new credential
- *     description: Create a new credential
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *     responses:
- *       '201':
- *         description: Credential created successfully
- *         content:
- *           application/json:
- *       '400':
- *         description: Invalid data
- */
 export const generateCredentials = async (req: Request, res: Response) => {
     console.log(req.body);
 
