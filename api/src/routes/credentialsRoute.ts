@@ -22,12 +22,7 @@ import { get } from 'http';
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
+ *             $ref: '#/components/schemas/CredentialMetadata'
  *     responses:
  *       '200':
  *         description: Credentials generated successfully
@@ -35,16 +30,111 @@ import { get } from 'http';
  *         description: Bad request. Invalid data provided.
  *       '500':
  *         description: Internal server error
+ * 
+ * components:
+ *   schemas:
+ *     CredentialMetadata:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         version:
+ *           type: string
+ *         created:
+ *           type: string
+ *           format: date-time
+ *         owner:
+ *           type: string
+ *         issuer:
+ *           type: string
+ *         fields:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/CredentialField'
+ *         contractPrivateKey:
+ *           type: string
+ *         contractPublicKey:
+ *           type: string
+ *         transactionUrl:
+ *           type: string
+ * 
+ *     CredentialField:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         type:
+ *           type: string
  */
+
 
 /**
  * @swagger
- * /created/:address:
+ * /created/{address}:
  *   get:
- *     description: Get credential for address
+ *     description: Get credentials for address
+ *     parameters:
+ *       - in: path
+ *         name: address
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: Returns credential for address
+ *         description: Returns credentials for address
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/CredentialMetadata'
+ * 
+ * components:
+ *   schemas:
+ *     CredentialMetadata:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         version:
+ *           type: string
+ *         created:
+ *           type: string
+ *           format: date-time
+ *         owner:
+ *           type: string
+ *         issuer:
+ *           type: string
+ *         fields:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/CredentialField'
+ *         contractPrivateKey:
+ *           type: string
+ *         contractPublicKey:
+ *           type: string
+ *         transactionUrl:
+ *           type: string
+ * 
+ *     CredentialField:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         type:
+ *           type: string
  */
 
 /**

@@ -16,9 +16,9 @@ const options: swaggerJsdoc.Options = {
     swaggerDefinition: {
         openapi: '3.0.0',
         info: {
-            title: 'Your API Title',
+            title: 'Whisper Key API',
             version: '1.0.0',
-            description: 'Your API Description',
+            description: 'Verifiable Credentials management',
         },
     },
     apis: [path.join(__dirname, './routes/*.ts')], // Replace with your route files pattern
