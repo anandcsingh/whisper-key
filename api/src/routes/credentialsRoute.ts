@@ -139,14 +139,22 @@ import { get } from 'http';
 
 /**
  * @swagger
- * /issue/:name:
+ * /issue/{name}:
  *   post:
  *     summary: Issue credential with name
  *     description: Issue a credential
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CredentialMetadata'
  *     responses:
  *       '201':
  *         description: Credential issued successfully
@@ -154,16 +162,108 @@ import { get } from 'http';
  *           application/json:
  *       '400':
  *         description: Invalid data
+ * 
+ * components:
+ *   schemas:
+ *     CredentialMetadata:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         version:
+ *           type: string
+ *         created:
+ *           type: string
+ *           format: date-time
+ *         owner:
+ *           type: string
+ *         issuer:
+ *           type: string
+ *         fields:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/CredentialField'
+ *         contractPrivateKey:
+ *           type: string
+ *         contractPublicKey:
+ *           type: string
+ *         transactionUrl:
+ *           type: string
+ * 
+ *     CredentialField:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         type:
+ *           type: string
  */
 
 /**
  * @swagger
- * /owned/:address:
+ * /owned/{address}:
  *   get:
  *     description: Get owned credential for address
+ *     parameters:
+ *       - in: path
+ *         name: address
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Returns owned credential for address
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CredentialMetadata'
+ * 
+ * components:
+ *   schemas:
+ *     CredentialMetadata:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         version:
+ *           type: string
+ *         created:
+ *           type: string
+ *           format: date-time
+ *         owner:
+ *           type: string
+ *         issuer:
+ *           type: string
+ *         fields:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/CredentialField'
+ *         contractPrivateKey:
+ *           type: string
+ *         contractPublicKey:
+ *           type: string
+ *         transactionUrl:
+ *           type: string
+ * 
+ *     CredentialField:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         type:
+ *           type: string
  */
 
 export const credsRouter = express.Router();
