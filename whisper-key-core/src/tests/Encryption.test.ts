@@ -9,13 +9,6 @@ import {
   Encoding,
 } from 'o1js';
 
-/*
- * This file specifies how to test the `Add` example smart contract. It is safe to delete this file and replace
- * with your own tests.
- *
- * See https://docs.minaprotocol.com/zkapps for more info.
- */
-
 let proofsEnabled = false;
 
 describe('Encrypt', () => {
@@ -78,6 +71,45 @@ describe('Encrypt', () => {
     let decryptedMessage = Field.fromFields(decryptedFields);
 
     expect(decryptedMessage).toEqual(message);
+    console.log("decrypted number:",decryptedMessage.toBigInt());
+    console.log("origianl number:", message.toBigInt());
+  });
+
+  it('can encrypta number, serialize it and decrypt it', async () => {
+    let message = Field(123456789);
+
+    // encrypt
+    let cipherText = Encryption.encrypt(message.toFields(), senderAccount);
+
+    let serialized = JSON.stringify(cipherText.cipherText);
+    let deserialized = { publicKey: senderAccount.toGroup(),  cipherText: JSON.parse(serialized) };
+
+    console.log("deserialized:", deserialized);
+
+    // decrypt
+    let decryptedFields = Encryption.decrypt(deserialized, senderKey);
+    let decryptedMessage = Field.fromFields(decryptedFields);
+
+    expect(decryptedMessage).toEqual(message);
+    console.log("decrypted number:",decryptedMessage.toBigInt());
+    console.log("origianl number:", message.toBigInt());
+  });
+
+  it('can encrypt and decrypt a number multiple times', async () => {
+    let message = Field(123456789);
+
+    // encrypt
+    let cipherText = Encryption.encrypt(message.toFields(), senderAccount);
+
+    // decrypt
+    let decryptedFields = Encryption.decrypt(cipherText, senderKey);
+    let decryptedMessage = Field.fromFields(decryptedFields);
+
+    expect(decryptedMessage).toEqual(message);
+
+    decryptedFields = Encryption.decrypt(cipherText, senderKey);
+    expect(decryptedMessage).toEqual(message);
+
   });
 
   it('can encrypt and decrypt string compare fields data', async () => {
