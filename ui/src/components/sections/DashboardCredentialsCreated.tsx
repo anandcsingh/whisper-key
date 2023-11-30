@@ -62,10 +62,10 @@ const DashboardCredentialsCreated = () => {
                                     <div className="modal-action">
                                         <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                                     </div>
-                                    <h1>Credential Name: {credential.name}</h1><br />
+                                    <h2 className="text-2xl font-bold sm:text-2xl">Credential Name: {credential.name}</h2><br />
                                     <div>Owner: {credential.owner}</div>
                                     <div>Description: {credential.description}</div> <br />
-                                    <h2>Fields:</h2>
+                                    <h2 className="text-2xl font-bold sm:text-2xl">Fields:</h2>
                                     {credential.fields.map((field: CredentialField, index: number) => {
                                         return(<div className='data-field' key={index}>
                                             <div>Name: {field.name}</div>
