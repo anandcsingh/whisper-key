@@ -10,6 +10,7 @@ const DashBoardCredentialsOwnedGrid = () => {
     const [owned, setOwned] = useState({
         credentials: [] as any
     });
+    const excludeKeys: string[] = ['hash', 'id'];
 
     useEffect(() => {
 
@@ -79,8 +80,13 @@ const DashBoardCredentialsOwnedGrid = () => {
                                         <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                                     </div>
                                     <h2 className="text-2xl font-bold sm:text-2xl">Credential Name: {credential.name}</h2><br />
-                                    <div>Owner: {credential.owner}</div>
-                                    <div>Description: {credential.description}</div> <br />
+                                    {Object.keys(credential)
+                                    .filter(key => !excludeKeys.includes(key))
+                                    .map(key => (
+                                    <p key={key}>
+                                        {`${key}: ${credential[key]}`}
+                                    </p>
+                                    ))}
                                 </form>
                                 <form method="dialog" className="modal-backdrop">
                                     <button>close</button>
