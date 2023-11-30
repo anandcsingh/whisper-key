@@ -10,6 +10,7 @@ const DashBoardCredentialsOwnedGrid = () => {
     const [owned, setOwned] = useState({
         credentials: [] as any
     });
+    const excludeKeys: string[] = ['hash', 'id'];
 
     useEffect(() => {
 
@@ -66,11 +67,34 @@ const DashBoardCredentialsOwnedGrid = () => {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {owned.credentials.map((credential: any, index: number) => (
-                        <div key={index} className="bg-white p-4 shadow-lg rounded-md">
-                            <h3 className="text-xl font-semibold">{credential.credentialType}</h3>
-                            <p className="text-gray-600">{credential.description}</p>
-                            <button className="btn btn-sm btn-primary">View Credential</button>
+                        <div key={index}>
+                            <div className="bg-white p-4 shadow-lg rounded-md">
+                                <h3 className="text-xl font-semibold">{credential.credentialType}</h3>
+                                <p className="text-gray-600">{credential.description}</p>
+                                <a href={`#${credential.name}_modal`} className="btn btn-sm btn-primary">View Credential</a>
+                            </div>
+                            <div className='modals-area'>
+                            <dialog className="modal" id={`${credential.name}_modal`}>
+                                <form method="dialog" className="modal-box w-11/12 max-w-5xl">
+                                    <div className="modal-action">
+                                        <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
+                                    </div>
+                                    <h2 className="text-2xl font-bold sm:text-2xl">Credential Name: {credential.name}</h2><br />
+                                    {Object.keys(credential)
+                                    .filter(key => !excludeKeys.includes(key))
+                                    .map(key => (
+                                    <p key={key}>
+                                        {`${key}: ${credential[key]}`}
+                                    </p>
+                                    ))}
+                                </form>
+                                <form method="dialog" className="modal-backdrop">
+                                    <button>close</button>
+                                </form>
+                            </dialog>
+                            </div>
                         </div>
+                        
                     ))}
                 </div>
             )}
