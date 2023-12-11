@@ -9,22 +9,24 @@ import {
   Encoding,
 } from 'o1js';
 import * as fs from 'fs';
-import { CredentialRepository } from '../CredentialRepository';
-import { CredentialMetadata } from '../CredentialMetadata';
+import { CredentialRepository } from '../CredentialRepository.js';
+import { CredentialMetadata } from '../CredentialMetadata.js';
 
 let repo = new CredentialRepository();
-let credential = new CredentialMetadata(
-  'Test',
-  'Test',
-  'Test',
-  '1.0',
-  new Date(),
-  'Test',
-  'Test',
-  [],
-  'Test',
-  'Test',
-  'Test',
+let credential = await repo.GetCredential('Whisper');
+console.log("credential:", credential);
+// let credential = new CredentialMetadata(
+//   'Test',
+//   'Test',
+//   'Test',
+//   '1.0',
+//   new Date(),
+//   'Test',
+//   'Test',
+//   [],
+//   'Test',
+//   'Test',
+//   'Test',
 
-);
-await repo.AddCredential(credential);
+// );
+// await repo.AddCredential(credential);
