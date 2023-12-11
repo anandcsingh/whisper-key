@@ -71,6 +71,21 @@ export class CredentialRepository {
     }
   }
 
+  async GetCredentialByName(name: string): Promise<CredentialMetadata | undefined> {
+    const maQuery = query(
+      collection(this.database, this.collectionName),
+      where('name', '==', name)
+    );
+   
+    const querySnapshot = await getDocs(maQuery);
+    const credentials: CredentialMetadata[] = [];
+    querySnapshot.forEach((doc) => {
+      const credential = doc.data() as CredentialMetadata;
+      credentials.push(credential);
+    });
+    return credentials[0];
+  }
+
   async GetCredentials(createdBy: string): Promise<CredentialMetadata[]> {
     const maQuery = query(
       collection(this.database, this.collectionName),
