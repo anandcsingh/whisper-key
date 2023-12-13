@@ -9,7 +9,6 @@ import { StoreMetadataStep } from './Pipeline/StoreMetadataStep.js';
 import { DeployContractStep } from './Pipeline/DeployContractStep.js';
 import { ContractCloudStorage } from './Pipeline/ContractCloudStorage.js';
 
-
 export { CredentialGenerationPipeline }
 export { IPipelineStep }
 export { CredentialGenerationContext }
@@ -34,6 +33,10 @@ export { ZkMentatStore }
 export { FirebaseMentatStore }
 export { IEntity }
 
+
+
+import {SignedCredential} from './SignedCredential.js';
+export {SignedCredential}
 
 
 

@@ -19,9 +19,9 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
             const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
             console.log("serverHash:", serverHash);
             console.log("receivedHash:", receivedHash);
-            const signature = Signature.fromJSON(signedResult);
-            const verify = signature.verify(cred.issuer, [Field(serverHash)]);
-            console.log("verify:", verify);
+            const signature = Signature.fromBase58(signedResult);
+            const verify = signature.verify(PublicKey.fromBase58(cred.issuer), CircuitString.fromString(serverHash).toFields());
+            console.log("verify:", verify.toBoolean());
         }
     }
 
