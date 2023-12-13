@@ -5,9 +5,9 @@ import { IEntity } from "./IEntity";
 export class SignedCredential {
     metadata: CredentialMetadata;
     oracleKey: PrivateKey;
-    constructor(metadata: CredentialMetadata, oracleKey: PrivateKey) {
+    constructor(metadata: CredentialMetadata, oracleKey: string) {
         this.metadata = metadata;
-        this.oracleKey = oracleKey;
+        this.oracleKey = PrivateKey.fromBase58(oracleKey);
     }
 
     sign(entity: IEntity) {

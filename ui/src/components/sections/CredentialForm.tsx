@@ -6,6 +6,7 @@ import Authentication from '@/modules/Authentication';
 import { AuthContext } from "@/components/layout/AuthPage";
 import Router from 'next/router';
 import { SHA256 } from 'crypto-js';
+import { Field, Signature, Scalar } from 'o1js';
 
 
 interface CredentialFormProps {
@@ -41,9 +42,10 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     const credStr = JSON.stringify(state.formData);
     const hash = SHA256(credStr).toString();
     const signResult = await (window as any).mina?.signMessage({ message: hash }).catch((err: any) => err);
-
+    const signature = new Signature(Field(signResult.signature.field), Scalar.fromBigInt(BigInt(signResult.signature.scalar)));
+    const baseSig = signature.toBase58();
     console.log(signResult)
-    fetchData({ data: state.formData, hash: hash, signResult: signResult });
+    fetchData({ data: state.formData, hash: hash, signResult: baseSig });
   };
 
   const fetchData = (formData: any) => {

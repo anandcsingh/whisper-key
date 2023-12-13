@@ -60,8 +60,8 @@ describe('SignedCredential', () => {
       nationality: 'USA'
     });
 
-    const privateKey = PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
-    const signedCred = new SignedCredential(creds, privateKey);
+    const privateKey = PrivateKey.random();
+    const signedCred = new SignedCredential(creds, privateKey.toBase58());
     const credential = signedCred.sign(passportEntity);
     console.log(credential);
 
