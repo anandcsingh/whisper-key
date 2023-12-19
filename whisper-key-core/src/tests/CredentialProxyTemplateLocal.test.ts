@@ -129,4 +129,34 @@ describe('CredentialProxyTemplateLocal', () => {
     expect(newRoot.toString()).toEqual(updatedRoot);
   });
 
+  it('get PassportEntity struct from plain object', async () => {
+    const contractAddress = PrivateKey.random();
+    const proxy = new CredentialProxy(contractAddress.toPublicKey(), "Passport",senderAccount, proofsEnabled);
+    const obj = {
+      id: 1,
+      credentialType: 'Passport',
+      owner: "B62qqzMHkbogU9gnQ3LjrKomimsXYt4qHcXc8Cw4aX7tok8DjuDsAzx",
+      issuer: senderAccount.toBase58(),
+      firstName: 'Alice',
+      lastName: 'Bob',
+      dateOfBirth: '2023-01-01',
+      expiryDate: '2023-01-01',
+      passportNumber: '123456789',
+      nationality: 'Trinidadian',
+    };
+    const entity = await proxy.getEntityFromObject(obj);
+    expect(entity).toBeDefined();
+
+    expect(entity.id).toEqual(Field(1));
+    expect(entity.credentialType).toEqual(CircuitString.fromString('Passport'));
+    expect(entity.owner).toEqual(PublicKey.fromBase58("B62qqzMHkbogU9gnQ3LjrKomimsXYt4qHcXc8Cw4aX7tok8DjuDsAzx"));
+    expect(entity.issuer).toEqual(senderAccount);
+    expect(entity.firstName).toEqual(CircuitString.fromString('Alice'));
+    expect(entity.lastName).toEqual(CircuitString.fromString('Bob'));
+    expect(entity.dateOfBirth).toEqual(CircuitString.fromString('2023-01-01'));
+    expect(entity.expiryDate).toEqual(CircuitString.fromString('2023-01-01'));
+    expect(entity.passportNumber).toEqual(CircuitString.fromString('123456789'));
+    expect(entity.nationality).toEqual(CircuitString.fromString('Trinidadian'));
+  });
+
 });

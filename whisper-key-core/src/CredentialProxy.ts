@@ -136,6 +136,10 @@ export class CredentialProxy {
         this.zkApp = new PassportContract(this.contractAddress);
     }
 
+    async getEntityFromObject(obj: any) {
+        return PassportEntity.fromPlainObject(obj);
+    }
+
     async getStorageRoot(): Promise<Field> {
 
         if (!this.useLocal) await fetchAccount({ publicKey: this.contractAddress });

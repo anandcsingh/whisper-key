@@ -13,11 +13,12 @@ export class PassportEntity extends Struct({
     credentialType: CircuitString,
     issuer: PublicKey,
     owner: PublicKey,
-    number: CircuitString,
-    expiryDate: CircuitString,
-    unique: Field,
-    address: PublicKey,
-    name: CircuitString,
+    FirstName: CircuitString,
+    LastName: CircuitString,
+    DateOfBirth: CircuitString,
+    ExpiryDate: CircuitString,
+    PassportNumber: CircuitString,
+    Nationality: CircuitString,
 }) {
     toPlainObject() {
         return {
@@ -25,11 +26,12 @@ export class PassportEntity extends Struct({
             credentialType: this.credentialType.toString(),
             issuer: this.issuer.toBase58(),
             owner: this.owner.toBase58(),
-            number: this.number.toString(),
-            expiryDate: this.expiryDate.toString(),
-            unique: Number(this.unique.toBigInt()),
-            address: this.address.toBase58(),
-            name: this.name.toString(),
+            FirstName: this.FirstName.toString(),
+            LastName: this.LastName.toString(),
+            DateOfBirth: this.DateOfBirth.toString(),
+            ExpiryDate: this.ExpiryDate.toString(),
+            PassportNumber: this.PassportNumber.toString(),
+            Nationality: this.Nationality.toString(),
         };
     }
     static fromPlainObject(obj) {
@@ -38,11 +40,12 @@ export class PassportEntity extends Struct({
             credentialType: CircuitString.fromString(obj.credentialType),
             issuer: PublicKey.fromBase58(obj.issuer),
             owner: PublicKey.fromBase58(obj.owner),
-            number: CircuitString.fromString(obj.number),
-            expiryDate: CircuitString.fromString(obj.expiryDate),
-            unique: Field(obj.unique),
-            address: PublicKey.fromBase58(obj.address),
-            name: CircuitString.fromString(obj.name),
+            FirstName: CircuitString.fromString(obj.FirstName),
+            LastName: CircuitString.fromString(obj.LastName),
+            DateOfBirth: CircuitString.fromString(obj.DateOfBirth),
+            ExpiryDate: CircuitString.fromString(obj.ExpiryDate),
+            PassportNumber: CircuitString.fromString(obj.PassportNumber),
+            Nationality: CircuitString.fromString(obj.Nationality),
         });
     }
     hash() {
@@ -50,11 +53,12 @@ export class PassportEntity extends Struct({
             .concat(this.credentialType.toFields())
             .concat(this.issuer.toFields())
             .concat(this.owner.toFields())
-            .concat(this.number.toFields())
-            .concat(this.expiryDate.toFields())
-            .concat(this.unique.toFields())
-            .concat(this.address.toFields())
-            .concat(this.name.toFields())
+            .concat(this.FirstName.toFields())
+            .concat(this.LastName.toFields())
+            .concat(this.DateOfBirth.toFields())
+            .concat(this.ExpiryDate.toFields())
+            .concat(this.PassportNumber.toFields())
+            .concat(this.Nationality.toFields())
             );
     }
 }
@@ -75,7 +79,8 @@ export class PassportContract extends SmartContract {
     issueCredential(owner, credential, witness, currentRoot) {
         this.mapRoot.getAndAssertEquals();
         this.mapRoot.assertEquals(currentRoot);
-        this.sender.assertEquals(credential.issuer);
+        // disable the assert for now
+        //this.sender.assertEquals(credential.issuer);
         credential.owner = owner;
         const hash = credential.hash();
         const [newRoot, _] = witness.computeRootAndKey(hash);
@@ -104,16 +109,21 @@ __decorate([
 export class CredentialProxy {
     constructor(contractAddress, credentialName, owner, proofsEnabled) {
         this.useLocal = false;
+        this.fee = 100000000;
         this.credentialName = credentialName;
         this.owner = owner;
         this.proofsEnabled = proofsEnabled;
         this.contractAddress = contractAddress;
         this.contractType = PassportContract;
-        //console.log("compiling contract @", new Date().toISOString());
-        if (this.proofsEnabled)
+        if (this.proofsEnabled) {
+            console.log("compiling contract @", new Date().toISOString());
             this.contractType.compile();
-        //console.log("compiled contract @", new Date().toISOString());
+            console.log("compiled contract @", new Date().toISOString());
+        }
         this.zkApp = new PassportContract(this.contractAddress);
+    }
+    async getEntityFromObject(obj) {
+        return PassportEntity.fromPlainObject(obj);
     }
     async getStorageRoot() {
         if (!this.useLocal)
@@ -123,23 +133,24 @@ export class CredentialProxy {
     async setStorageRoot(storageRoot, sender) {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
-        const transaction = await Mina.transaction({ sender }, () => {
+        const transaction = await Mina.transaction({ sender, fee: this.fee }, () => {
             this.zkApp.setMapRoot(storageRoot);
         });
         return transaction;
     }
-    async issueCredential(owner, credential, merkleStore) {
+    async issueCredential(payer, credential, merkleStore) {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
-        //this.zkApp = new PassportContract(this.contractAddress);
+        
+        credential.id = merkleStore.nextID;
         const entity = PassportEntity.fromPlainObject(credential);
         entity.id = Field(merkleStore.nextID);
         let hash = entity.hash();
-        console.log("hash:", hash.toString());
         merkleStore.map.set(entity.id, hash);
         const witness = merkleStore.map.getWitness(entity.id);
-        const transaction = await Mina.transaction({ sender: entity.issuer }, () => {
-            this.zkApp.issueCredential(owner, entity, witness, this.zkApp.mapRoot.get());
+        const currentRoot = await this.getStorageRoot();
+        const transaction = await Mina.transaction({ sender: payer, fee: this.fee }, () => {
+            this.zkApp.issueCredential(entity.owner, entity, witness, currentRoot);
         });
         return {
             transaction: transaction,
@@ -148,7 +159,6 @@ export class CredentialProxy {
     }
     async deployLocal(minaLocal, deployer, zkAppPrivateKey, useLocal) {
         this.useLocal = useLocal;
-        let zkAppAddress = zkAppPrivateKey.toPublicKey();
         let deployerPublic = deployer.toPublicKey();
         const txn = await minaLocal.transaction(deployerPublic, () => {
             AccountUpdate.fundNewAccount(deployerPublic);

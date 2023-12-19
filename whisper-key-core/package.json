@@ -1,6 +1,6 @@
 {
   "name": "contract-is-key",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "",
   "author": "",
   "license": "Apache-2.0",
@@ -14,7 +14,7 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node dist/src/CredentialTemplateTransformer.js",
     "buildw": "tsc --watch",
     "coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "format": "prettier --write --ignore-unknown **/*",
