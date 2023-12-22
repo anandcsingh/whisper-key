@@ -13,7 +13,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const signedResult = req.body.signResult;
 
     if (receivedHash != null && signedResult != null) {
-        const enableSignature = true;
+        const enableSignature = false;
         if (enableSignature) {
             const jsonString = JSON.stringify(cred);
             const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
