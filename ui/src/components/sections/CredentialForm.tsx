@@ -44,8 +44,9 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     const signResult = await (window as any).mina?.signMessage({ message: hash }).catch((err: any) => err);
     const signature = new Signature(Field(signResult.signature.field), Scalar.fromBigInt(BigInt(signResult.signature.scalar)));
     const baseSig = signature.toBase58();
+    console.log("base58", baseSig);
     console.log(signResult)
-    fetchData({ data: state.formData, hash: hash, signResult: baseSig });
+    fetchData({ data: state.formData, hash: hash, signResult: signature });
   };
 
   const fetchData = (formData: any) => {
