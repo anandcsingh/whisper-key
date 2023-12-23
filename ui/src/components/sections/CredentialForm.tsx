@@ -41,12 +41,13 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     const credStr = JSON.stringify(state.formData);
     const hash = SHA256(credStr).toString();
+    //const hash = '1216d101a5016fbbcb8c0df2896be04517197aea2f92a4f5fdd117a6633795ae';
     const signResult = await (window as any).mina?.signMessage({ message: hash }).catch((err: any) => err);
-    const signature = new Signature(Field(signResult.signature.field), Scalar.fromBigInt(BigInt(signResult.signature.scalar)));
-    const baseSig = signature.toBase58();
-    console.log("base58", baseSig);
+    // const signature = new Signature(Field(signResult.signature.field), Scalar.fromBigInt(BigInt(signResult.signature.scalar)));
+    // const baseSig = signature.toBase58();
+    // console.log("base58", baseSig);
     console.log(signResult)
-    fetchData({ data: state.formData, hash: hash, signResult: signature });
+    fetchData({ data: state.formData, hash: hash, signResult: signResult });
   };
 
   const fetchData = (formData: any) => {

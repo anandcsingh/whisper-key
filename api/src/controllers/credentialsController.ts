@@ -5,31 +5,37 @@ import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, Signature
 import { CredentialProxy, FreeCredentialContract, FreeCredentialEntity } from '../../public/credentials/FreeCredentialContract.js';
 import crypto from 'crypto';
 import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata } from "contract-is-key";
+import Client from 'mina-signer';
 
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const name = req.params.name;
     const cred = req.body.data;
-    const receivedHash = req.body.hash;
     const signedResult = req.body.signResult;
 
-    if (receivedHash != null && signedResult != null) {
-        const enableSignature = false;
+    if (signedResult != null) {
+        const enableSignature = true;
         if (enableSignature) {
+
+            const receivedHash = signedResult.data;
             const jsonString = JSON.stringify(cred);
             const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
             console.log("cred:", cred);
             console.log("serverHash:", serverHash);
             console.log("receivedHash:", receivedHash);
-            const signature = Signature.fromBase58(signedResult);
-            const verify = signature.verify(PublicKey.fromBase58(cred.issuer), CircuitString.fromString(serverHash).toFields());
-            console.log("verify:", verify.toBoolean());
-            if (!verify.toBoolean()) {
-                res.status(500).send("Signature does not match");
+
+            if (serverHash != receivedHash) {
+                res.status(500).send("Data hashes does not match");
                 return;
             } else {
-                console.log("Signature matches");
-                res.send("ok");
-                return;
+
+                let client = new Client({ network: 'testnet' });
+                const verify = client.verifyMessage(signedResult);
+                if (!verify) {
+                    res.status(500).send("Signature does not match");
+                    return;
+                } else {
+                    console.log("Signature matches");
+                }
             }
         }
     }

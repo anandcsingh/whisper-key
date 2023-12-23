@@ -10,12 +10,14 @@ import {
   Sign,
   Signature,
   Scalar,
+  verify,
 } from 'o1js';
 import { CredentialMetadata } from '../CredentialMetadata';
 import { CredentialsPipeline } from '../CredentialsPipeline';
 import { PassportEntity } from '../CredentialProxy';
 import { SignedCredential } from '../SignedCredential';
 import crypto from 'crypto';
+import Client from 'mina-signer';
 
 /*
  * This file specifies how to test the `Add` example smart contract. It is safe to delete this file and replace
@@ -94,7 +96,7 @@ describe('SignedCredential', () => {
     const clientJson = JSON.stringify(cred);
     const clientHash = crypto.createHash('sha256').update(clientJson).digest('hex');
     const clientSignature = Signature.create(privateKey, CircuitString.fromString(clientHash).toFields());
-  
+
     // client sends the credential and signature to the server
     const serializedSignature = clientSignature.toBase58();
 
@@ -104,7 +106,7 @@ describe('SignedCredential', () => {
     const verified = transportedSignature.verify(privateKey.toPublicKey(), CircuitString.fromString(serverHash).toFields());
     expect(verified.toBoolean()).toBeTruthy();
   });
-  
+
   it('invalid data fails verify', async () => {
     const privateKey = PrivateKey.random();
 
@@ -125,7 +127,7 @@ describe('SignedCredential', () => {
     const clientJson = JSON.stringify(cred);
     const clientHash = crypto.createHash('sha256').update(clientJson).digest('hex');
     const clientSignature = Signature.create(privateKey, CircuitString.fromString(clientHash).toFields());
-  
+
     // client sends the credential and signature to the server
     const serializedSignature = clientSignature.toBase58();
 
@@ -141,25 +143,27 @@ describe('SignedCredential', () => {
   it('can verify signature from auro', async () => {
     const privateKey = PrivateKey.random();
 
-    const request   = {"data":{"owner":"B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5","Time":"12","Stop":"12","issuer":"B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5","credentialType":"DeclareTime"},
-    "hash":"1216d101a5016fbbcb8c0df2896be04517197aea2f92a4f5fdd117a6633795ae",
-    "signResult":"7mXCzrtW7KxZkYEDi1LRvwAkxYUnT99s3yvzsSdXD2Uw8tsPXDxMKXK2m6tLQXtfBXqwGmAi7PaRzAnZxxJGxjyzUVDeZ83h"}
+    const request = {
+      "data": { "owner": "B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5", "Time": "12", "Stop": "12", "issuer": "B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5", "credentialType": "DeclareTime" },
+      "hash": "1216d101a5016fbbcb8c0df2896be04517197aea2f92a4f5fdd117a6633795ae",
+      "signResult": "7mXCzrtW7KxZkYEDi1LRvwAkxYUnT99s3yvzsSdXD2Uw8tsPXDxMKXK2m6tLQXtfBXqwGmAi7PaRzAnZxxJGxjyzUVDeZ83h"
+    }
 
     const signatureJson = {
       "signature": {
-          "field": "9210022359405050608824861496380483949808720947153451299496618614614426062446",
-          "scalar": "24300077718074168807590934528324640827732566755573655281653809118784765936185"
+        "field": "9210022359405050608824861496380483949808720947153451299496618614614426062446",
+        "scalar": "24300077718074168807590934528324640827732566755573655281653809118784765936185"
       },
       "publicKey": "B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5",
       "data": "1216d101a5016fbbcb8c0df2896be04517197aea2f92a4f5fdd117a6633795ae"
-  };
+    };
 
-  // const jsonSignature = Signature.fromObject({
-  //   r: Field(signatureJson.signature.field),
-  //   s: Scalar.fromJSON(s.toString()),
-  // });
-  const jsonSignature = new Signature(Field(signatureJson.signature.field), Scalar.fromBigInt(BigInt(signatureJson.signature.scalar)));
-  console.log("jsonSignature base 58:", jsonSignature.toBase58());
+    // const jsonSignature = Signature.fromObject({
+    //   r: Field(signatureJson.signature.field),
+    //   s: Scalar.fromJSON(s.toString()),
+    // });
+    const jsonSignature = new Signature(Field(signatureJson.signature.field), Scalar.fromBigInt(BigInt(signatureJson.signature.scalar)));
+    console.log("jsonSignature base 58:", jsonSignature.toBase58());
 
     //const jsonSignature = Signature.fromJSON(signatureJson.signature);
 
@@ -172,14 +176,35 @@ describe('SignedCredential', () => {
     expect(verified.toBoolean()).toBeTruthy();
   });
 
-  
+
   it('signature from auro and o1js same', async () => {
     const privateKey = PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
     const hash = "1216d101a5016fbbcb8c0df2896be04517197aea2f92a4f5fdd117a6633795ae";
     const auroSignature = "7mXCzrtW7KxZkYEDi1LRvwAkxYUnT99s3yvzsSdXD2Uw8tsPXDxMKXK2m6tLQXtfBXqwGmAi7PaRzAnZxxJGxjyzUVDeZ83h";
-    
+
     const signature = Signature.create(privateKey, CircuitString.fromString(hash).toFields());
     const o1Signature = signature.toBase58();
     expect(o1Signature).toEqual(auroSignature);
+  });
+
+  it('signature from auro and mina-signer same', async () => {
+    const privateKey = PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
+    const hash = "1216d101a5016fbbcb8c0df2896be04517197aea2f92a4f5fdd117a6633795ae";
+    const signatureJson = {
+      "signature": {
+        "field": "9210022359405050608824861496380483949808720947153451299496618614614426062446",
+        "scalar": "24300077718074168807590934528324640827732566755573655281653809118784765936185"
+      },
+      "publicKey": "B62qrZhVxxpGGTjWXntrDh5qCC3kboUQ1zjnayYLppMZZ4vfdX8F3x5",
+      "data": "1216d101a5016fbbcb8c0df2896be04517197aea2f92a4f5fdd117a6633795ae"
+    };
+    expect(privateKey.toPublicKey().toBase58()).toEqual(signatureJson.publicKey);
+
+
+    let client = new Client({ network: 'testnet' });
+    const signedMessage = client.signMessage(hash, privateKey.toBase58());
+    console.log("signedMessage:", signedMessage);
+    const verified = await client.verifyMessage(signedMessage);
+    expect(verified).toBeTruthy();
   });
 });
