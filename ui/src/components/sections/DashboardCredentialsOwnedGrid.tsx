@@ -8,34 +8,35 @@ import axios from "axios";
 const DashBoardCredentialsOwnedGrid = () => {
 
     const [owned, setOwned] = useState({
-        credentials: [] as any
+        credentials: [] as any,
+        currentCredential: {} as any,
     });
     const excludeKeys: string[] = ['hash', 'id'];
 
     useEffect(() => {
 
         (async () => {
-    const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/owned/${Authentication.address}`;
+            const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/owned/${Authentication.address}`;
 
-    const requestHeaders = { "Content-Type": "application/json" };
-    let ownedCredentials: CredentialMetadata[] = [];
-    axios.get(apiURL)
-        .then(function (response) {
-            // handle success
-            console.log("Credentials/Owned - Success");
-            console.log(response);
-            ownedCredentials = response!.data! as CredentialMetadata[];
-            setOwned({ ...owned, credentials: ownedCredentials });
+            const requestHeaders = { "Content-Type": "application/json" };
+            let ownedCredentials: CredentialMetadata[] = [];
+            axios.get(apiURL)
+                .then(function (response) {
+                    // handle success
+                    console.log("Credentials/Owned - Success");
+                    console.log(response);
+                    ownedCredentials = response!.data! as CredentialMetadata[];
+                    setOwned({ ...owned, credentials: ownedCredentials });
 
-            console.log("owned Credentials:" + ownedCredentials);
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
-        })
-        .finally(function () {
-            // always executed
-        });
+                    console.log("owned Credentials:" + ownedCredentials);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+                .finally(function () {
+                    // always executed
+                });
 
 
 
@@ -59,8 +60,16 @@ const DashBoardCredentialsOwnedGrid = () => {
     // let credentialMetaDataList = [];
     // credentialMetaDataList.push(licenseCredentialMetaData);
     // credentialMetaDataList.push(degreeCredentialMetaData);
+    const setCurrentCredential = (credential: any) => {
 
-    return(
+        setOwned({ ...owned, currentCredential: credential });
+        console.log("current credential: ", credential);
+
+        // navigate to the modal
+        //router.push('#current_credential_modal');
+        (document.getElementById('current_credential_modal') as any).showModal()
+    }
+    return (
         <div className="relative bg-indigo-200 dark:bg-indigo-500 p-4 sm:p-6 rounded-sm overflow-hidden">
             {owned.credentials.length === 0 ? (
                 <div className="text-center text-gray-600">You currently own 0 credentials.</div>
@@ -71,33 +80,34 @@ const DashBoardCredentialsOwnedGrid = () => {
                             <div className="bg-white p-4 shadow-lg rounded-md">
                                 <h3 className="text-xl font-semibold">{credential.credentialType}</h3>
                                 <p className="text-gray-600">{credential.description}</p>
-                                <a href={`#${credential.name}_modal`} className="btn btn-sm btn-primary">View Credential</a>
+                                <button onClick={() => setCurrentCredential(credential)} className="btn btn-sm btn-primary">View Credential</button>
                             </div>
-                            <div className='modals-area'>
-                            <dialog className="modal" id={`${credential.name}_modal`}>
-                                <form method="dialog" className="modal-box w-11/12 max-w-5xl">
-                                    <div className="modal-action">
-                                        <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
-                                    </div>
-                                    <h2 className="text-2xl font-bold sm:text-2xl">Credential Name: {credential.name}</h2><br />
-                                    {Object.keys(credential)
-                                    .filter(key => !excludeKeys.includes(key))
-                                    .map(key => (
-                                    <p key={key}>
-                                        {`${key}: ${credential[key]}`}
-                                    </p>
-                                    ))}
-                                </form>
-                                <form method="dialog" className="modal-backdrop">
-                                    <button>close</button>
-                                </form>
-                            </dialog>
-                            </div>
+
                         </div>
-                        
+
                     ))}
                 </div>
             )}
+            <div className='modals-area'>
+                <dialog className="modal" id="current_credential_modal">
+                    <form method="dialog" className="modal-box w-11/12 max-w-5xl">
+                        <div className="modal-action">
+                            <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
+                        </div>
+                        <h2 className="text-2xl font-bold sm:text-2xl">Credential Name: {owned.currentCredential.name}</h2><br />
+                        {Object.keys(owned.currentCredential)
+                            .filter(key => !excludeKeys.includes(key))
+                            .map(key => (
+                                <p key={key}>
+                                    {`${key}: ${owned.currentCredential[key]}`}
+                                </p>
+                            ))}
+                    </form>
+                    <form method="dialog" className="modal-backdrop">
+                        <button>close</button>
+                    </form>
+                </dialog>
+            </div>
         </div>
     );
 }
