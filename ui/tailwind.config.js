@@ -16,7 +16,7 @@ module.exports = {
     },
   },
   daisyui: {
-    themes: ["cupcake"],
+    themes: ["light", "dark", "cupcake"],
   },
   plugins: [require('flowbite/plugin'),require("@tailwindcss/typography"),require('daisyui')],
 }

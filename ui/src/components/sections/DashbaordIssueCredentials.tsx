@@ -63,7 +63,6 @@ const DashBoardIssueCredentials = () => {
     return (
 
         <div>
-            <a className="inline-block rounded btn-primary px-12 py-3 text-center text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400" href='#issue_credential_modal'>Issue Verifiable Credentials to Users</a>
             <div className='modals-area'>
                 <dialog className="modal" id="issue_credential_modal">
                     <div className="modal-box w-11/12 max-w-5xl">

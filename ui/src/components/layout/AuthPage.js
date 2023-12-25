@@ -45,6 +45,7 @@ const AuthPage = ({ validate, children }) => {
     alertAvailable: false,
     alertMessage: '',
     alertNeedsSpinner: false,
+    creator: null,
   });
 
   const [userAuthenticated, setUserAuthenticated] = useState(false);

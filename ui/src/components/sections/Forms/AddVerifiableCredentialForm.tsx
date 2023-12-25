@@ -164,7 +164,7 @@ const AddForm = () => {
               )}
               {index === rows.length - 1 && (
                 <div className="flex items-end">
-                  <button onClick={addAnotherField} className="btn btn-sm btn-accent">
+                  <button onClick={addAnotherField} className="btn btn-accent">
                     Add Another
                   </button>
                 </div>

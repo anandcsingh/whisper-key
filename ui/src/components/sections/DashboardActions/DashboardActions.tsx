@@ -9,6 +9,7 @@ import ShareAction from './ShareAction';
 import PromoteAction from './PromoteAction';
 import RevokeAction from './RevokeAction';
 import ProveAction from './ProveAction';
+import IssueAction from './IssueAction';
 
 export interface DashboardActionsProps {
   // Define any props you want to pass to the component here
@@ -24,6 +25,7 @@ const DashboardActions: React.FC<DashboardActionsProps> = ({ isInstructor, disci
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
       
       <AddAction isInstructor={isInstructor} disciplines={disciplines} />
+      <IssueAction isInstructor={isInstructor} disciplines={disciplines} />
       <InstructorsAction isInstructor={isInstructor} disciplines={disciplines}/>
       <ShareAction isInstructor={isInstructor} disciplines={disciplines} />
       <PromoteAction isInstructor={isInstructor} disciplines={disciplines} />

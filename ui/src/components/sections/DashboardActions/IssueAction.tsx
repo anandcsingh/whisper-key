@@ -1,14 +1,15 @@
 import { DashboardActionsProps } from "./DashboardActions";
 import AddForm from "../Forms/AddForm";
 import AddVerifiableCredentialForm from "../Forms/AddVerifiableCredentialForm";
+import DashBoardIssueCredentials from "../DashbaordIssueCredentials";
 
 
-const AddAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
+const IssueAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
 
     return (
         <div>
             <a className="block rounded-xl border border-gray-100 p-4 shadow-sm hover:border-gray-200 hover:ring-1 hover:ring-gray-200 focus:outline-none focus:ring"
-                href="#add_action_modal">
+                href='#issue_credential_modal'>
 
                 <span className="inline-block rounded-lg bg-gray-50 p-3">
                     <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="#652dc5" viewBox="0 0 20 18">
@@ -16,30 +17,17 @@ const AddAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
                     </svg>
                 </span>
 
-                <h2 className="mt-2 font-bold">Create</h2>
+                <h2 className="mt-2 font-bold">Issue</h2>
 
                 <p className="hidden sm:mt-1 sm:block sm:text-sm sm:text-gray-600">
-                    Create Verifiable Credential
+                    Issue Verifiable Credential
                 </p>
             </a>
 
-            <div className='modals-area'>
-                <dialog className="modal" id="add_action_modal">
-                    <form method="dialog" className="modal-box w-11/12 max-w-5xl">
-                        <div className="modal-action">
-                            <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
-                        </div>
-                        {/* <AddForm /> */}
-                        <AddVerifiableCredentialForm />
-                    </form>
-                    <form method="dialog" className="modal-backdrop">
-                        <button>close</button>
-                    </form>
-                </dialog>
-            </div>
-
+            <DashBoardIssueCredentials />
+          
         </div>
     );
 }
 
-export default AddAction;
+export default IssueAction;
