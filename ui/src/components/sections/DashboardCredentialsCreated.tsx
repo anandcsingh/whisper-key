@@ -76,21 +76,46 @@ const DashboardCredentialsCreated = () => {
 
             <div className='modals-area'>
                 <dialog className="modal" id="current_credential_modal">
-                    <form method="dialog" className="modal-box w-11/12 max-w-5xl">
+                    <div className="modal-box w-11/12 max-w-5xl">
                         <div className="modal-action">
                             <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                         </div>
-                        <h2 className="text-2xl font-bold sm:text-2xl">Credential Name: {created.currentCredential.name}</h2><br />
-                        <div>Owner: {created.currentCredential.owner}</div>
-                        <div>Description: {created.currentCredential.description}</div> <br />
-                        <h2 className="text-2xl font-bold sm:text-2xl">Fields:</h2>
-                        {created.currentCredential.fields.map((field: CredentialField, index: number) => {
-                            return (<div className='data-field' key={index}>
-                                <div>Name: {field.name}</div>
-                                <div>Type: {field.type}</div>
-                            </div>)
+                        <h2 className="text-2xl font-bold sm:text-2xl">{created.currentCredential.name}</h2><br />
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="text-base label-text uppercase">Owner</span>
+                            </label>
+                            {created.currentCredential.owner}
+                            <div className="divider"></div> 
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="text-base label-text uppercase">Description</span>
+                            </label>
+                            {created.currentCredential.description}
+                            <div className="divider"></div> 
+                        </div>
+                        <h3 className="text-2xl font-bold sm:text-2xl">Fields</h3>
+                        <table className="table">
+    
+    <thead>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+    {created.currentCredential.fields.map((field: CredentialField, index: number) => {
+                            return (<tr key={index}>
+                                <td></td>
+                                <td>{field.name}</td>
+                                <td>{field.type}</td>
+                            </tr>)
                         })}
-                    </form>
+    </tbody>
+    </table>
+                    </div>
                     <form method="dialog" className="modal-backdrop">
                         <button>close</button>
                     </form>

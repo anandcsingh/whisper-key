@@ -17,8 +17,8 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ disciplines, creato
   const [authState, _] = useContext(AuthContext);
 
   const shortName = () => {
-      let address = authState.userAddress;
-      return address.substring(0, 5) + "..." + address.substring(address.length - 5, address.length);
+    let address = authState.userAddress;
+    return address.substring(0, 5) + "..." + address.substring(address.length - 5, address.length);
   }
   return (
     <div className="relative bg-indigo-200 dark:bg-indigo-500 p-4 sm:p-6 rounded-sm overflow-hidden">
@@ -66,38 +66,43 @@ const DashboardProfile: React.FC<DashboardProfileProps> = ({ disciplines, creato
       {/* Content */}
       <div className="relative">
         <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold mb-1">
-          Good afternoon {creator ? "Creator" : "Owner"}, { authState.userAuthenticated && shortName() } 👋
+          Good afternoon {creator ? "Creator" : "Owner"}, {authState.userAuthenticated && shortName()} 👋
         </h1>
-        <p className="dark:text-indigo-200 pb-2">Create your Verified Credentials...</p>
-
+        {authState.creator && <p className="dark:text-indigo-200 pb-2">
+          Create your Verified Credentials...
+        </p>
+        }
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 items-center	">
           <div className='grid grid-cols-3'>
-          {disciplines.map((discipline, index) => (
+            {disciplines.map((discipline, index) => (
 
-            <div key={index}>
-              <a href="#my_modal_8">
-                { !discipline.verified ? 
-                  <div className="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-3 rounded dark:bg-blue-900 dark:text-blue-300">
-                    {discipline.discipline} : {discipline.rank}
-                  </div> : 
-                  <div className="bg-yellow-300 text-blue-800 text-xs font-medium mr-2 px-2.5 py-3 rounded dark:bg-blue-900 dark:text-blue-300">{discipline.discipline} : {discipline.rank}</div>}
-              </a>
-              <div className="modal" id="my_modal_8">
-                <div className="modal-box ">
-                  <h3 className="font-bold text-lg">Hello!</h3>
-                  <p className="py-4">This modal works with anchor links</p>
-                  <div className="modal-action">
-                    <a href="#" className="btn btn-primary">Close</a>
+              <div key={index}>
+                <a href="#my_modal_8">
+                  {!discipline.verified ?
+                    <div className="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-3 rounded dark:bg-blue-900 dark:text-blue-300">
+                      {discipline.discipline} : {discipline.rank}
+                    </div> :
+                    <div className="bg-yellow-300 text-blue-800 text-xs font-medium mr-2 px-2.5 py-3 rounded dark:bg-blue-900 dark:text-blue-300">{discipline.discipline} : {discipline.rank}</div>}
+                </a>
+                <div className="modal" id="my_modal_8">
+                  <div className="modal-box ">
+                    <h3 className="font-bold text-lg">Hello!</h3>
+                    <p className="py-4">This modal works with anchor links</p>
+                    <div className="modal-action">
+                      <a href="#" className="btn btn-primary">Close</a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
 
 
-          ))}
+            ))}
           </div>
-          <a className="inline-block rounded btn-primary px-12 py-3 text-center text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400" href='#add_action_modal'>Create Verifiable Credential</a>
+          {authState.creator ?
+            <a className="inline-block rounded btn-primary px-12 py-3 text-center text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400" href='#add_action_modal'>Create Verifiable Credential</a>
+            : <a className="inline-block rounded btn-primary px-12 py-3 text-center text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400"
+              href="#lineage_address_modal1">View Credentials</a>}
         </div>
       </div>
     </div>

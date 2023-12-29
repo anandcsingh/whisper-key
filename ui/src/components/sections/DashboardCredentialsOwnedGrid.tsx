@@ -90,19 +90,24 @@ const DashBoardCredentialsOwnedGrid = () => {
             )}
             <div className='modals-area'>
                 <dialog className="modal" id="current_credential_modal">
-                    <form method="dialog" className="modal-box w-11/12 max-w-5xl">
+                    <div className="modal-box w-11/12 max-w-5xl">
                         <div className="modal-action">
                             <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                         </div>
-                        <h2 className="text-2xl font-bold sm:text-2xl">Credential Name: {owned.currentCredential.name}</h2><br />
+                        <h2 className="text-2xl font-bold sm:text-2xl">{owned.currentCredential.credentialType}</h2><br />
                         {Object.keys(owned.currentCredential)
                             .filter(key => !excludeKeys.includes(key))
                             .map(key => (
-                                <p key={key}>
-                                    {`${key}: ${owned.currentCredential[key]}`}
-                                </p>
+
+                                <div key={key} className="form-control">
+                                    <label className="label">
+                                        <span className="text-base label-text uppercase">{key}</span>
+                                    </label>
+                                    {owned.currentCredential[key]}
+                                    <div className="divider"></div> 
+                                </div>
                             ))}
-                    </form>
+                    </div>
                     <form method="dialog" className="modal-backdrop">
                         <button>close</button>
                     </form>
