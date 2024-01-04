@@ -1,8 +1,8 @@
 
 // Contract creation pipeline
 import { CredentialGenerationPipeline } from './Pipeline/CredentialGenerationPipeline.js';
-import { IPipelineStep } from './Pipeline/CredentialGenerationPipeline.js';
-import { CredentialGenerationContext } from './Pipeline/CredentialGenerationPipeline.js';
+import { IPipelineStep } from './Pipeline/IPipelineStep.js';
+import { CredentialGenerationContext } from './Pipeline/CredentialGenerationContext.js';
 import { CreateFileStep } from './Pipeline/CreateFileStep.js';
 import { BundleFileStep } from './Pipeline/BundleFileStep.js';
 import { StoreMetadataStep } from './Pipeline/StoreMetadataStep.js';

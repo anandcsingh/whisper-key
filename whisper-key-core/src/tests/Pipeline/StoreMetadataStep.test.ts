@@ -9,7 +9,7 @@ import {
   Encoding,
 } from 'o1js';
 import { CredentialMetadata } from '../../CredentialMetadata';
-import { CredentialGenerationContext } from '../../Pipeline/CredentialGenerationPipeline';
+import { CredentialGenerationContext } from '../../Pipeline/CredentialGenerationContext';
 import { jest } from '@jest/globals';
 import path from 'path';
 import { StoreMetadataStep } from '../../Pipeline/StoreMetadataStep';

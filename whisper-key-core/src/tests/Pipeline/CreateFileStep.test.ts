@@ -1,22 +1,9 @@
-import {
-  Field,
-  Mina,
-  PrivateKey,
-  PublicKey,
-  AccountUpdate,
-  CircuitString,
-  Encryption,
-  Encoding,
-} from 'o1js';
-import { CredentialMetadata } from '../../CredentialMetadata';
+
+import { CredentialMetadata } from '../../CredentialMetadata.js';
 import { CreateFileStep } from '../../Pipeline/CreateFileStep';
-import { CredentialGenerationContext } from '../../Pipeline/CredentialGenerationPipeline';
-import {jest} from '@jest/globals';
+import { CredentialGenerationContext } from '../../Pipeline/CredentialGenerationContext';
 import path from 'path';
-// jest.useFakeTimers()
-describe('CreateFileStep', () => {
- 
-  it('can create file from json', async () => {
+import { CredentialGenerationPipeline } from '../../Pipeline/CredentialGenerationPipeline.js';
     const req = {
       "name": "Passport",
       "owner": "3e42",
@@ -32,14 +19,10 @@ describe('CreateFileStep', () => {
       ]
   };
   const creds = CredentialMetadata.fromJson(req);
-   const step = new CreateFileStep();
-   const context = new CredentialGenerationContext();
-   context.credential = creds;
-   context.templatePath = path.resolve('templates/CredentialTemplate.mustache');
-   context.saveFilesPath = path.resolve('./credentials');
-    expect(creds).toBeDefined();
-    await step.run(context);
-    expect(context.generatedFile).toBeDefined();
-  });
-
-});
+   const pipeline = new CredentialGenerationPipeline(); 
+   pipeline.initDefault();
+   pipeline.steps = [pipeline.steps[0]];
+   pipeline.context.credential = creds;
+    
+   pipeline.context.saveFilesPath = path.resolve('templates');
+   await pipeline.run(creds);

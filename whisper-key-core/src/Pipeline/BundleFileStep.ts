@@ -1,7 +1,7 @@
 import path from "path";
 import fs from 'fs';
-import { CredentialGenerationContext } from "./CredentialGenerationPipeline.js"
-import { IPipelineStep } from "./CredentialGenerationPipeline.js"
+import { CredentialGenerationContext } from "./CredentialGenerationContext.js"
+import { IPipelineStep } from "./IPipelineStep.js"
 import CredentialGenerator from "../CredentialGenerator.js";
 import webpack from "webpack";
 
@@ -28,7 +28,8 @@ export class BundleFileStep implements IPipelineStep {
       }
       else {
         context.bundledFile = path.resolve(config.output.path, config.output.filename);
-        context.cloudStorage.storeContractBundle(context.credential);
+        //context.cloudStorage.storeContractBundle(context.credential);
+        throw new Error("Not implemented");
       }
       console.log(stats!.toString());
     });

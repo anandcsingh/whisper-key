@@ -10,7 +10,7 @@ import {
 } from 'o1js';
 import { CredentialMetadata } from '../../CredentialMetadata';
 import { CreateFileStep } from '../../Pipeline/CreateFileStep';
-import { CredentialGenerationContext } from '../../Pipeline/CredentialGenerationPipeline';
+import { CredentialGenerationContext } from '../../Pipeline/CredentialGenerationContext';
 import { jest } from '@jest/globals';
 import path from 'path';
 import { BundleFileStep } from '../../Pipeline/BundleFileStep';

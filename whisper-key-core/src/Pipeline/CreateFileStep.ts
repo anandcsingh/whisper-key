@@ -1,7 +1,7 @@
 import path from "path";
 import fs from 'fs';
-import { CredentialGenerationContext } from "./CredentialGenerationPipeline.js"
-import { IPipelineStep } from "./CredentialGenerationPipeline.js"
+import { CredentialGenerationContext } from "./CredentialGenerationContext.js"
+import { IPipelineStep } from "./IPipelineStep.js"
 import CredentialGenerator from "../CredentialGenerator.js";
 import mustache from "mustache";
 
@@ -18,6 +18,8 @@ export class CreateFileStep implements IPipelineStep {
         const file = this.generateAndSave(context.credential, templateContent, context.saveFilesPath);
         console.log("Generated credential file");
         context.generatedFile = file;
+
+        return Promise.resolve();
     }
 
     generateAndSave(jsonObject: any, template: string, savePath: string): string {

@@ -1,7 +1,7 @@
 import path from "path";
 import fs from 'fs';
-import { CredentialGenerationContext } from "./CredentialGenerationPipeline"
-import { IPipelineStep } from "./CredentialGenerationPipeline"
+import { CredentialGenerationContext } from "./CredentialGenerationContext"
+import { IPipelineStep } from "./IPipelineStep"
 import CredentialGenerator from "../CredentialGenerator.js";
 import { CredentialRepository } from "../CredentialRepository.js";
 

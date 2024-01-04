@@ -24,4 +24,4 @@ export class CredentialTemplateTransformer {
     }
 }
 
-CredentialTemplateTransformer.transform('./dist/src/CredentialProxy.js', './dist/src/CredentialTemplate.mustache');
+CredentialTemplateTransformer.transform('./dist/src/CredentialProxy.js', './dist/src/Pipeline/CredentialTemplate.mustache');

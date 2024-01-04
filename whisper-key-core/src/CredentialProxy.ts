@@ -83,6 +83,10 @@ export class PassportEntity extends Struct({
 export class PassportContract extends SmartContract {
     @state(Field) mapRoot = State<Field>();
 
+    events = {
+        issued: PublicKey,
+    }
+
     init() {
         super.init();
         this.mapRoot.set(Field(new MerkleMap().getRoot()));
@@ -108,6 +112,7 @@ export class PassportContract extends SmartContract {
         const hash = credential.hash();
         const [newRoot, _] = witness.computeRootAndKey(hash);
         this.mapRoot.set(newRoot);
+        this.emitEvent('issued', owner);
     }
 }
 
