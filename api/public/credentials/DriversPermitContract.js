@@ -13,12 +13,9 @@ export class DriversPermitEntity extends Struct({
     credentialType: CircuitString,
     issuer: PublicKey,
     owner: PublicKey,
-    firstName: CircuitString,
-    lastName: CircuitString,
-    dateOfBirth: CircuitString,
-    expiryDate: CircuitString,
-    passportNumber: CircuitString,
-    nationality: CircuitString,
+            Name: CircuitString,
+            ExpiryDate: CircuitString,
+            Number: Field,
 }) {
     toPlainObject() {
         return {
@@ -26,12 +23,9 @@ export class DriversPermitEntity extends Struct({
             credentialType: this.credentialType.toString(),
             issuer: this.issuer.toBase58(),
             owner: this.owner.toBase58(),
-            firstName: this.firstName.toString(),
-            lastName: this.lastName.toString(),
-            dateOfBirth: this.dateOfBirth.toString(),
-            expiryDate: this.expiryDate.toString(),
-            passportNumber: this.passportNumber.toString(),
-            nationality: this.nationality.toString(),
+            Name: this.Name.toString(),
+            ExpiryDate: this.ExpiryDate.toString(),
+            Number: Number(this.Number.toBigInt()),
         };
     }
     static fromPlainObject(obj) {
@@ -40,12 +34,9 @@ export class DriversPermitEntity extends Struct({
             credentialType: CircuitString.fromString(obj.credentialType),
             issuer: PublicKey.fromBase58(obj.issuer),
             owner: PublicKey.fromBase58(obj.owner),
-            firstName: CircuitString.fromString(obj.firstName),
-            lastName: CircuitString.fromString(obj.lastName),
-            dateOfBirth: CircuitString.fromString(obj.dateOfBirth),
-            expiryDate: CircuitString.fromString(obj.expiryDate),
-            passportNumber: CircuitString.fromString(obj.passportNumber),
-            nationality: CircuitString.fromString(obj.nationality),
+            Name: CircuitString.fromString(obj.Name),
+            ExpiryDate: CircuitString.fromString(obj.ExpiryDate),
+            Number: Field(obj.Number),
         });
     }
     hash() {
@@ -53,13 +44,10 @@ export class DriversPermitEntity extends Struct({
             .concat(this.credentialType.toFields())
             .concat(this.issuer.toFields())
             .concat(this.owner.toFields())
-            .concat(this.firstName.toFields())
-            .concat(this.lastName.toFields())
-            .concat(this.dateOfBirth.toFields())
-            .concat(this.expiryDate.toFields())
-            .concat(this.dateOfBirth.toFields())
-            .concat(this.passportNumber.toFields())
-            .concat(this.nationality.toFields()));
+            .concat(this.Name.toFields())
+                        .concat(this.ExpiryDate.toFields())
+                        .concat(this.Number.toFields())
+            );
     }
 }
 export class DriversPermitContract extends SmartContract {
