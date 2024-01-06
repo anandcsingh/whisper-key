@@ -1,5 +1,5 @@
 import { CredentialProxy, PassportContract, PassportEntity } from '../CredentialProxy';
-import { Field, Mina, PrivateKey, PublicKey, AccountUpdate, MerkleMap, CircuitString } from 'o1js';
+import { Field, Mina, PrivateKey, PublicKey, AccountUpdate, MerkleMap, CircuitString, UInt32 } from 'o1js';
 
 /*
  * This file specifies how to test the `Add` example smart contract. It is safe to delete this file and replace
@@ -159,4 +159,48 @@ describe('CredentialProxyTemplateLocal', () => {
     expect(entity.nationality).toEqual(CircuitString.fromString('Trinidadian'));
   });
 
+  it('issues `PassportContract` credential smart contract produces events', async () => {
+    const contractAddress = PrivateKey.random();
+    const proxy = new CredentialProxy(contractAddress.toPublicKey(), "Passport",senderAccount, proofsEnabled);
+    await proxy.deployLocal(local, deployerKey, contractAddress, true);
+    const map = new MerkleMap();
+    const entity = new PassportEntity({
+      id: Field(1),
+      credentialType: CircuitString.fromString('Test'),
+      owner: PublicKey.fromBase58("B62qqzMHkbogU9gnQ3LjrKomimsXYt4qHcXc8Cw4aX7tok8DjuDsAzx"),
+      issuer: senderAccount,
+      firstName: CircuitString.fromString('Test'),
+      lastName: CircuitString.fromString('Test'),
+      dateOfBirth: CircuitString.fromString('Test'),
+      expiryDate: CircuitString.fromString('Test'),
+      passportNumber: CircuitString.fromString('Test'),
+      nationality: CircuitString.fromString('Test'),
+    });
+    
+    
+    const merkleStore = {
+      nextID: 2,
+      map: map,
+    };
+    const currentRoot = (await proxy.getStorageRoot()).toString();
+
+    // update transaction
+    const txn = await proxy.issueCredential(senderAccount, entity.toPlainObject(), merkleStore);
+    await txn.transaction.prove();
+    await txn.transaction.sign([senderKey]).send();
+
+    const updatedRoot = (await proxy.getStorageRoot()).toString();
+
+    expect(currentRoot).not.toEqual(updatedRoot);
+    entity.id = Field(merkleStore.nextID);
+    console.log("hash:", entity.hash().toString());
+    const updatedWitness = map.getWitness(entity.id);
+    const [newRoot, _] = updatedWitness.computeRootAndKey(entity.hash());
+
+    expect(newRoot.toString()).toEqual(updatedRoot);
+
+    const events = await proxy.fetchEvents(UInt32.from(0));
+    console.log(events);
+    expect(events.length).toEqual(1);
+  });
 });

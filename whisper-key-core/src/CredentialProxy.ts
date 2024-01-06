@@ -20,6 +20,7 @@ import {
     PrivateKey,
     AccountUpdate,
     Provable,
+    UInt32,
 } from 'o1js';
 
 export class PassportEntity extends Struct({
@@ -141,6 +142,14 @@ export class CredentialProxy {
         this.zkApp = new PassportContract(this.contractAddress);
     }
 
+    async fetchEvents(start: UInt32) {
+        let events = await this.zkApp.fetchEvents(start)
+        let content = events.map((e) => {
+            return { type: e.type, data: JSON.stringify(e.event), blockHeight: Number(e.blockHeight.toBigint()) };
+        });
+        return content;
+    }
+
     async getEntityFromObject(obj: any) {
         return PassportEntity.fromPlainObject(obj);
     }
@@ -169,7 +178,7 @@ export class CredentialProxy {
 
         credential.id = merkleStore.nextID;
         const entity: PassportEntity = PassportEntity.fromPlainObject(credential);
-        
+
         let hash = entity.hash();
         merkleStore.map.set(entity.id, hash);
         const witness = merkleStore.map.getWitness(entity.id);

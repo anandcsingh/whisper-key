@@ -113,6 +113,14 @@ export class CredentialProxy {
             console.log("compiled contract @", new Date().toISOString());
         }
         this.zkApp = new DriversPermitContract(this.contractAddress);
+       // this.zkApp.fetchEvents();
+    }
+    async fetchEvents(start) {
+        let events = await this.zkApp.fetchEvents(start);
+        let content = events.map((e) => {
+            return { type: e.type, data: JSON.stringify(e.event) };
+        });
+        return content;
     }
     async getEntityFromObject(obj) {
         return DriversPermitEntity.fromPlainObject(obj);

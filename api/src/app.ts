@@ -6,10 +6,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, fetchAccount } from 'o1js';
+import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, UInt32, fetchAccount } from 'o1js';
 import { DiscordBadgeContract, DiscordBadgeEntity } from '../public/credentials/DiscordBadgeContract.js';
 import swaggerUi from 'swagger-ui-express';
 import specs from './config/swaggerConfig.js'; // Import the generated Swagger specs
+import { CredentialRepository } from 'contract-is-key';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
@@ -19,6 +20,30 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/api/credentials', credsRouter);
+
+app.use('/api/events/:name', async (req, res, next) => { 
+  const name = req.params.name;
+  const Berkeley = Mina.Network({
+    mina: 'https://proxy.berkeley.minaexplorer.com/graphql',
+    archive: 'https://archive.berkeley.minaexplorer.com/',
+  });
+  Mina.setActiveInstance(Berkeley);
+  
+  const repo = new CredentialRepository();
+  const credMetadata = await repo.GetCredential(name);
+ // const templatePath = path.resolve(`public/credentials/${name}Contract.js`);
+  const templatePath = `../../public/credentials/${req.params.name}Contract.js`
+
+  const { CredentialProxy } = await import(/* webpackIgnore: true */templatePath); 
+  const zkAppAddress = PublicKey.fromBase58(credMetadata.contractPublicKey);
+   
+  console.log("credMetadata.contractPublicKey:", credMetadata.contractPublicKey);
+  const proxy = new CredentialProxy(zkAppAddress, name, PublicKey.empty, true);
+  const events = await proxy.fetchEvents(UInt32.from(0));
+  res.send(events);
+
+});
+
 
 // Serve Swagger documentation using swagger-ui-express
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
