@@ -9,7 +9,7 @@ const DashboardLineageHero = () => {
 
     return (
         <div>
-            <div className="mx-auto max-w-lg text-center lg:mx-0 ltr:lg:text-left rtl:lg:text-right">
+            <div className="m-auto max-w-lg text-center lg:mx-0 ltr:lg:text-left rtl:lg:text-right">
                 <h2 className="text-3xl font-bold sm:text-4xl">
                     {authState.creator != null && 
                     <>
