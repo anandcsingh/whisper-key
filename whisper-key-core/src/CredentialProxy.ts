@@ -142,8 +142,8 @@ export class CredentialProxy {
         this.zkApp = new PassportContract(this.contractAddress);
     }
 
-    async fetchEvents(start: UInt32) {
-        let events = await this.zkApp.fetchEvents(start)
+    async fetchEvents(start: UInt32, end?: UInt32) {
+        let events = await this.zkApp.fetchEvents(start, end)
         let content = events.map((e) => {
             return { type: e.type, data: JSON.stringify(e.event), blockHeight: Number(e.blockHeight.toBigint()) };
         });
