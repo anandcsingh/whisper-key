@@ -4,7 +4,7 @@ import { PublicKey, UInt32 } from "o1js";
 
 export class EventNotification {
     
-    async push(events: any[]) {
+    async push(name: string, events: any[]) {
         
         // store in firebase for web notifications
 
