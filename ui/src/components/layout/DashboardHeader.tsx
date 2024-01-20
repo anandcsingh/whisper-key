@@ -18,7 +18,6 @@ const Header = () => {
 
   const handleButtonClick = () => {
     console.log('clicked');
-    // Now you can use the selectedContactMethod in your logic
     if(selectedContactMethod)
     {
       console.log('Selected Contact Method:', selectedContactMethod);
