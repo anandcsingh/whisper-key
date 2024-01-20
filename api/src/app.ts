@@ -11,6 +11,8 @@ import { DiscordBadgeContract, DiscordBadgeEntity } from '../public/credentials/
 import swaggerUi from 'swagger-ui-express';
 import specs from './config/swaggerConfig.js'; // Import the generated Swagger specs
 import { CredentialRepository } from 'contract-is-key';
+import { EventNotification } from './models/EventNotification.js';
+import { EventPolling } from './models/EventPolling.js';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
@@ -18,6 +20,15 @@ const port = process.env.PORT || 3001; // Set your desired port
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
+
+
+// const Berkeley = Mina.Network({
+//   mina: 'https://proxy.berkeley.minaexplorer.com/graphql',
+//   archive: 'https://archive.berkeley.minaexplorer.com/',
+// });
+// Mina.setActiveInstance(Berkeley);
+// const polling = new EventPolling("*/10  * * * *", new CredentialRepository(), new EventNotification(), Berkeley);
+//polling.start();
 
 app.use('/api/credentials', credsRouter);
 
@@ -39,6 +50,7 @@ app.use('/api/events/:name', async (req, res, next) => {
    
   console.log("credMetadata.contractPublicKey:", credMetadata.contractPublicKey);
   const proxy = new CredentialProxy(zkAppAddress, name, PublicKey.empty, true);
+  const blockHeight = UInt32.from(34964);
   const events = await proxy.fetchEvents(UInt32.from(0));
   res.send(events);
 
