@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser'
 import { credsRouter } from './routes/credentialsRoute.js';
+import { messagingRouter } from './routes/messagingRoute.js';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
@@ -32,22 +33,24 @@ app.use(cors());
 
 app.use('/api/credentials', credsRouter);
 
-app.use('/api/events/:name', async (req, res, next) => { 
+app.use('/api/messaging', messagingRouter);
+
+app.use('/api/events/:name', async (req, res, next) => {
   const name = req.params.name;
   const Berkeley = Mina.Network({
     mina: 'https://proxy.berkeley.minaexplorer.com/graphql',
     archive: 'https://archive.berkeley.minaexplorer.com/',
   });
   Mina.setActiveInstance(Berkeley);
-  
+
   const repo = new CredentialRepository();
   const credMetadata = await repo.GetCredential(name);
- // const templatePath = path.resolve(`public/credentials/${name}Contract.js`);
+  // const templatePath = path.resolve(`public/credentials/${name}Contract.js`);
   const templatePath = `../../public/credentials/${req.params.name}Contract.js`
 
-  const { CredentialProxy } = await import(/* webpackIgnore: true */templatePath); 
+  const { CredentialProxy } = await import(/* webpackIgnore: true */templatePath);
   const zkAppAddress = PublicKey.fromBase58(credMetadata.contractPublicKey);
-   
+
   console.log("credMetadata.contractPublicKey:", credMetadata.contractPublicKey);
   const proxy = new CredentialProxy(zkAppAddress, name, PublicKey.empty, true);
   const blockHeight = UInt32.from(34964);
