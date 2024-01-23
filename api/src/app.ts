@@ -26,7 +26,7 @@ app.use(cors());
 
 
 // NOTIFICATIONS 
-cron.schedule('*/15 * * * * *', () => {
+cron.schedule('*/5 * * * *', () => {
   checkDeploymentStatus(new EventNotification());
 });
 
