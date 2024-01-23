@@ -40,7 +40,7 @@ export class EventPolling {
                 const zkAppAddress = PublicKey.fromBase58(cred.contractPublicKey);
                 const proxy = new CredentialProxy(zkAppAddress, name, PublicKey.empty, true);
                 const events = await proxy.fetchEvents(UInt32.from(0));
-                this.eventNotification.push(cred.name, events);
+                this.eventNotification.pushIssued(cred.name, events);
             }
 
             // update db with current block

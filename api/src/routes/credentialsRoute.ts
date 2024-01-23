@@ -1,6 +1,6 @@
 // routes/credentialsRoute.ts
 import express from 'express';
-import { generateCredentials, getCreatedCredentials, getOwnedCredentials, issueCredentialViaProxy } from '../controllers/credentialsController.js';
+import { addTask, generateCredentials, getCreatedCredentials, getOwnedCredentials, issueCredentialViaProxy } from '../controllers/credentialsController.js';
 import { get } from 'http';
 
 /**
@@ -275,3 +275,4 @@ credsRouter.get('/created/:address', getCreatedCredentials);
 credsRouter.post('/issue/:name', issueCredentialViaProxy);
 
 credsRouter.get('/owned/:address', getOwnedCredentials);
+credsRouter.get('/addtask', addTask);

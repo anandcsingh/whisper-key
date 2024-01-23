@@ -14,6 +14,8 @@ import specs from './config/swaggerConfig.js'; // Import the generated Swagger s
 import { CredentialRepository } from 'contract-is-key';
 import { EventNotification } from './models/EventNotification.js';
 import { EventPolling } from './models/EventPolling.js';
+import {checkDeploymentStatus} from './controllers/credentialsController.js'
+import cron from 'node-cron';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
@@ -22,6 +24,11 @@ const port = process.env.PORT || 3001; // Set your desired port
 app.use(bodyParser.json());
 app.use(cors());
 
+
+// NOTIFICATIONS 
+cron.schedule('*/5 * * * *', () => {
+  checkDeploymentStatus(new EventNotification());
+});
 
 // const Berkeley = Mina.Network({
 //   mina: 'https://proxy.berkeley.minaexplorer.com/graphql',
