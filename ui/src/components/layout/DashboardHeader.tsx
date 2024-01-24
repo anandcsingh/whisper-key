@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import React from 'react';
 import Authentication from '@/modules/Authentication';
 import { AuthContext } from './AuthPage';
+import { ProfileMetadata } from '../../../../api/src/models/ProfileMetadata';
 
 const Header = () => {
 
@@ -21,6 +22,14 @@ const Header = () => {
     if(selectedContactMethod)
     {
       console.log('Selected Contact Method:', selectedContactMethod);
+    }
+    let myWalletAddress = authState.userAuthenticated ? authState.userAddress : '';
+    if(myWalletAddress !== '' && myWalletAddress !== undefined && myWalletAddress !== null)
+    {
+      let profile = new ProfileMetadata(myWalletAddress, '', '', selectedContactMethod);
+      // TODO:
+      // POST to /api/profile to update profile info
+      //updateProfile();
     }
     setProfileIsModalOpen(false);
   };
