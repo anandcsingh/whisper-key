@@ -63,3 +63,7 @@ a {
 .modal-box {
   max-width: 65rem;
 }
+
+.bg-slice{
+  background-image: url(../../public/assets/bg-slice.svg);
+}

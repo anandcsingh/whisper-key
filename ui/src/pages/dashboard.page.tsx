@@ -30,12 +30,12 @@ export default function Dashboard() {
       <AuthPage validate={true}>
       <DashboardHeader />
       <main>
-           <div className='rankproof-page'>
+        <div className='rankproof-page'>
    
-             <div className='rankproof-content-wrap'>
+        <div className='rankproof-content-wrap'>
    
-                <DashboardContainer showDummyData={true} dummyDataIsInstructor={true} />
-                <footer className="bg-gray-100 dark:bg-gray-800">
+          <DashboardContainer showDummyData={true} dummyDataIsInstructor={true} />
+          <footer className="bg-gray-100 dark:bg-gray-800">
             <div className="max-w-screen-xl p-4 py-6 mx-auto lg:py-16 md:p-8 lg:p-10">
               
             
