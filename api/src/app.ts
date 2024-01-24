@@ -14,8 +14,9 @@ import specs from './config/swaggerConfig.js'; // Import the generated Swagger s
 import { CredentialRepository } from 'contract-is-key';
 import { EventNotification } from './models/EventNotification.js';
 import { EventPolling } from './models/EventPolling.js';
-import {checkDeploymentStatus} from './controllers/credentialsController.js'
+import { checkDeploymentStatus } from './controllers/credentialsController.js'
 import cron from 'node-cron';
+import { profileRouter } from './routes/profileRoute.js';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
@@ -41,6 +42,8 @@ cron.schedule('*/5 * * * *', () => {
 app.use('/api/credentials', credsRouter);
 
 app.use('/api/messaging', messagingRouter);
+
+app.use('/api/profile', profileRouter);
 
 app.use('/api/events/:name', async (req, res, next) => {
   const name = req.params.name;

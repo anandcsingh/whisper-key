@@ -6,4 +6,4 @@ export const messagingRouter = express.Router();
 
 messagingRouter.post('/sms', sendSms);
 messagingRouter.post('/whatsapp', sendWhatsapp);
-messagingRouter.post('email', sendEmail);
+messagingRouter.post('/email', sendEmail);
