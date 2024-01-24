@@ -222,7 +222,7 @@ export const generateCredentials = async (req: Request, res: Response) => {
     pipeline.initDefault();
     await pipeline.run(creds);
 
-    contractsDeploying.push(creds);
+    contractsDeploying[creds.name] = { creds };
 
     res.status(200)
         .send(creds);
@@ -252,7 +252,8 @@ export const checkTasks = async () => {
 }
 
 
-let contractsDeploying: CredentialMetadata[] = [({ name: "DriversPermit", contractPublicKey: "B62qmY247XU9mYFj9emWdKATGGBLH7tRu5BZjDd8Qhy26emBkdLwk8B" } as CredentialMetadata)];
+//let contractsDeploying: any = {"DriversPermit": { creds: ({ name: "DriversPermit", contractPublicKey: "B62qmY247XU9mYFj9emWdKATGGBLH7tRu5BZjDd8Qhy26emBkdLwk8B" } as CredentialMetadata)}};
+let contractsDeploying: any = {"Director": { creds: ({ name: "Director", contractPublicKey: "B62qrwAF6n1ox1BW3qbdb4SzTDR344ZwirkygvfgskFBD42quZYxWHW", owner: "B62qrwAF6n1ox1BW3qbdb4SzTDR344ZwirkygvfgskFBD42quZYxWHW" } as CredentialMetadata)}};
 
 export const checkDeploymentStatus = async (notifier: EventNotification) => {
     try {
@@ -265,30 +266,45 @@ export const checkDeploymentStatus = async (notifier: EventNotification) => {
         console.log("contractsDeploying:", contractsDeploying);
         const senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
         const senderAccount = senderKey.toPublicKey();
-        const clonedContracts = [...contractsDeploying];
+        const clonedContracts = {...contractsDeploying};
 
-        for (let i = 0; i < contractsDeploying.length; i++) {
-            const cred = contractsDeploying[i];
+        // iterate over contractsDeploying object properties
+        for (const key of Object.keys(contractsDeploying)) {
+            const cred = contractsDeploying[key].creds;
             console.log("Checking deployment status for", cred.name);
-            const zkAppAddress = PublicKey.fromBase58(cred.contractPublicKey);
-            await fetchAccount({ publicKey: zkAppAddress });
-            const path = `../../../public/credentials/${cred.name}Contract.js`
-            const { CredentialProxy } = await import(/* webpackIgnore: true */path);
-            const proxy = new CredentialProxy(zkAppAddress, cred.name, senderAccount, true);
-
+            await setProxy(cred, senderAccount);
+            const proxy = contractsDeploying[key].proxy;
             try {
                 const contractRoot = await proxy.getStorageRoot();
-                console.log("Contract found");
+                console.log(`${cred.name} Contract found`);
                 notifier.pushCreated(cred);
-                clonedContracts.splice(i, 1);
+                delete clonedContracts[key];
             } catch (e) {
                 console.log("Error:", e);
+                console.log(`${cred.name} Contract NOT found`);
             }
+
         }
         contractsDeploying = clonedContracts;
     }
     catch (e) {
+        console.log("Error:", e);   
     }
 }
 
+
+async function setProxy(cred: any, senderAccount: PublicKey) {
+
+    if (contractsDeploying[cred.name] != null && contractsDeploying[cred.name].proxy != null) {
+        return;
+    } else {
+        const zkAppAddress = PublicKey.fromBase58(cred.contractPublicKey);
+        await fetchAccount({ publicKey: zkAppAddress });
+        const path = `../../../public/credentials/${cred.name}Contract.js`;
+        const { CredentialProxy } = await import(/* webpackIgnore: true */ path);
+        const proxy = new CredentialProxy(zkAppAddress, cred.name, senderAccount, true);
+        contractsDeploying[cred.name].proxy = proxy;
+        return;
+    }
+}
 
