@@ -10,7 +10,7 @@ import {
     setDoc,
     where,
   } from 'firebase/firestore';
-  import { NotificationsRepository } from './NotificationsRepository';
+  import { NotificationsRepository } from './NotificationsRepository.js';
   
   export class CreatedCredentialRepository extends NotificationsRepository {
   
@@ -61,5 +61,15 @@ export class CreatedCredentialNotification {
         this.creator = creator;
         this.seen = seen;
         this.created = created;
+    }
+
+    toPlainObject(): any {
+        return {
+            id: this.id,
+            credentialName: this.credentialName,
+            creator: this.creator,
+            seen: this.seen,
+            created: this.created,
+        };
     }
 }
