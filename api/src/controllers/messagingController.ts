@@ -24,6 +24,8 @@ export const sendSms = async (req: Request, res: Response) => {
             to: to
         })
         .then(message => console.log(message.sid));
+
+    res.status(200).send("ok");
 }
 // Send a WhatsApp Message : Number format: E164
 export const sendWhatsapp = async (req: Request, res: Response) => {
@@ -47,6 +49,9 @@ export const sendWhatsapp = async (req: Request, res: Response) => {
             to: `whatsapp:${to}`
         })
         .then(message => console.log(message.sid));
+
+    res.status(200).send("ok");
+
 }
 
 // Send an Email
@@ -103,4 +108,5 @@ export const sendEmail = async (req: Request, res: Response) => {
         console.error('Error sending email: ', error);
         return res.status(500).json({ error: 'Internal server error' });
     }
+
 };

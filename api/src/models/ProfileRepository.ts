@@ -26,8 +26,9 @@ export class ProfileRepository {
         this.database = getFirestore(this.app);
     }
 
-    async getProfile(id: string): Promise<ProfileMetadata | undefined> {
-        const docRef = doc(this.database, this.collectionName, id);
+    // walletAddress is the unique id
+    async getProfile(walletAddress: string): Promise<ProfileMetadata | undefined> {
+        const docRef = doc(this.database, this.collectionName, walletAddress);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             return docSnap.data() as ProfileMetadata;
