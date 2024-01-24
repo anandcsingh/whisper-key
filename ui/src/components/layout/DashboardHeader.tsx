@@ -6,35 +6,60 @@ import React from 'react';
 import Authentication from '@/modules/Authentication';
 import { AuthContext } from './AuthPage';
 import { ProfileMetadata } from '../../../../api/src/models/ProfileMetadata';
+import async from '../../pages/api/credentials';
+import axios from 'axios';
 
 const Header = () => {
 
   const [authState, setAuthState] = useContext(AuthContext);
+  const [profileData, setProfileData] = useState<ProfileMetadata | null>(null);
   const [isProfleModalOpen, setProfileIsModalOpen] = useState(false);
-  const [selectedContactMethod, setSelectedContactMethod] = useState('');
+  const [preferredNotificationChannel, setPreferredNotificationChannel] = useState('');
+  const [userPhone, setUserPhoneNum] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+    const fetchProfileInfo = async () => {
+      try {
+        let myWalletAddress = authState.userAuthenticated ? authState.userAddress : '';
+        if(myWalletAddress !== '' && myWalletAddress !== undefined && myWalletAddress !== null)
+        {
+          const profileInstance = new ProfileMetadata(myWalletAddress, '', '', '');
+          const data = await profileInstance.getProfileInfo();
+          setProfileData(data);
+  
+          setUserPhoneNum(data.phoneNumber);
+          setUserEmail(data.emailAddress);
+          setPreferredNotificationChannel(data.preferredNotificationChannel);
+        }
+      } catch (error) {
+        console.error('Error fetching profile information:', error);
+      }
+    };
+    fetchProfileInfo();
+  }, []); 
 
   const handleContactMethodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedContactMethod(event.target.value);
+    setPreferredNotificationChannel(event.target.value);
   };
 
   const handleButtonClick = () => {
     console.log('clicked');
-    if(selectedContactMethod)
+    if(preferredNotificationChannel)
     {
-      console.log('Selected Contact Method:', selectedContactMethod);
+      console.log('Selected Contact Method:', preferredNotificationChannel);
     }
     let myWalletAddress = authState.userAuthenticated ? authState.userAddress : '';
     if(myWalletAddress !== '' && myWalletAddress !== undefined && myWalletAddress !== null)
-    {
-      let profile = new ProfileMetadata(myWalletAddress, '', '', selectedContactMethod);
-      // TODO:
-      // POST to /api/profile to update profile info
-      //updateProfile();
+    {      
+      const profile = new ProfileMetadata(myWalletAddress, userPhone, userEmail, preferredNotificationChannel);
+      profile.updateProfileInfo();
     }
     setProfileIsModalOpen(false);
   };
 
 
+  //TODO: Add user phone number and user email to the Profile Modal
   return (
 
     <nav className="bg-gray-800 z-100 invisible lg:visible">
@@ -82,6 +107,7 @@ const Header = () => {
                       name="contactMethod"
                       className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       onChange={handleContactMethodChange}
+                      value={preferredNotificationChannel}
                     >
                       <option value="">Select Contact Method</option>
                       <option value="whatsapp">WhatsApp</option>
