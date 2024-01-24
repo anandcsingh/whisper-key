@@ -6,6 +6,7 @@ import { CredentialProxy, FreeCredentialContract, FreeCredentialEntity } from '.
 import crypto from 'crypto';
 import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata } from "contract-is-key";
 import Client from 'mina-signer';
+import { EventNotification } from "../models/EventNotification.js";
 
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const name = req.params.name;
@@ -209,6 +210,8 @@ export const getOwnedCredentials = async (req: Request, res: Response) => {
         .send(creds);
 }
 
+
+
 export const generateCredentials = async (req: Request, res: Response) => {
     console.log(req.body);
 
@@ -219,8 +222,73 @@ export const generateCredentials = async (req: Request, res: Response) => {
     pipeline.initDefault();
     await pipeline.run(creds);
 
+    contractsDeploying.push(creds);
+
     res.status(200)
         .send(creds);
     return;
-
 };
+
+let tasks: string[] = [];
+export const addTask = async (req: Request, res: Response) => {
+    // random string
+    const random = Math.random().toString(36).substring(7);
+    tasks.push(random)
+    res.status(200)
+        .send(random);
+}
+
+export const checkTasks = async () => {
+
+    console.log("Checking tasks");
+    console.log("tasks:", tasks);
+
+    for (let i = 0; i < tasks.length; i++) {
+        const task = tasks[i];
+        console.log("Checking task", task);
+        // remove task
+        tasks = tasks.filter(t => t != task);
+    }
+}
+
+
+let contractsDeploying: CredentialMetadata[] = [({ name: "DriversPermit", contractPublicKey: "B62qmY247XU9mYFj9emWdKATGGBLH7tRu5BZjDd8Qhy26emBkdLwk8B" } as CredentialMetadata)];
+
+export const checkDeploymentStatus = async (notifier: EventNotification) => {
+    try {
+        const Berkeley = Mina.Network({
+            mina: 'https://proxy.berkeley.minaexplorer.com/graphql',
+            archive: 'https://archive.berkeley.minaexplorer.com/',
+        });
+        Mina.setActiveInstance(Berkeley);
+        console.log("Checking deployment status");
+        console.log("contractsDeploying:", contractsDeploying);
+        const senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
+        const senderAccount = senderKey.toPublicKey();
+        const clonedContracts = [...contractsDeploying];
+
+        for (let i = 0; i < contractsDeploying.length; i++) {
+            const cred = contractsDeploying[i];
+            console.log("Checking deployment status for", cred.name);
+            const zkAppAddress = PublicKey.fromBase58(cred.contractPublicKey);
+            await fetchAccount({ publicKey: zkAppAddress });
+            const path = `../../../public/credentials/${cred.name}Contract.js`
+            const { CredentialProxy } = await import(/* webpackIgnore: true */path);
+            const proxy = new CredentialProxy(zkAppAddress, cred.name, senderAccount, true);
+
+            try {
+                const contractRoot = await proxy.getStorageRoot();
+                console.log("Contract found");
+                notifier.pushCreated(cred);
+                clonedContracts.splice(i, 1);
+            } catch (e) {
+                console.log("Error:", e);
+            }
+        }
+        contractsDeploying = clonedContracts;
+    }
+    catch (e) {
+    }
+}
+
+

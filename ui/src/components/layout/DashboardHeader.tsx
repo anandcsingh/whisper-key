@@ -9,6 +9,21 @@ import { AuthContext } from './AuthPage';
 const Header = () => {
 
   const [authState, setAuthState] = useContext(AuthContext);
+  const [isProfleModalOpen, setProfileIsModalOpen] = useState(false);
+  const [selectedContactMethod, setSelectedContactMethod] = useState('');
+
+  const handleContactMethodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedContactMethod(event.target.value);
+  };
+
+  const handleButtonClick = () => {
+    console.log('clicked');
+    if(selectedContactMethod)
+    {
+      console.log('Selected Contact Method:', selectedContactMethod);
+    }
+    setProfileIsModalOpen(false);
+  };
 
 
   return (
@@ -31,16 +46,55 @@ const Header = () => {
                  href='/dashboard' >
                     Launch App
                 </Link> */}
-              { authState.userAuthenticated && <p className='mr-2'>
+              {authState.userAuthenticated && <p className='mr-2'>
                 {authState.userAddress.substring(0, 5) + "..." + authState.userAddress.substring(authState.userAddress.length - 5, authState.userAddress.length)}
-                </p> 
+              </p>
               }
               <button type="button" className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-  Notifications
-  <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">
-    2
-  </span>
-</button>
+                Notifications
+                <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">
+                  2
+                </span>
+              </button>
+              <button type="button" style={{ marginLeft: '5px' }} onClick={() => setProfileIsModalOpen(true)}
+                className="button-channel inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Profile
+              </button>
+
+              {isProfleModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-80">
+                  {/* Dropdown Menu */}
+                  <div className="mt-4">
+                    <label htmlFor="contactMethod" className="block text-sm font-medium text-gray-700">
+                      Notification Method
+                    </label>
+                    <select
+                      id="contactMethod"
+                      name="contactMethod"
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      onChange={handleContactMethodChange}
+                    >
+                      <option value="">Select Contact Method</option>
+                      <option value="whatsapp">WhatsApp</option>
+                      <option value="sms">SMS</option>
+                      <option value="email">Email</option>
+                    </select>
+                  </div>
+                  {/* Button to capture choice */}
+                  <button
+                    className="mt-4 bg-purple-500 text-white px-4 py-2 rounded"
+                    onClick={handleButtonClick}
+                  >
+                    Save
+                  </button>
+                </div>
+              )}
+
+              {/* Semi-transparent overlay with a higher z-index */}
+              {isProfleModalOpen && (
+                <div className="fixed inset-0 z-40 bg-gray-600 bg-opacity-60"></div>
+              )}
+
             </div>
 
 

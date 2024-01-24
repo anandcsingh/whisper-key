@@ -202,5 +202,15 @@ describe('CredentialProxyTemplateLocal', () => {
     const events = await proxy.fetchEvents(UInt32.from(0));
     console.log(events);
     expect(events.length).toEqual(1);
+
+    entity.owner = PublicKey.fromBase58("B62qqNZ5uRoJabpHubKLoaGQtHPiJBAoNWiPAHyf1W9iWHWzkko8pYC");
+
+    const txn1 = await proxy.issueCredential(senderAccount, entity.toPlainObject(), merkleStore);
+    await txn1.transaction.prove();
+    await txn1.transaction.sign([senderKey]).send();
+
+    const events1 = await proxy.fetchEvents(UInt32.from(0));
+    console.log(events1);
+    expect(events1.length).toEqual(2);
   });
 });

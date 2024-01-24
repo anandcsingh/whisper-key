@@ -23,9 +23,12 @@
     "firebase": "^10.5.2",
     "mina-signer": "^2.1.1",
     "mustache": "^4.2.0",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.8",
     "o1js": "^0.13.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "twilio": "^4.20.1",
     "typescript": "^5.2.2",
     "webpack": "^5.89.0"
   },

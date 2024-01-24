@@ -13,9 +13,8 @@ export class NewTimeWatchEntity extends Struct({
     credentialType: CircuitString,
     issuer: PublicKey,
     owner: PublicKey,
-    Military: Bool,
-    Digital: Bool,
-    Color: CircuitString,
+            ID: Field,
+            Name: CircuitString,
 }) {
     toPlainObject() {
         return {
@@ -23,9 +22,8 @@ export class NewTimeWatchEntity extends Struct({
             credentialType: this.credentialType.toString(),
             issuer: this.issuer.toBase58(),
             owner: this.owner.toBase58(),
-            Military: this.Military.toBoolean(),
-            Digital: this.Digital.toBoolean(),
-            Color: this.Color.toString(),
+            ID: Number(this.ID.toBigInt()),
+            Name: this.Name.toString(),
         };
     }
     static fromPlainObject(obj) {
@@ -34,9 +32,8 @@ export class NewTimeWatchEntity extends Struct({
             credentialType: CircuitString.fromString(obj.credentialType),
             issuer: PublicKey.fromBase58(obj.issuer),
             owner: PublicKey.fromBase58(obj.owner),
-            Military: Bool(Military),
-            Digital: Bool(Digital),
-            Color: CircuitString.fromString(obj.Color),
+            ID: Field(obj.ID),
+            Name: CircuitString.fromString(obj.Name),
         });
     }
     hash() {
@@ -44,9 +41,8 @@ export class NewTimeWatchEntity extends Struct({
             .concat(this.credentialType.toFields())
             .concat(this.issuer.toFields())
             .concat(this.owner.toFields())
-            .concat(this.Military.toFields())
-            .concat(this.Digital.toFields())
-            .concat(this.Color.toFields())
+            .concat(this.ID.toFields())
+                        .concat(this.Name.toFields())
             );
     }
 }
@@ -54,6 +50,9 @@ export class NewTimeWatchContract extends SmartContract {
     constructor() {
         super(...arguments);
         this.mapRoot = State();
+        this.events = {
+            issued: PublicKey,
+        };
     }
     init() {
         super.init();
@@ -67,11 +66,13 @@ export class NewTimeWatchContract extends SmartContract {
     issueCredential(owner, credential, witness, currentRoot) {
         this.mapRoot.getAndAssertEquals();
         this.mapRoot.assertEquals(currentRoot);
-        this.sender.assertEquals(credential.issuer);
+        // disable the assert for now
+        //this.sender.assertEquals(credential.issuer);
         credential.owner = owner;
         const hash = credential.hash();
         const [newRoot, _] = witness.computeRootAndKey(hash);
         this.mapRoot.set(newRoot);
+        this.emitEvent('issued', owner);
     }
 }
 __decorate([
@@ -109,6 +110,16 @@ export class CredentialProxy {
         }
         this.zkApp = new NewTimeWatchContract(this.contractAddress);
     }
+    async fetchEvents(start) {
+        let events = await this.zkApp.fetchEvents(start);
+        let content = events.map((e) => {
+            return { type: e.type, data: JSON.stringify(e.event), blockHeight: Number(e.blockHeight.toBigint()) };
+        });
+        return content;
+    }
+    async getEntityFromObject(obj) {
+        return NewTimeWatchEntity.fromPlainObject(obj);
+    }
     async getStorageRoot() {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
@@ -122,17 +133,17 @@ export class CredentialProxy {
         });
         return transaction;
     }
-    async issueCredential(owner, credential, merkleStore) {
+    async issueCredential(payer, credential, merkleStore) {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
+        credential.id = merkleStore.nextID;
         const entity = NewTimeWatchEntity.fromPlainObject(credential);
-        entity.id = Field(merkleStore.nextID);
         let hash = entity.hash();
         merkleStore.map.set(entity.id, hash);
         const witness = merkleStore.map.getWitness(entity.id);
         const currentRoot = await this.getStorageRoot();
-        const transaction = await Mina.transaction({ sender: entity.issuer, fee: this.fee }, () => {
-            this.zkApp.issueCredential(owner, entity, witness, currentRoot);
+        const transaction = await Mina.transaction({ sender: payer, fee: this.fee }, () => {
+            this.zkApp.issueCredential(entity.owner, entity, witness, currentRoot);
         });
         return {
             transaction: transaction,
