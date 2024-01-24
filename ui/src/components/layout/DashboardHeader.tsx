@@ -6,8 +6,6 @@ import React from 'react';
 import Authentication from '@/modules/Authentication';
 import { AuthContext } from './AuthPage';
 import { ProfileMetadata } from '../../../../api/src/models/ProfileMetadata';
-import async from '../../pages/api/credentials';
-import axios from 'axios';
 
 const Header = () => {
 
