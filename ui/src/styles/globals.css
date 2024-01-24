@@ -66,4 +66,18 @@ a {
 
 .bg-slice{
   background-image: url(../../public/assets/bg-slice.svg);
+  background-size: 1600px 100px;
+  background-repeat: no-repeat;
+}
+
+.bg-primary,
+.btn-primary{
+  background-color: #57ba8b;
+  border: solid 1px #57ba8b;
+}
+
+.hover\:bg-indigo-700:hover{
+  background-color: #FFF;
+  color: #57ba8b;
+  border: solid 1px #57ba8b;
 }
