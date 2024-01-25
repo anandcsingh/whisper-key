@@ -1,7 +1,7 @@
 // controllers/profileController.ts
 import { Request, Response } from "express";
-import { ProfileRepository } from "../models/ProfileRepository";
-import { ProfileMetadata } from "../models/ProfileMetadata";
+import { ProfileRepository } from "../models/ProfileRepository.js";
+import { ProfileMetadata } from "../models/ProfileMetadata.js";
 
 
 export const getProfile = async (req: Request, res: Response) => {
