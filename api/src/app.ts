@@ -16,6 +16,7 @@ import { EventNotification } from './models/EventNotification.js';
 import { EventPolling } from './models/EventPolling.js';
 import {checkDeploymentStatus} from './controllers/credentialsController.js'
 import cron from 'node-cron';
+import { BlockHeightRepository } from './models/BlockHeightRepository.js';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
@@ -25,17 +26,13 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
-// NOTIFICATIONS 
+// Create Credential NOTIFICATIONS 
 cron.schedule('*/5 * * * *', () => {
   checkDeploymentStatus(new EventNotification());
 });
 
-// const Berkeley = Mina.Network({
-//   mina: 'https://proxy.berkeley.minaexplorer.com/graphql',
-//   archive: 'https://archive.berkeley.minaexplorer.com/',
-// });
-// Mina.setActiveInstance(Berkeley);
-// const polling = new EventPolling("*/10  * * * *", new CredentialRepository(), new EventNotification(), Berkeley);
+// Issue credential NOTIFICATIONS
+const polling = new EventPolling("*/10 * * * * *", new CredentialRepository(), new EventNotification(), new BlockHeightRepository());
 //polling.start();
 
 app.use('/api/credentials', credsRouter);
