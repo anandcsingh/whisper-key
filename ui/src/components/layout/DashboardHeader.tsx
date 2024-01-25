@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import React from 'react';
 import Authentication from '@/modules/Authentication';
 import { AuthContext } from './AuthPage';
-import { ProfileMetadata } from '../../../../api/src/models/ProfileMetadata';
+import { ProfileMetadata } from '@/modules/ProfileMetadata';
 
 const Header = () => {
 
@@ -57,7 +57,6 @@ const Header = () => {
   };
 
 
-  //TODO: Add user phone number and user email to the Profile Modal
   return (
 
     <nav className="bg-gray-800 z-100 invisible lg:visible">
@@ -94,10 +93,11 @@ const Header = () => {
               </button>
 
               {isProfleModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-80">
+                <div style={{display:'flex', flexDirection:'column'}} className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-80">
+                  <div><h1 style={{color:'white', fontSize:'30px'}}>Update User Settings</h1></div> <br/>
                   {/* Dropdown Menu */}
-                  <div className="mt-4">
-                    <label htmlFor="contactMethod" className="block text-sm font-medium text-gray-700">
+                  <div className="mt-4" style={{display:'flex', flexDirection:'column'}}>
+                    <label style={{fontSize:'20px', color:'white'}} htmlFor="contactMethod">
                       Notification Method
                     </label>
                     <select
@@ -112,14 +112,24 @@ const Header = () => {
                       <option value="sms">SMS</option>
                       <option value="email">Email</option>
                     </select>
-                  </div>
-                  {/* Button to capture choice */}
-                  <button
+                    <label htmlFor="mobile" style={{fontSize:'20px', color:'white'}}>
+                      Mobile Number
+                    </label>
+                  <input id='mobile' value={userPhone} type="text" className="mt-1 block w-full p-2 border border-gray-300 
+                  rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
+                    <label htmlFor="email"style={{fontSize:'20px', color:'white'}}>
+                      Email
+                    </label>
+                    <input id='email' value={userEmail} type="text" className="mt-1 block w-full p-2 border border-gray-300 
+                  rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                    {/* Button to capture choice */}
+                    <button
                     className="mt-4 bg-purple-500 text-white px-4 py-2 rounded"
                     onClick={handleButtonClick}
-                  >
+                    >
                     Save
-                  </button>
+                    </button>
+                  </div>
                 </div>
               )}
 
