@@ -1,30 +1,27 @@
 import { CredentialMetadata, CredentialRepository } from "contract-is-key";
 import { CronJob } from "node-cron";
 import { PublicKey, UInt32 } from "o1js";
-import { randomUUID } from 'crypto';
-import { CreatedCredentialNotification, CreatedCredentialRepository } from "./CreatedCredentialRepository.js";
-import { IssuedCredentialNotification, IssuedCredentialRepository } from "./IssuedCredentialRepository.js";
+import {  randomUUID  } from 'crypto';
+import { NotificationData, NotificationsRepository } from "./NotificationsRepository.js";
 import { ProfileMetadata } from "./ProfileMetadata.js";
 import axios from 'axios';
 import { NotificationChannel, NotificationChannel } from './NotificationChannel';
 
 export class EventNotification {
 
-    addRepo: CreatedCredentialRepository;
-    issuedRepo: IssuedCredentialRepository;
+    repo: NotificationsRepository;
     constructor() {
-        this.addRepo = new CreatedCredentialRepository();
-        this.issuedRepo = new IssuedCredentialRepository();
+        this.repo = new NotificationsRepository();
     }
 
 
-    async pushCreated(cred: CredentialMetadata) {
-        console.log("pushing created notification");
-        console.log(cred);
+    async push(notification: NotificationData) {
+        console.log("pushing notification");
+        console.log(notification);
+
         // store in firebase for web notifications
-        const notification: CreatedCredentialNotification
-            = new CreatedCredentialNotification(cred.name, cred.name, cred.owner, false, new Date());
-        this.addRepo.addCredentialCreationNotification(notification.toPlainObject());
+        this.repo.addNotification(notification.toPlainObject());
+
         // send omni-channel notifications
 
     }
@@ -38,10 +35,7 @@ export class EventNotification {
             }
             console.log("pushing issued notification");
             const eventInfo = JSON.parse(event.data);
-            const id = randomUUID();
-            const notification: IssuedCredentialNotification
-                = new IssuedCredentialNotification(id, name, issuer, eventInfo.data, false, new Date());
-            this.issuedRepo.addIssuesdredentialNotification(notification.toPlainObject());
+            this.push(new NotificationData(name, issuer, eventInfo.data, event.type))
         }
 
         // send omni-channel notifications

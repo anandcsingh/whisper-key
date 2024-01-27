@@ -7,6 +7,7 @@ import crypto from 'crypto';
 import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata } from "contract-is-key";
 import Client from 'mina-signer';
 import { EventNotification } from "../models/EventNotification.js";
+import { NotificationData } from "../models/NotificationsRepository.js";
 
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const name = req.params.name;
@@ -277,7 +278,7 @@ export const checkDeploymentStatus = async (notifier: EventNotification) => {
             try {
                 const contractRoot = await proxy.getStorageRoot();
                 console.log(`${cred.name} Contract found`);
-                notifier.pushCreated(cred);
+                notifier.push(new NotificationData(cred.name, "", cred.owner, "created"));
                 delete clonedContracts[key];
             } catch (e) {
                 console.log("Error:", e);
