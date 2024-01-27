@@ -6,6 +6,7 @@ import React from 'react';
 import Authentication from '@/modules/Authentication';
 import { AuthContext } from './AuthPage';
 import { ProfileMetadata } from '@/modules/ProfileMetadata';
+import { Inbox } from '@/modules/Inbox';
 
 const Header = () => {
 
@@ -15,6 +16,8 @@ const Header = () => {
   const [preferredNotificationChannel, setPreferredNotificationChannel] = useState('');
   const [userPhone, setUserPhoneNum] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [inboxCount, setInboxCount] = useState(0);
+  var inbox: Inbox = new Inbox();
 
   useEffect(() => {
     const fetchProfileInfo = async () => {
@@ -35,6 +38,20 @@ const Header = () => {
       }
     };
     fetchProfileInfo();
+
+    (async () => {
+      try {
+        let myWalletAddress = authState.userAuthenticated ? authState.userAddress : '';
+        if(myWalletAddress !== '' && myWalletAddress !== undefined && myWalletAddress !== null)
+        {
+          const inboxCount = await inbox.getInboxCount(myWalletAddress);
+          setInboxCount(inboxCount);
+        }
+      } catch (error) {
+        console.error('Error fetching inbox count:', error);
+      }
+      
+    })();
   }, []); 
 
   const handleContactMethodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -82,10 +99,11 @@ const Header = () => {
               </p>
               }
               <button type="button" className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                Notifications
-                <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">
-                  2
+                Inbox
+                {inboxCount > 0 &&<span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">
+                   {inboxCount}
                 </span>
+              } 
               </button>
               <button type="button" style={{ marginLeft: '5px' }} onClick={() => setProfileIsModalOpen(true)}
                 className="button-channel inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

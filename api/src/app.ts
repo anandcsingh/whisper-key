@@ -18,6 +18,7 @@ import { checkDeploymentStatus } from './controllers/credentialsController.js'
 import cron from 'node-cron';
 import { profileRouter } from './routes/profileRoute.js';
 import { BlockHeightRepository } from './models/BlockHeightRepository.js';
+import { inboxRouter } from './routes/inboxRoute.js';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
@@ -27,19 +28,20 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Create Credential NOTIFICATIONS 
-cron.schedule('*/5 * * * *', () => {
-  checkDeploymentStatus(new EventNotification());
-});
+// cron.schedule('*/5 * * * *', () => {
+//   checkDeploymentStatus(new EventNotification());
+// });
 
 // Issue credential NOTIFICATIONS
 const polling = new EventPolling("*/10 * * * * *", new CredentialRepository(), new EventNotification(), new BlockHeightRepository());
-polling.start();
+//polling.start();
 
 app.use('/api/credentials', credsRouter);
 
 app.use('/api/messaging', messagingRouter);
 
 app.use('/api/profile', profileRouter);
+app.use('/api/inbox', inboxRouter);
 
 app.use('/api/events/:name', async (req, res, next) => {
   const name = req.params.name;
