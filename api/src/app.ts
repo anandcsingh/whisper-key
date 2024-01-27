@@ -43,6 +43,20 @@ app.use('/api/messaging', messagingRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/inbox', inboxRouter);
 
+app.use('/api/poll/created', async (req, res, next) => {
+  checkDeploymentStatus(new EventNotification());
+  res.status(200).send('checking created status');
+
+});
+
+app.use('/api/poll/issued', async (req, res, next) => {
+  const polling = new EventPolling("*/10 * * * * *", new CredentialRepository(), new EventNotification(), new BlockHeightRepository());
+  polling.job();
+  res.status(200).send('checking issued status');
+
+});
+
+
 app.use('/api/events/:name', async (req, res, next) => {
   const name = req.params.name;
   const Berkeley = Mina.Network({

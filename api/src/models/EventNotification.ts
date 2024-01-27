@@ -5,7 +5,7 @@ import { NotificationData, NotificationsRepository } from "./NotificationsReposi
 import { ProfileMetadata } from "./ProfileMetadata.js";
 import axios from 'axios';
 import { MessageDestination } from "./MessageDestination.js";
-import { NotificationChannel } from './NotificationChannel';
+import { NotificationChannelFactory } from './NotificationChannelFactory.js';
 
 export class EventNotification {
 
@@ -24,7 +24,9 @@ export class EventNotification {
 
         // send omni-channel notifications
         const message = `Your credential ${notification.credentialName} has been issued!`;
-        await this.sendNotification(notification.owner, message);
+
+        // disabled as it fails, use ProfileRepository instead
+        //await this.sendNotification(notification.owner, message);
 
     }
 
@@ -41,12 +43,6 @@ export class EventNotification {
             owner = eventInfo.data;
             this.push(new NotificationData(name, issuer, owner, event.type))
         }
-
-        // send omni-channel notifications
-        const message = `Credential ${name} has been issued!`;
-        if (owner) {
-            await this.sendNotification(owner, message);
-        }
     }
 
 
@@ -57,7 +53,7 @@ export class EventNotification {
         try {
             const response = await axios.get(`${apiUrl}?${queryString}`);
             let profileData = response.data as ProfileMetadata;
-            const channel = NotificationChannel.createChannel(profileData.preferredNotificationChannel);
+            const channel = NotificationChannelFactory.createChannel(profileData.preferredNotificationChannel);
             const destination = new MessageDestination();
             destination.email = profileData.emailAddress;
             destination.phone = profileData.phoneNumber;

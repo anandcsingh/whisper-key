@@ -1,5 +1,5 @@
-import { MessageDestination } from "./MessageDestination";
-import { NotificationChannel } from "./NotificationChannel";
+import { MessageDestination } from "./MessageDestination.js";
+import { NotificationChannel } from "./NotificationChannel.js";
 import nodemailer from 'nodemailer';
 
 export class EmailChannel extends NotificationChannel {

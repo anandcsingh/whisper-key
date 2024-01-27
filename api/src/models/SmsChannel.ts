@@ -1,5 +1,5 @@
-import { MessageDestination } from "./MessageDestination";
-import { NotificationChannel } from "./NotificationChannel";
+import { MessageDestination } from "./MessageDestination.js";
+import { NotificationChannel } from "./NotificationChannel.js";
 
 export class SmsChannel extends NotificationChannel {
     constructor(channel: string) {
