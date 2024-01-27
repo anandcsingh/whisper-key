@@ -63,7 +63,7 @@ export class EventNotification {
             destination.phone = profileData.phoneNumber;
             channel.sendMessage(destination, message);
         } catch (error) {
-            console.error('Error fetching profile information:', error);
+            console.error('Error occurred while attempting to push notification update', error);
             throw error;
         }
     }
