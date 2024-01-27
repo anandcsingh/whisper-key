@@ -1,3 +1,4 @@
+import { MessageDestination } from "./MessageDestination";
 import { NotificationChannel } from "./NotificationChannel";
 
 export class WhatsAppChannel extends NotificationChannel {
@@ -5,8 +6,8 @@ export class WhatsAppChannel extends NotificationChannel {
         super(channel);
     }
 
-    sendMessage(source: string, destination: string, message: string): void {
-        super.setupSend(source, destination, message);
+    sendMessage(destination: MessageDestination, message: string): void {
+        const source = process.env.WHATSAPP_NUMBER;
         const accountSid = process.env.TWILIO_ACCOUNT_SID;
         const authToken = process.env.TWILIO_AUTH_TOKEN;
         const client = require('twilio')(accountSid, authToken);
@@ -19,7 +20,7 @@ export class WhatsAppChannel extends NotificationChannel {
             .create({
                 body: message,
                 from: `whatsapp:${source}`,
-                to: `whatsapp:${destination}`
+                to: `whatsapp:${destination.phone}`
             })
             .then(message => console.log(message.sid));
     }

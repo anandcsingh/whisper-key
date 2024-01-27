@@ -1,3 +1,4 @@
+import { MessageDestination } from "./MessageDestination";
 import { NotificationChannel } from "./NotificationChannel";
 import nodemailer from 'nodemailer';
 
@@ -6,13 +7,37 @@ export class EmailChannel extends NotificationChannel {
         super(channel);
     }
 
-    sendMessage(source: string, destination: string, message: string): void {
+    async sendMessage(destination: MessageDestination, message: string): Promise<void> {
+        // Your email configuration
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER, // Your email address
+                pass: process.env.EMAIL_PASSWORD // Your email password or app-specific password
+            }
+        });
 
+        const subject = "Your credential notification from Whisper Key"
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER, // sender address
+            to: destination.email, // list of receivers
+            subject: subject, // Subject line
+            text: message // plain text body
+        };
+
+        try {
+            // Send email
+            const info = await transporter.sendMail(mailOptions);
+            console.log('Email sent: ', info.response);
+
+        } catch (error) {
+            console.error('Error sending email: ', error);
+        }
     }
 
-    async sendEmail(source: string, destination: string, message: string,
+    async sendEmail(destination: string, message: string,
         transport: string, subject: string): Promise<void> {
-        super.setupSend(source, destination, message);
 
         let transporter;
 

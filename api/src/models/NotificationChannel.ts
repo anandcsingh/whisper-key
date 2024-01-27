@@ -1,11 +1,9 @@
 import { EmailChannel } from './EmailChannel';
+import { MessageDestination } from './MessageDestination';
 import { SmsChannel } from './SmsChannel';
 import { WhatsAppChannel } from './WhatsAppChannel';
 export class NotificationChannel {
     channel: string;
-    source: string;
-    destination: string;
-    message: string;
 
     constructor(channel: string) {
         this.channel = channel;
@@ -25,11 +23,5 @@ export class NotificationChannel {
         }
     }
 
-    setupSend(source: string, destination: string, message: string): void {
-        this.source = source;
-        this.destination = destination;
-        this.message = message
-    }
-
-    sendMessage(source: string, destination: string, message: string): void { }
+    sendMessage(destination: MessageDestination, message: string): void { }
 }

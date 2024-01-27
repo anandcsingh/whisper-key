@@ -15,21 +15,4 @@ export class ProfileMetadata {
         this.emailAddress = emailAddress;
         this.preferredNotificationChannel = preferredNotificationChannel;
     }
-
-    // Getter methods
-    getWalletAddress(): string {
-        return this.walletAddress;
-    }
-
-    getPhoneNumber(): string {
-        return this.phoneNumber;
-    }
-
-    getEmailAddress(): string {
-        return this.emailAddress;
-    }
-
-    getPreferredNotificationChannel(): string {
-        return this.preferredNotificationChannel;
-    }
 }
