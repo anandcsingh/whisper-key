@@ -41,7 +41,7 @@ export class ProfileRepository {
         const docRef = doc(
             this.database,
             this.collectionName,
-            profile.getWalletAddress(),
+            profile.walletAddress,
         );
         await setDoc(docRef, profile);
     }
