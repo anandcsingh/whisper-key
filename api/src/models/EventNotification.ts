@@ -6,12 +6,15 @@ import { ProfileMetadata } from "./ProfileMetadata.js";
 import axios from 'axios';
 import { MessageDestination } from "./MessageDestination.js";
 import { NotificationChannelFactory } from './NotificationChannelFactory.js';
+import { ProfileRepository } from "./ProfileRepository.js";
 
 export class EventNotification {
 
     repo: NotificationsRepository;
+    profileRepo: ProfileRepository;
     constructor() {
         this.repo = new NotificationsRepository();
+        this.profileRepo = new ProfileRepository();
     }
 
 
@@ -25,8 +28,7 @@ export class EventNotification {
         // send omni-channel notifications
         const message = `Your credential ${notification.credentialName} has been issued!`;
 
-        // disabled as it fails, use ProfileRepository instead
-        //await this.sendNotification(notification.owner, message);
+        await this.sendNotification(notification.owner, message);
 
     }
 
@@ -47,12 +49,8 @@ export class EventNotification {
 
 
     private async sendNotification(address: string, message: string) {
-        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/api/profile`;
-        const queryString = `walletAddress=${encodeURIComponent(address)}`;
-
         try {
-            const response = await axios.get(`${apiUrl}?${queryString}`);
-            let profileData = response.data as ProfileMetadata;
+            let profileData = await this.profileRepo.getProfile(address);
             const channel = NotificationChannelFactory.createChannel(profileData.preferredNotificationChannel);
             const destination = new MessageDestination();
             destination.email = profileData.emailAddress;
