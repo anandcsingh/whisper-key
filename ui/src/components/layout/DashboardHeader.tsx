@@ -12,7 +12,7 @@ const Header = () => {
 
   const [authState, setAuthState] = useContext(AuthContext);
   const [profileData, setProfileData] = useState<ProfileMetadata | null>(null);
-  const [isProfleModalOpen, setProfileIsModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [preferredNotificationChannel, setPreferredNotificationChannel] = useState('');
   const [userPhone, setUserPhoneNum] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -70,7 +70,7 @@ const Header = () => {
       const profile = new ProfileMetadata(myWalletAddress, userPhone, userEmail, preferredNotificationChannel);
       profile.updateProfileInfo();
     }
-    setProfileIsModalOpen(false);
+    setIsProfileModalOpen(false);
   };
 
 
@@ -105,14 +105,24 @@ const Header = () => {
                 </span>
               } 
               </button>
-              <button type="button" style={{ marginLeft: '5px' }} onClick={() => setProfileIsModalOpen(true)}
+              <button type="button" style={{ marginLeft: '5px' }} onClick={() => setIsProfileModalOpen(true)}
                 className="button-channel inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Profile
               </button>
 
-              {isProfleModalOpen && (
+              {isProfileModalOpen && (
                 <div style={{display:'flex', flexDirection:'column'}} className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-80">
-                  <div><h1 style={{color:'white', fontSize:'30px'}}>Update User Settings</h1></div> <br/>
+                  <div style={{display:'flex'}}>
+                    <h1 style={{color:'white', fontSize:'30px'}}>User Settings</h1>
+                      {/* Close button */}
+                      <button
+                        className="text-white"
+                        onClick={() => setIsProfileModalOpen(false)}
+                        style={{ fontSize: '24px', cursor: 'pointer', marginLeft: '15px'}}
+                        >
+                        &times;
+                      </button>
+                    </div> <br/>
                   {/* Dropdown Menu */}
                   <div className="mt-4" style={{display:'flex', flexDirection:'column'}}>
                     <label style={{fontSize:'20px', color:'white'}} htmlFor="contactMethod">
@@ -152,7 +162,7 @@ const Header = () => {
               )}
 
               {/* Semi-transparent overlay with a higher z-index */}
-              {isProfleModalOpen && (
+              {isProfileModalOpen && (
                 <div className="fixed inset-0 z-40 bg-gray-600 bg-opacity-60"></div>
               )}
 
