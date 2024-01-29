@@ -43,6 +43,8 @@ export class NotificationsRepository {
   }
 
   async getNotifications(owner: string): Promise<NotificationData[]> {
+    console.log("getting notifications for " + owner);
+    
     const maQuery = query(collection(this.database, 'Notifications'), 
     where('owner', '==', owner), 
     where('seen', '==', false), 

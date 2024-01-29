@@ -53,7 +53,7 @@ export class ProfileMetadata {
     };
 
     async getProfileInfo(): Promise<any> {
-        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/api/profile`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API_HOST}/api/profile`;
         const queryString = `walletAddress=${encodeURIComponent(this.walletAddress)}`;
 
         try {

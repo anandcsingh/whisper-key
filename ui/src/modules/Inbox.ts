@@ -2,7 +2,7 @@ import axios from 'axios';
 export class Inbox {
    
     setNotifcationsAsSeen = async (owner: string, notifcations: string[]): Promise<any> => {
-        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/api/inbox/seenby/${owner}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API_HOST}/api/inbox/seenby/${owner}`;
 
         try {
             const response = await axios.post(apiUrl, notifcations);
@@ -14,11 +14,13 @@ export class Inbox {
     };
 
     async getInboxCount(owner: string): Promise<any> {
-        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/api/inbox/countfor/${owner}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API_HOST}/api/inbox/countfor/${owner}`;
 
         try {
             const response = await axios.get(`${apiUrl}`);
-            return response.data;
+            console.log("response data", response.data);
+
+            return response.data.count;
         } catch (error) {
             console.error('Error fetching profile information:', error);
             throw error;
@@ -26,10 +28,12 @@ export class Inbox {
     }
 
     async getNotifications(owner: string): Promise<any> {
-        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/api/inbox/${owner}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API_HOST}/api/inbox/${owner}`;
 
         try {
+            console.log("getting notifications for " + owner);
             const response = await axios.get(`${apiUrl}`);
+            console.log("response data", response.data);
             return response.data;
         } catch (error) {
             console.error('Error fetching profile information:', error);
