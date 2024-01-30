@@ -78,7 +78,9 @@ const DashboardCredentialsCreated = () => {
                 <dialog className="modal" id="current_credential_modal">
                     <div className="modal-box w-11/12 max-w-5xl">
                         <div className="modal-action">
-                            <a href="#" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
+                            <a href="#" onClick={() => {
+                                (document.getElementById('current_credential_modal') as any).close()
+                            }} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">X</a>
                         </div>
                         <h2 className="text-2xl font-bold sm:text-2xl">{created.currentCredential.name}</h2><br />
                         <div className="form-control">
