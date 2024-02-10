@@ -16,7 +16,7 @@ import { ZkMentatStore } from './ZkMentatStore.js';
 import { FirebaseMentatStore } from './FirebaseMentatStore.js';
 
 export class CredentialRepository {
-  
+
   config: any;
   app: any;
   database: any;
@@ -65,9 +65,9 @@ export class CredentialRepository {
     const docRef = doc(this.database, this.collectionName, id);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-        return docSnap.data() as CredentialMetadata;
+      return docSnap.data() as CredentialMetadata;
     } else {
-        return undefined;
+      return undefined;
     }
   }
 
@@ -76,7 +76,7 @@ export class CredentialRepository {
       collection(this.database, this.collectionName),
       where('name', '==', name)
     );
-   
+
     const querySnapshot = await getDocs(maQuery);
     const credentials: CredentialMetadata[] = [];
     querySnapshot.forEach((doc) => {
@@ -121,22 +121,87 @@ export class CredentialRepository {
     // filter by owner
     const creds: any = [];
     const all = await this.GetAllCredentials();
-    
+
     for (let i = 0; i < all.length; i++) {
       const credentialMetadata = all[i];
       const store = this.GetCredentialStore(credentialMetadata.name);
       const allIsssued = (await store.getAll());
       allIsssued.forEach((value, key) => {
-        if((value as any).owner === owner) {
+        if ((value as any).owner === owner) {
           creds.push(value);
         }
       });
-      
+
     }
     return creds;
-}
+  }
 
   GetCredentialStore(name: string): ZkMentatStore {
     return new FirebaseMentatStore(name, 'owner', this.config);
   }
+
+  // Queries as it pertains to verifiable crendentials statistics
+
+  // Get the number of all collections
+  async GetNumberOfAllCollections(): Promise<number> {
+    const collections = await this.database.listCollections();
+    const collectionCount = collections.length;
+    console.log(`Number of collections: ${collectionCount}`);
+    return collectionCount;
+  }
+
+  // Get total number of documents for all collections
+  async GetTotalNumberOfIssuedCredentials(): Promise<number> {
+    const collections = await this.database.listCollections();
+    let totalDocumentCount = 0;
+    for (const collection of collections) {
+      // Get the collection reference
+      const colRef = collection.ref;
+      const snapshot = await colRef.count();
+      totalDocumentCount += snapshot.data().count;
+    }
+    console.log(`Total number of documents: ${totalDocumentCount}`);
+    return totalDocumentCount;
+  }
+
+  // Get the number of documents per collection
+  async GetIssuedCredentialCountForEachCredentialType(): Promise<{ [name: string]: number }> {
+    const collectionCounts: { [name: string]: number } = {};
+
+    const collections = await this.database.listCollections();
+
+    for (const collection of collections) {
+      const colRef = collection.ref;
+      const snapshot = await colRef.count();
+      collectionCounts[collection.id] = snapshot.data().count;
+    }
+    return collectionCounts;
+  }
+
+  // Get number of issued VCs by this issuer address
+  // For example, fieldName = "issuer";
+  // For example. It can return { jerry: 3, missy: 55}
+  async groupDocumentsByFieldName(collectionName: string, fieldName: string): Promise<{ [field: string]: number }> {
+    const collectionRef = this.database.collection(collectionName);
+
+    // Use aggregation query to group by field name(for example, "issuer") and count documents
+    const snapshot = await collectionRef
+      .orderBy(fieldName)
+      .groupBy(fieldName)
+      .count()
+      .get();
+
+    const fieldCounts: { [field: string]: number } = {};
+
+    // Iterate through each group and extract field name (for example, "issuer") and count
+    //@ts-ignore
+    snapshot.forEach((doc) => {
+      const field = doc.id;
+      const count = doc.data().count;
+      fieldCounts[field] = count;
+    });
+
+    return fieldCounts;
+  }
+
 }
