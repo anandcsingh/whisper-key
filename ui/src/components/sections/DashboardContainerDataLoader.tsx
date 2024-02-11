@@ -14,6 +14,7 @@ import DashBoardCredentialsOwned from './DashboardCredentialsOwned';
 import DashBoardIssueCredentials from './DashbaordIssueCredentials';
 import DashBoardCredentialsOwnedGrid from './DashboardCredentialsOwnedGrid';
 import DashboardCredentialsCreated from './DashboardCredentialsCreated';
+import Statistics from './Statistics';
 
 export interface DashboardContainerProps {
     // Define any props you want to pass to the component here
@@ -125,6 +126,9 @@ const DashboardContainerDataLoader: React.FC<DashboardContainerProps> = ({ showD
                 </div>
             </section>
             <DashboardStats />
+            <div style={{textAlign: 'center'}}>
+                <Statistics />
+            </div>
 
         </div>
 
