@@ -34,3 +34,8 @@ async function CanGroupDocumentsByFieldNameTest() {
 
 }
 
+GetNumberOfAllCollectionsTest();
+GetTotalNumberOfIssuedCredentialsTest();
+GetIssuedCredentialCountForEachCredentialTypeTest();
+CanGroupDocumentsByFieldNameTest();
+
