@@ -181,7 +181,7 @@ export class CredentialRepository {
   // Get number of issued VCs by this issuer address
   // For example, fieldName = "issuer";
   // For example. It can return { jerry: 3, missy: 55}
-  async groupDocumentsByFieldName(collectionName: string, fieldName: string): Promise<{ [field: string]: number }> {
+  async GroupDocumentsByFieldName(collectionName: string, fieldName: string): Promise<{ [field: string]: number }> {
     const collectionRef = this.database.collection(collectionName);
 
     // Use aggregation query to group by field name(for example, "issuer") and count documents
