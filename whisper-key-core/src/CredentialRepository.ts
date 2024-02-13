@@ -21,6 +21,7 @@ export class CredentialRepository {
   app: any;
   database: any;
   collectionName = 'CredentialMetadata';
+  allCredentials: CredentialMetadata[];
 
   constructor() {
     this.config = {
@@ -112,6 +113,7 @@ export class CredentialRepository {
       const credential = doc.data() as CredentialMetadata;
       credentials.push(credential);
     });
+    this.allCredentials = credentials;
     return credentials;
   }
 
@@ -142,63 +144,68 @@ export class CredentialRepository {
 
   // Queries as it pertains to verifiable crendentials statistics
 
-  // Get the number of all collections
-  async GetNumberOfAllCollections(): Promise<number> {
-    const collections = await this.database.listCollections();
-    const collectionCount = collections.length;
-    console.log(`Number of collections: ${collectionCount}`);
-    return collectionCount;
-  }
-
-  // Get total number of documents for all collections
   async GetTotalNumberOfIssuedCredentials(): Promise<number> {
-    const collections = await this.database.listCollections();
-    let totalDocumentCount = 0;
-    for (const collection of collections) {
-      // Get the collection reference
-      const colRef = collection.ref;
-      const snapshot = await colRef.count();
-      totalDocumentCount += snapshot.data().count;
+    const creds: any = [];
+    const all = await this.GetAllCredentials();
+
+    for (let i = 0; i < all.length; i++) {
+      const credentialMetadata = all[i];
+      const store = this.GetCredentialStore(credentialMetadata.name);
+      const allIsssued = (await store.getAll());
+      allIsssued.forEach((value, key) => {
+        creds.push(value);
+      });
+
     }
-    console.log(`Total number of documents: ${totalDocumentCount}`);
-    return totalDocumentCount;
+    return creds;
   }
 
-  // Get the number of documents per collection
-  async GetIssuedCredentialCountForEachCredentialType(): Promise<{ [name: string]: number }> {
-    const collectionCounts: { [name: string]: number } = {};
-
-    const collections = await this.database.listCollections();
-
-    for (const collection of collections) {
-      const colRef = collection.ref;
-      const snapshot = await colRef.count();
-      collectionCounts[collection.id] = snapshot.data().count;
+  async GetFirstCreatedCredential() {
+    let first: string = '';
+    if (!this.allCredentials) {
+      const maQuery = query(
+        collection(this.database, this.collectionName),
+        orderBy('created', 'asc')
+      );
+      const querySnapshot = await getDocs(maQuery);
+      first = querySnapshot.docs[0].id;
     }
-    return collectionCounts;
+    return first;
+  }
+
+  async GetMostRecentCredential() {
+    let last: string = '';
+    if (!this.allCredentials) {
+      const maQuery = query(
+        collection(this.database, this.collectionName),
+        orderBy('created', 'desc')
+      );
+      const querySnapshot = await getDocs(maQuery);
+      last = querySnapshot.docs[0].id;
+    }
+    return last;
   }
 
   // Get number of issued VCs by this issuer address
   // For example, fieldName = "issuer";
   // For example. It can return { jerry: 3, missy: 55}
-  async GroupDocumentsByFieldName(collectionName: string, fieldName: string): Promise<{ [field: string]: number }> {
-    const collectionRef = this.database.collection(collectionName);
+  async GroupDocumentsByFieldName(fieldName: string): Promise<{ [field: string]: number }> {
+    const maQuery = query(
+      collection(this.database, this.collectionName)
+    );
 
-    // Use aggregation query to group by field name(for example, "issuer") and count documents
-    const snapshot = await collectionRef
-      .orderBy(fieldName)
-      .groupBy(fieldName)
-      .count()
-      .get();
+    const querySnapshot = await getDocs(maQuery);
+    const credentials: CredentialMetadata[] = [];
 
     const fieldCounts: { [field: string]: number } = {};
 
-    // Iterate through each group and extract field name (for example, "issuer") and count
-    //@ts-ignore
-    snapshot.forEach((doc) => {
-      const field = doc.id;
-      const count = doc.data().count;
-      fieldCounts[field] = count;
+    // Iterate over each document in the snapshot
+    querySnapshot.forEach(doc => {
+      const fieldValue = doc.get(fieldName); // Get the value of the specified field from the document
+      if (fieldValue) {
+        // Increment count for the fieldValue group
+        fieldCounts[fieldValue] = (fieldCounts[fieldValue] || 0) + 1;
+      }
     });
 
     return fieldCounts;
