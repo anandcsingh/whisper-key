@@ -1,4 +1,52 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { CredentialRepository } from '../../../../whisper-key-core/src/CredentialRepository';
+
 const Statistics = () => {
+    const [totalCredentialsCreated, setTotalCredsCreated] = useState<number>(0);
+    const [totalIssuedCreds, setTotalIssuedCreds] = useState<number>(0);
+    const [firstCredCreated, setFirstCreated] = useState<string>('');
+    const [mostRecentCred, setMostRecent] = useState<string>('');
+    const [mostCredsOwned, setMostOwnedBy] = useState<string | null>('');
+    
+    useEffect(() => {
+        // To be replaced by calling whispey key core 'contract-is-key' npm package
+        // for now direct calls...
+        const fetchData = async () => {
+            try {
+                let credentialRepository = new CredentialRepository();
+                const total = (await credentialRepository.GetAllCredentials()).length;
+                setTotalCredsCreated(total);
+                
+                setTotalIssuedCreds(((await credentialRepository.GetTotalNumberOfIssuedCredentials()).length));
+    
+                setFirstCreated(await credentialRepository.GetFirstCreatedCredential());
+    
+                setMostRecent(await credentialRepository.GetMostRecentCredential());
+                
+                const ownedByList = await credentialRepository.GroupDocumentsByFieldName('owner');
+                const mostOwned = getKeyWithHighestCount(ownedByList);
+                setMostOwnedBy(mostOwned);   
+            } catch (error) {
+                console.error('Error getting data:', error);
+            }
+        };
+        fetchData();
+    }, []);
+
+    function getKeyWithHighestCount(data: { [key: string]: number }): string | null {
+        let maxCount = 0;
+        let keyWithMaxCount: string | null = null;
+    
+        for (const key in data) {
+            if (data[key] > maxCount) {
+                maxCount = data[key];
+                keyWithMaxCount = key;
+            }
+        }
+        return keyWithMaxCount;
+    }
+
     return(
         <div>
             <div className="stats1">
@@ -48,11 +96,60 @@ const Statistics = () => {
 
 
             <div className="stats3">
+                <div style={{}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
+                <div className="card-body">
+                    <h2 className="card-title">Total Credentials Created</h2>
+                    <p>{totalCredentialsCreated}</p>
+                    <div className="card-actions justify-end">
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div className="stats3">
                 <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
                 <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
                 <div className="card-body">
-                    <h2 className="card-title">Verifiable Credentials</h2>
-                    <p>Do you need to get your verifiable credentials set up? Whisper Key is here for you!</p>
+                    <h2 className="card-title">Total Verifiable Credentials Issued</h2>
+                    <p>{totalIssuedCreds}</p>
+                    <div className="card-actions justify-end">
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div className="stats3">
+                <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
+                <div className="card-body">
+                    <h2 className="card-title">Frist Credential Created</h2>
+                    <p>{firstCredCreated}</p>
+                    <div className="card-actions justify-end">
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div className="stats3">
+                <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
+                <div className="card-body">
+                    <h2 className="card-title">Most Recent Credential Created</h2>
+                    <p>{mostRecentCred}</p>
+                    <div className="card-actions justify-end">
+                    <button className="btn btn-primary">Get Started</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div className="stats3">
+                <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
+                <div className="card-body">
+                    <h2 className="card-title">Institution that owns the most Credentials</h2>
+                    <p>{mostCredsOwned}</p>
                     <div className="card-actions justify-end">
                     <button className="btn btn-primary">Get Started</button>
                     </div>

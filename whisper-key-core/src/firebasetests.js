@@ -57,9 +57,10 @@ function getKeyWithHighestCount(data) {
     return keyWithMaxCount;
 }
 
-
+// Get total created
 GetNumberOfAllCollectionsTest();
-//GetTotalNumberOfIssuedCredentialsTest();
+// Get total issued
+GetTotalNumberOfIssuedCredentialsTest();
 // First credential
 GetFirstCreatedCredential();
 // Newest credential

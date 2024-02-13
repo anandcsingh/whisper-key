@@ -144,7 +144,7 @@ export class CredentialRepository {
 
   // Queries as it pertains to verifiable crendentials statistics
 
-  async GetTotalNumberOfIssuedCredentials(): Promise<number> {
+  async GetTotalNumberOfIssuedCredentials(): Promise<[any]> {
     const creds: any = [];
     const all = await this.GetAllCredentials();
 
@@ -170,6 +170,9 @@ export class CredentialRepository {
       const querySnapshot = await getDocs(maQuery);
       first = querySnapshot.docs[0].id;
     }
+    else {
+      first = this.allCredentials[0].id;
+    }
     return first;
   }
 
@@ -183,6 +186,9 @@ export class CredentialRepository {
       const querySnapshot = await getDocs(maQuery);
       last = querySnapshot.docs[0].id;
     }
+    else {
+      last = this.allCredentials[0].id;
+    }
     return last;
   }
 
@@ -193,9 +199,7 @@ export class CredentialRepository {
     const maQuery = query(
       collection(this.database, this.collectionName)
     );
-
     const querySnapshot = await getDocs(maQuery);
-    const credentials: CredentialMetadata[] = [];
 
     const fieldCounts: { [field: string]: number } = {};
 
