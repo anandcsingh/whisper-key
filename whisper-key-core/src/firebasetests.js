@@ -1,41 +1,68 @@
-import { CredentialRepository } from "./CredentialRepository";
+import { CredentialRepository } from "./CredentialRepository.js";
 
 async function GetNumberOfAllCollectionsTest() {
     const credentialRepository = new CredentialRepository();
 
-    const collectionCount = await credentialRepository.GetNumberOfAllCollections();
-    console.log('Number of all collections are:', collectionCount);
-
+    console.log('About to get number of verifiable credentials in firebase');
+    const credentials = await credentialRepository.GetAllCredentials();
+    credentials.forEach(credential => {
+        console.log('Credential found:', credential.id);
+    });
+    console.log("Total number of credentials:", credentials.length);
 }
 
 async function GetTotalNumberOfIssuedCredentialsTest() {
     const credentialRepository = new CredentialRepository();
 
     const issuedCreds = await credentialRepository.GetTotalNumberOfIssuedCredentials();
-    console.log('Number of issued credentials are:', issuedCreds);
+    console.log('Number of issued credentials are:', issuedCreds.length);
 
 }
 
-async function GetIssuedCredentialCountForEachCredentialTypeTest() {
+async function GetFirstCreatedCredential() {
     const credentialRepository = new CredentialRepository();
 
-    const issuedIssuedCredsCountPerType = {};
-    issuedIssuedCredsCountPerType = await credentialRepository.GetIssuedCredentialCountForEachCredentialType();
-    console.log(issuedIssuedCredsCountPerType);
-
+    const first = await credentialRepository.GetFirstCreatedCredential();
+    console.log(first);
 }
 
-async function CanGroupDocumentsByFieldNameTest() {
+async function GetMostRecentCredential() {
     const credentialRepository = new CredentialRepository();
 
-    // Get all documents and group by field name = "issuer", return the groups and the count
-    const issuerDocs = credentialRepository.GroupDocumentsByFieldName("DriversPermit", "issuer");
-    console.log(issuerDocs);
-
+    const last = await credentialRepository.GetMostRecentCredential();
+    console.log(last);
 }
+
+async function GetCredentialsMostOwnedBy() {
+    const credentialRepository = new CredentialRepository();
+
+    let data = await credentialRepository.GroupDocumentsByFieldName('owner');
+    console.log(data);
+    
+    const mostOwned = getKeyWithHighestCount(data);
+    console.log(`Most owned:`, mostOwned);
+}
+
+function getKeyWithHighestCount(data) {
+    let maxCount = 0;
+    let keyWithMaxCount = null;
+
+    for (const key in data) {
+        if (data[key] > maxCount) {
+            maxCount = data[key];
+            keyWithMaxCount = key;
+        }
+    }
+
+    return keyWithMaxCount;
+}
+
 
 GetNumberOfAllCollectionsTest();
-GetTotalNumberOfIssuedCredentialsTest();
-GetIssuedCredentialCountForEachCredentialTypeTest();
-CanGroupDocumentsByFieldNameTest();
-
+//GetTotalNumberOfIssuedCredentialsTest();
+// First credential
+GetFirstCreatedCredential();
+// Newest credential
+GetMostRecentCredential();
+// Most owned by
+GetCredentialsMostOwnedBy();
