@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser'
 import { credsRouter } from './routes/credentialsRoute.js';
 import { messagingRouter } from './routes/messagingRoute.js';
+import { credsStatsRouter } from './routes/credentialStatsRoute.js';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
@@ -42,6 +43,8 @@ app.use('/api/messaging', messagingRouter);
 
 app.use('/api/profile', profileRouter);
 app.use('/api/inbox', inboxRouter);
+
+app.use('/api/credential-stats', credsStatsRouter);
 
 app.use('/api/poll/created', async (req, res, next) => {
   checkDeploymentStatus(new EventNotification());

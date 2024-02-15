@@ -128,7 +128,7 @@ const DashboardContainerDataLoader: React.FC<DashboardContainerProps> = ({ showD
             <DashboardStats />
             <div style={{textAlign: 'center'}}>
                 // Uncomment for updated stats - currently being built out
-                {/* <Statistics /> */} 
+                <Statistics /> 
             </div>
 
         </div>
