@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { CredentialRepository } from '../../../../whisper-key-core/src/CredentialRepository';
 
 const Statistics = () => {
     const [totalCredentialsCreated, setTotalCredsCreated] = useState<number>(0);
@@ -14,19 +13,32 @@ const Statistics = () => {
         // for now direct calls...
         const fetchData = async () => {
             try {
-                let credentialRepository = new CredentialRepository();
-                const total = (await credentialRepository.GetAllCredentials()).length;
-                setTotalCredsCreated(total);
-                
-                setTotalIssuedCreds(((await credentialRepository.GetTotalNumberOfIssuedCredentials()).length));
-    
-                setFirstCreated(await credentialRepository.GetFirstCreatedCredential());
-    
-                setMostRecent(await credentialRepository.GetMostRecentCredential());
-                
-                const ownedByList = await credentialRepository.GroupDocumentsByFieldName('owner');
-                const mostOwned = getKeyWithHighestCount(ownedByList);
-                setMostOwnedBy(mostOwned);   
+                const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/credential-stats`;
+                const responses = await Promise.all([
+                    axios.get(`${apiURL}/`),
+                    axios.get(`${apiURL}/issued`),
+                    axios.get(`${apiURL}/first`),
+                    axios.get(`${apiURL}/last`),
+                    axios.get(`${apiURL}/most-owned`),
+                  ]);
+          
+                  // Extracting data from responses
+                  const [
+                    response1,
+                    response2,
+                    response3,
+                    response4,
+                    response5,
+                  ] = responses.map(response => response.data);
+
+                  const mostOwned = getKeyWithHighestCount(response5);
+          
+                  // Update state variables
+                  setTotalCredsCreated(response1.length);
+                  setTotalIssuedCreds(response2.totalIssuedCredentials.length);
+                  setFirstCreated(response3);
+                  setMostRecent(response4);
+                  setMostOwnedBy(mostOwned);
             } catch (error) {
                 console.error('Error getting data:', error);
             }

@@ -23,14 +23,14 @@ async function GetFirstCreatedCredential() {
     const credentialRepository = new CredentialRepository();
 
     const first = await credentialRepository.GetFirstCreatedCredential();
-    console.log(first);
+    console.log('first:',first);
 }
 
 async function GetMostRecentCredential() {
     const credentialRepository = new CredentialRepository();
 
     const last = await credentialRepository.GetMostRecentCredential();
-    console.log(last);
+    console.log('last:',last);
 }
 
 async function GetCredentialsMostOwnedBy() {
