@@ -13,12 +13,13 @@ const Statistics = () => {
         // for now direct calls...
         const fetchData = async () => {
             try {
-                const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/credential-stats`;
+                const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/api/credential-stats`;
+                console.log(apiURL);
                 const responses = await Promise.all([
                     axios.get(`${apiURL}/`),
                     axios.get(`${apiURL}/issued`),
                     axios.get(`${apiURL}/first`),
-                    axios.get(`${apiURL}/last`),
+                    axios.get(`${apiURL}/recent`),
                     axios.get(`${apiURL}/most-owned`),
                   ]);
           
@@ -108,11 +109,11 @@ const Statistics = () => {
 
 
             <div className="stats3">
-                <div style={{}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
                 <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
                 <div className="card-body">
-                    <h2 className="card-title">Total Credentials Created</h2>
-                    <p>{totalCredentialsCreated}</p>
+                    <h2 style={{margin: '0 auto'}} className="card-title">Total Credentials Created: {totalCredentialsCreated}</h2>
+                    {/* <h1>{totalCredentialsCreated}</h1> */}
                     <div className="card-actions justify-end">
                     </div>
                 </div>
@@ -121,10 +122,10 @@ const Statistics = () => {
 
             <div className="stats3">
                 <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
+                <figure><img crossOrigin="anonymous" src="https://fastly.picsum.photos/id/631/200/300.jpg?hmac=fgDzRjKee8EpUbckbz7kp1S1ssIqedrw2oOk5mBYQvk" alt="Whisper Key call to action" /></figure>
                 <div className="card-body">
-                    <h2 className="card-title">Total Verifiable Credentials Issued</h2>
-                    <p>{totalIssuedCreds}</p>
+                    <h2 style={{margin: '0 auto'}} className="card-title">Total Verifiable Credentials Issued: {totalIssuedCreds}</h2>
+                    {/* <p>{totalIssuedCreds}</p> */}
                     <div className="card-actions justify-end">
                     </div>
                 </div>
@@ -133,10 +134,10 @@ const Statistics = () => {
 
             <div className="stats3">
                 <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
+                <figure><img crossOrigin="anonymous" src="https://fastly.picsum.photos/id/444/200/300.jpg?hmac=xTzo_bbWzDyYSD5pNCUYw552_qtHzg0tQUKn50R6FOM" alt="Whisper Key call to action" /></figure>
                 <div className="card-body">
-                    <h2 className="card-title">Frist Credential Created</h2>
-                    <p>{firstCredCreated}</p>
+                    <h2 style={{margin: '0 auto'}} className="card-title">Frist Credential Created: {firstCredCreated}</h2>
+                    {/* <p>{firstCredCreated}</p> */}
                     <div className="card-actions justify-end">
                     </div>
                 </div>
@@ -145,12 +146,12 @@ const Statistics = () => {
 
             <div className="stats3">
                 <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
+                <figure><img crossOrigin="anonymous" src="https://fastly.picsum.photos/id/678/200/300.jpg?hmac=oO5BaTGKFZ00iWC6GR1arWVrbmu2-XmgYl9ub3C_ug4" alt="Whisper Key call to action" /></figure>
                 <div className="card-body">
-                    <h2 className="card-title">Most Recent Credential Created</h2>
-                    <p>{mostRecentCred}</p>
+                    <h2 style={{margin: '0 auto'}} className="card-title">Most Recent Credential Created: {mostRecentCred}</h2>
+                    {/* <p>{mostRecentCred}</p> */}
                     <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Get Started</button>
+                    <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button>
                     </div>
                 </div>
                 </div>
@@ -158,12 +159,12 @@ const Statistics = () => {
 
             <div className="stats3">
                 <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
+                <figure><img crossOrigin="anonymous" src="https://fastly.picsum.photos/id/28/200/300.jpg?hmac=PtGtIbRuuZW5gEPGm0h1Y-koEaki3vffOYcq3TdSAlA" alt="Whisper Key call to action" /></figure>
                 <div className="card-body">
-                    <h2 className="card-title">Institution that owns the most Credentials</h2>
-                    <p>{mostCredsOwned}</p>
+                    <h2 style={{margin: '0 auto'}} className="card-title">Institution that owns the most Credentials: {mostCredsOwned}</h2>
+                    {/* <p>{mostCredsOwned}</p> */}
                     <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Get Started</button>
+                    <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button>
                     </div>
                 </div>
                 </div>

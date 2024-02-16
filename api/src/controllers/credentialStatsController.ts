@@ -1,6 +1,6 @@
 // controllers/credentialController.ts
 import { Request, Response } from "express";
-import { CredentialRepository } from "../../../whisper-key-core/dist/src/CredentialRepository.js";
+import { CredentialRepository } from "contract-is-key";
 
 const credentialRepository = new CredentialRepository();
 
