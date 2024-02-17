@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const Statistics = () => {
     const [totalCredentialsCreated, setTotalCredsCreated] = useState<number|null>(null);
@@ -41,7 +43,7 @@ const Statistics = () => {
                   setMostRecent(response4);
                   //@ts-ignore
                   setMostOwnedBy(response5.mostOwned);
-                  setIsLoading(false);
+                  //setIsLoading(false);
             } catch (error) {
                 console.error('Error getting data:', error);
             }
@@ -71,13 +73,16 @@ const Statistics = () => {
 
             {
                 isLoading ? (
-                    <div>
-                        <span className="loading loading-ring loading-xs"></span>
-                        <span className="loading loading-ring loading-sm"></span>
-                        <span className="loading loading-ring loading-md"></span>
-                        <span className="loading loading-ring loading-lg"></span>
-                        <br/>
-                        Loading.....
+                    <div style={{display: 'flex', margin: '20px'}}>
+                        <div style={{flex:'1'}}>
+                            <Skeleton width={'75%'} count={10} />
+                        </div>
+                        <div style={{flex:'1'}}>
+                            <Skeleton width={'75%'} count={10} />
+                        </div>
+                        <div style={{flex:'1'}}>
+                            <Skeleton width={'75%'} count={10} />
+                        </div>
                     </div>
                 ) : 
                 <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
