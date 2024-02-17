@@ -35,6 +35,7 @@ The Whisper UI application is the hub of the Whisper Key ecosystem, it allows en
 Set the following environment variable to point the the api. for example
 
 `NEXT_PUBLIC_CREDENTIALS_API=http://localhost:3001/api/credentials`
+`NEXT_PUBLIC_BASE_API=http://localhost:3001`
 
 Navigate to the ui folder and run the following commands
 
