@@ -43,7 +43,7 @@ const Statistics = () => {
                   setMostRecent(response4);
                   //@ts-ignore
                   setMostOwnedBy(response5.mostOwned);
-                  //setIsLoading(false);
+                  setIsLoading(false);
             } catch (error) {
                 console.error('Error getting data:', error);
             }
