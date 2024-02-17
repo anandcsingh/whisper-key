@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const Statistics = () => {
     const [totalCredentialsCreated, setTotalCredsCreated] = useState<number|null>(null);
@@ -66,29 +68,32 @@ const Statistics = () => {
     return(
         <div>
             <div className="divider"></div> 
-            <h1 className='text-5xl'>Statistics</h1>
+            <h1 className='text-5xl' style={{margin: '30px'}}>Statistics</h1>
 
 
             {
                 isLoading ? (
-                    <div>
-                        <span className="loading loading-ring loading-xs"></span>
-                        <span className="loading loading-ring loading-sm"></span>
-                        <span className="loading loading-ring loading-md"></span>
-                        <span className="loading loading-ring loading-lg"></span>
-                        <br/>
-                        Loading.....
+                    <div style={{display: 'flex', margin: '20px'}}>
+                        <div style={{flex:'1'}}>
+                            <Skeleton width={'75%'} count={10} />
+                        </div>
+                        <div style={{flex:'1'}}>
+                            <Skeleton width={'75%'} count={10} />
+                        </div>
+                        <div style={{flex:'1'}}>
+                            <Skeleton width={'75%'} count={10} />
+                        </div>
                     </div>
                 ) : 
-                <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
+                <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', maxWidth: '100%'}}>
                 {
                     totalCredentialsCreated && (
-                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                    <div style={{flex: '0 0 30%', margin: '15px', display:'flex', justifyContent:'center'}} className="stats-comp">
                         <div style={{}} className="card card-compact w-96 bg-base-100 shadow-xl">
                         <figure><img crossOrigin="anonymous" src="/assets/abacus.png" alt="Whisper Key call to action" /></figure>
-                        <div className="card-body">
-                            <h2 style={{margin: '0 auto'}} className="card-title">Total Credentials Created: {totalCredentialsCreated}</h2>
-                            {/* <h1>{totalCredentialsCreated}</h1> */}
+                        <div style={{height:'200px'}} className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title text-2xl">Total Credentials Created:</h2>
+                            <h1 style={{color:'green'}} className='text-4xl'>{totalCredentialsCreated}</h1>
                             <div className="card-actions justify-end">
                             </div>
                         </div>
@@ -99,12 +104,12 @@ const Statistics = () => {
 
                 {
                     totalIssuedCreds && (
-                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                    <div style={{flex: '0 0 30%', margin: '15px', display:'flex', justifyContent:'center'}} className="stats-comp">
                         <div style={{}} className="card card-compact w-96 bg-base-100 shadow-xl">
                         <figure><img crossOrigin="anonymous" src="/assets/magic-wand.png" alt="Whisper Key call to action" /></figure>
-                        <div className="card-body">
-                            <h2 style={{margin: '0 auto'}} className="card-title">Total Verifiable Credentials Issued: {totalIssuedCreds}</h2>
-                            {/* <p>{totalIssuedCreds}</p> */}
+                        <div style={{height:'200px'}} className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title text-2xl">Total Verifiable Credentials Issued:</h2>
+                            <p style={{color:'green'}} className='text-4xl'>{totalIssuedCreds}</p>
                             <div className="card-actions justify-end">
                             </div>
                         </div>
@@ -115,12 +120,12 @@ const Statistics = () => {
 
                 {
                     firstCredCreated && (
-                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                    <div style={{flex: '0 0 30%', margin: '15px', display:'flex', justifyContent:'center'}} className="stats-comp">
                         <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
                         <figure><img crossOrigin="anonymous" src="/assets/first-medal.png" alt="Whisper Key call to action" /></figure>
-                        <div className="card-body">
-                            <h2 style={{margin: '0 auto'}} className="card-title">Frist Credential Created: {firstCredCreated}</h2>
-                            {/* <p>{firstCredCreated}</p> */}
+                        <div style={{height:'200px'}} className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title text-2xl">Frist Credential Created:</h2>
+                            <p style={{color:'green'}} className='text-4xl'>{firstCredCreated}</p>
                             <div className="card-actions justify-end">
                             </div>
                         </div>
@@ -131,14 +136,14 @@ const Statistics = () => {
 
                 {
                     mostRecentCred && (
-                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                    <div style={{flex: '0 0 30%', margin: '15px', display:'flex', justifyContent:'center'}} className="stats-comp">
                         <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
                         <figure><img crossOrigin="anonymous" src="/assets/beer.png" alt="Whisper Key call to action" /></figure>
-                        <div className="card-body">
-                            <h2 style={{margin: '0 auto'}} className="card-title">Most Recent Credential Created: {mostRecentCred}</h2>
-                            {/* <p>{mostRecentCred}</p> */}
+                        <div style={{height:'200px'}} className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title text-2xl">Most Recent Credential Created:</h2>
+                            <p style={{color:'green'}} className='text-4xl'>{mostRecentCred}</p>
                             <div className="card-actions justify-end">
-                            <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button>
+                            {/* <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button> */}
                             </div>
                         </div>
                         </div>
@@ -148,14 +153,14 @@ const Statistics = () => {
 
                 {
                     mostCredsOwned && (
-                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                    <div style={{flex: '0 0 30%', margin: '15px', display:'flex', justifyContent:'center'}} className="stats-comp">
                         <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
                         <figure><img crossOrigin="anonymous" src="/assets/most-valuable-player.png" alt="Whisper Key call to action" /></figure>
-                        <div className="card-body">
-                            <h2 style={{margin: '0 auto'}} className="card-title">Institution that owns the most Credentials:</h2>
-                            <h1>{mostCredsOwned?.substring(0, 10)}.......</h1>
+                        <div style={{height:'200px'}} className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title text-2xl">Institution that owns the most Credentials:</h2>
+                            <p style={{color:'green'}} className='text-4xl'>{mostCredsOwned?.substring(0, 10)}.......</p>
                             <div className="card-actions justify-end">
-                            <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button>
+                            {/* <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button> */}
                             </div>
                         </div>
                         </div>
