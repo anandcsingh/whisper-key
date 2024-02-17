@@ -2,18 +2,20 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Statistics = () => {
-    const [totalCredentialsCreated, setTotalCredsCreated] = useState<number>(0);
-    const [totalIssuedCreds, setTotalIssuedCreds] = useState<number>(0);
+    const [totalCredentialsCreated, setTotalCredsCreated] = useState<number|null>(null);
+    const [totalIssuedCreds, setTotalIssuedCreds] = useState<number|null>(null);
     const [firstCredCreated, setFirstCreated] = useState<string>('');
     const [mostRecentCred, setMostRecent] = useState<string>('');
     const [mostCredsOwned, setMostOwnedBy] = useState<string | null>('');
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     
     useEffect(() => {
         // To be replaced by calling whispey key core 'contract-is-key' npm package
         // for now direct calls...
         const fetchData = async () => {
             try {
-                const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/api/credential-stats`;
+                console.log('base URL:',process.env.NEXT_PUBLIC_BASE_API);
+                const apiURL = `${process.env.NEXT_PUBLIC_BASE_API}/api/credential-stats`;
                 console.log(apiURL);
                 const responses = await Promise.all([
                     axios.get(`${apiURL}/`),
@@ -31,19 +33,20 @@ const Statistics = () => {
                     response4,
                     response5,
                   ] = responses.map(response => response.data);
-
-                  const mostOwned = getKeyWithHighestCount(response5);
           
                   // Update state variables
                   setTotalCredsCreated(response1.length);
-                  setTotalIssuedCreds(response2.totalIssuedCredentials.length);
+                  setTotalIssuedCreds(response2.count);
                   setFirstCreated(response3);
                   setMostRecent(response4);
-                  setMostOwnedBy(mostOwned);
+                  //@ts-ignore
+                  setMostOwnedBy(response5.mostOwned);
+                  setIsLoading(false);
             } catch (error) {
                 console.error('Error getting data:', error);
             }
         };
+        console.log('about to fetch dataaaaa');
         fetchData();
     }, []);
 
@@ -62,115 +65,109 @@ const Statistics = () => {
 
     return(
         <div>
-            <div className="stats1">
-                <div className="stats shadow">
-  
-                <div className="stat">
-                    <div className="stat-figure text-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <div className="stat-title">Total Verifiable Credentials</div>
-                    <div className="stat-value">31K</div>
-                    <div className="stat-desc">Jan 1st - Feb 1st</div>
-                </div>
-                
-                <div className="stat">
-                    <div className="stat-figure text-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                    </div>
-                    <div className="stat-title">New Verified Credentials</div>
-                    <div className="stat-value">4,200</div>
-                    <div className="stat-desc">↗︎ 400 (22%)</div>
-                </div>
-                
-                <div className="stat">
-                    <div className="stat-figure text-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
-                    </div>
-                    <div className="stat-title">Total Issued Verifiable Credentials</div>
-                    <div className="stat-value">1,200</div>
-                    <div className="stat-desc">↘︎ 90 (14%)</div>
-                </div>
-                
-                </div>
-            </div>
-
-            <div className="stats2">
-                <div className="stats shadow">
-  
-                <div className="stat">
-                    <div className="stat-title">Projected Issued By December 2024</div>
-                    <div className="stat-value">89,400</div>
-                    <div className="stat-desc">21% more than last month</div>
-                </div>
-  
-                </div>
-            </div>
+            <div className="divider"></div> 
+            <h1 className='text-5xl'>Statistics</h1>
 
 
-            <div className="stats3">
-                <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img crossOrigin="anonymous" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Whisper Key call to action" /></figure>
-                <div className="card-body">
-                    <h2 style={{margin: '0 auto'}} className="card-title">Total Credentials Created: {totalCredentialsCreated}</h2>
-                    {/* <h1>{totalCredentialsCreated}</h1> */}
-                    <div className="card-actions justify-end">
+            {
+                isLoading ? (
+                    <div>
+                        <span className="loading loading-ring loading-xs"></span>
+                        <span className="loading loading-ring loading-sm"></span>
+                        <span className="loading loading-ring loading-md"></span>
+                        <span className="loading loading-ring loading-lg"></span>
+                        <br/>
+                        Loading.....
                     </div>
-                </div>
-                </div>
-            </div>
-
-            <div className="stats3">
-                <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img crossOrigin="anonymous" src="https://fastly.picsum.photos/id/631/200/300.jpg?hmac=fgDzRjKee8EpUbckbz7kp1S1ssIqedrw2oOk5mBYQvk" alt="Whisper Key call to action" /></figure>
-                <div className="card-body">
-                    <h2 style={{margin: '0 auto'}} className="card-title">Total Verifiable Credentials Issued: {totalIssuedCreds}</h2>
-                    {/* <p>{totalIssuedCreds}</p> */}
-                    <div className="card-actions justify-end">
+                ) : 
+                <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
+                {
+                    totalCredentialsCreated && (
+                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                        <div style={{}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                        <figure><img crossOrigin="anonymous" src="/assets/abacus.png" alt="Whisper Key call to action" /></figure>
+                        <div className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title">Total Credentials Created: {totalCredentialsCreated}</h2>
+                            {/* <h1>{totalCredentialsCreated}</h1> */}
+                            <div className="card-actions justify-end">
+                            </div>
+                        </div>
+                        </div>
                     </div>
-                </div>
-                </div>
-            </div>
+                    )
+                }
 
-            <div className="stats3">
-                <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img crossOrigin="anonymous" src="https://fastly.picsum.photos/id/444/200/300.jpg?hmac=xTzo_bbWzDyYSD5pNCUYw552_qtHzg0tQUKn50R6FOM" alt="Whisper Key call to action" /></figure>
-                <div className="card-body">
-                    <h2 style={{margin: '0 auto'}} className="card-title">Frist Credential Created: {firstCredCreated}</h2>
-                    {/* <p>{firstCredCreated}</p> */}
-                    <div className="card-actions justify-end">
+                {
+                    totalIssuedCreds && (
+                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                        <div style={{}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                        <figure><img crossOrigin="anonymous" src="/assets/magic-wand.png" alt="Whisper Key call to action" /></figure>
+                        <div className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title">Total Verifiable Credentials Issued: {totalIssuedCreds}</h2>
+                            {/* <p>{totalIssuedCreds}</p> */}
+                            <div className="card-actions justify-end">
+                            </div>
+                        </div>
+                        </div>
                     </div>
-                </div>
-                </div>
-            </div>
+                    )
+                }
 
-            <div className="stats3">
-                <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img crossOrigin="anonymous" src="https://fastly.picsum.photos/id/678/200/300.jpg?hmac=oO5BaTGKFZ00iWC6GR1arWVrbmu2-XmgYl9ub3C_ug4" alt="Whisper Key call to action" /></figure>
-                <div className="card-body">
-                    <h2 style={{margin: '0 auto'}} className="card-title">Most Recent Credential Created: {mostRecentCred}</h2>
-                    {/* <p>{mostRecentCred}</p> */}
-                    <div className="card-actions justify-end">
-                    <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button>
+                {
+                    firstCredCreated && (
+                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                        <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                        <figure><img crossOrigin="anonymous" src="/assets/first-medal.png" alt="Whisper Key call to action" /></figure>
+                        <div className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title">Frist Credential Created: {firstCredCreated}</h2>
+                            {/* <p>{firstCredCreated}</p> */}
+                            <div className="card-actions justify-end">
+                            </div>
+                        </div>
+                        </div>
                     </div>
-                </div>
-                </div>
-            </div>
+                    )
+                }
 
-            <div className="stats3">
-                <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img crossOrigin="anonymous" src="https://fastly.picsum.photos/id/28/200/300.jpg?hmac=PtGtIbRuuZW5gEPGm0h1Y-koEaki3vffOYcq3TdSAlA" alt="Whisper Key call to action" /></figure>
-                <div className="card-body">
-                    <h2 style={{margin: '0 auto'}} className="card-title">Institution that owns the most Credentials: {mostCredsOwned}</h2>
-                    {/* <p>{mostCredsOwned}</p> */}
-                    <div className="card-actions justify-end">
-                    <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button>
+                {
+                    mostRecentCred && (
+                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                        <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                        <figure><img crossOrigin="anonymous" src="/assets/beer.png" alt="Whisper Key call to action" /></figure>
+                        <div className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title">Most Recent Credential Created: {mostRecentCred}</h2>
+                            {/* <p>{mostRecentCred}</p> */}
+                            <div className="card-actions justify-end">
+                            <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button>
+                            </div>
+                        </div>
+                        </div>
                     </div>
-                </div>
-                </div>
-            </div>
+                    )
+                }
 
+                {
+                    mostCredsOwned && (
+                    <div style={{flex: '0 0 30%', margin: '5px'}} className="stats-comp">
+                        <div style={{margin: '0 auto'}} className="card card-compact w-96 bg-base-100 shadow-xl">
+                        <figure><img crossOrigin="anonymous" src="/assets/most-valuable-player.png" alt="Whisper Key call to action" /></figure>
+                        <div className="card-body">
+                            <h2 style={{margin: '0 auto'}} className="card-title">Institution that owns the most Credentials:</h2>
+                            <h1>{mostCredsOwned?.substring(0, 10)}.......</h1>
+                            <div className="card-actions justify-end">
+                            <button style={{margin: '0 auto'}} className="btn btn-primary">Get Started</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    )
+                }
+                </div>
+            }
+
+            <div className="divider"></div> 
         </div>
+        
         
     );
 }
