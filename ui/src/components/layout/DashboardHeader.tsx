@@ -88,12 +88,12 @@ const Header = () => {
     <nav className="bg-gray-800 z-100 invisible lg:visible">
 
       <header className="fixed w-full zclass">
-        <nav className="border-gray-200 py-2.5 dark:bg-gray-900">
+        <nav style={{backgroundColor:'#ccdbfe'}} className="border-gray-200 py-2.5 dark:bg-gray-900">
           <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
 
             <a href="/" className="flex items-center">
-              <img src="/assets/images/logo.png" className="h-6 mr-3 sm:h-9" alt="RankProok Logo" />
-              <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Whisper Key</span>
+              <img style={{borderRadius:'17px'}} src="/assets/images/logo.png" className="h-6 mr-3 sm:h-9" alt="RankProok Logo" />
+              <span style={{color:'black'}} className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Whisper Key</span>
             </a>
 
 
@@ -103,7 +103,7 @@ const Header = () => {
                  href='/dashboard' >
                     Launch App
                 </Link> */}
-              {authState.userAuthenticated && <p className='mr-2'>
+              {authState.userAuthenticated && <p style={{color:'black'}} className='mr-2'>
                 {authState.userAddress.substring(0, 5) + "..." + authState.userAddress.substring(authState.userAddress.length - 5, authState.userAddress.length)}
               </p>
               }
