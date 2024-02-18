@@ -68,7 +68,7 @@ const Statistics = () => {
     return(
         <div>
             <div className="divider"></div> 
-            <h1 className='text-5xl' style={{margin: '30px'}}>Statistics</h1>
+            <h1 className='text-5xl' style={{margin: '30px'}}>Verifiable Credential Statistics</h1>
 
 
             {

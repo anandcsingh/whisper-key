@@ -12,11 +12,11 @@ const Header = () => {
     <nav className="bg-gray-800">
 
       <header className="fixed w-full">
-        <nav className="border-gray-200 py-2.5 dark:bg-gray-900">
+        <nav style={{backgroundColor:'#f3f4f6'}} className="border-gray-200 py-2.5 dark:bg-gray-900">
           <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
 
             <a href="/" className="flex items-center">
-              <img src="/assets/images/logo.png" className="h-6 mr-3 sm:h-9" alt="Whisper Key Logo" />
+              <img style={{borderRadius:'17px'}} src="/assets/images/logo.png" className="h-6 mr-3 sm:h-9" alt="Whisper Key Logo" />
               <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Whisper Key</span>
             </a>
            

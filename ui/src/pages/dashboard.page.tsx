@@ -41,7 +41,7 @@ export default function Dashboard() {
             
               <div className="text-center">
                 <a href="#" className="flex items-center justify-center mb-5 text-2xl font-semibold text-gray-900 dark:text-white">
-                  <img src="/assets/images/logo.png" className="h-6 mr-3 sm:h-9" alt="Whisper key Logo" />
+                  <img style={{borderRadius:'17px'}} src="/assets/images/logo.png" className="h-6 mr-3 sm:h-9" alt="Whisper key Logo" />
                   Whisper Key    
                 </a>
                 <span className="block text-sm text-center text-gray-500 dark:text-gray-400">© 2023 Whisper Key. All Rights Reserved.
