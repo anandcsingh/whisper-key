@@ -55,11 +55,11 @@ export default function Credentials() {
               {/* Row */}
               <div className="items-center gap-8 lg:grid lg:grid-cols-1 xl:gap-16">
               <div className="overflow-x-auto table-div">
-                <table style={{color:'black'}} className="table table">
+                <table style={{color:'#000'}} className="table table">
                     <thead>
                         <tr>
-                            <th className='text-4xl'>Name</th>
-                            <th className='text-4xl'>Owner</th>
+                            <th style={{color:'green'}} className='text-4xl'>Name</th>
+                            <th style={{color:'green'}} className='text-4xl'>Owner</th>
                         </tr>
                     </thead>
                     <tbody>
