@@ -51,8 +51,6 @@ describe('Escrow', () => {
 
     it('can deposit to the sender account', async () => {
         await localDeploy();
-
-        console.log('Sender account:', senderAccount);
         // update transaction
         const txn = await Mina.transaction(senderAccount, () => {
             zkApp.deposit(senderAccount);
@@ -71,7 +69,9 @@ describe('Escrow', () => {
         await txn.prove();
         await txn.sign([senderKey]).send();
         console.log(txn.toPretty());
+        let balance = Mina.getBalance(zkAppAddress).div(1e9);
+        console.log(`zkApp balance after deposit:  ${balance} MINA`);
+        expect(balance).toEqual(UInt64.from(2));
     });
-
 
 });
