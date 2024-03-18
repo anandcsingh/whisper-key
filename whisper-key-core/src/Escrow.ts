@@ -20,11 +20,7 @@ export class Escrow extends SmartContract {
     @method depositToSmartContract(amount: UInt64) {
         let senderUpdate = AccountUpdate.create(this.sender);
         senderUpdate.requireSignature();
-        console.log('Smart contract balance before:')
-        printBalances(this.address);
         senderUpdate.send({ to: this, amount });
-        console.log('Smart contract balance after:');
-        printBalances(this.address);
     }
 }
 
