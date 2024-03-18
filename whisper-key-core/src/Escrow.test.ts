@@ -1,5 +1,5 @@
 import { Escrow } from './Escrow';
-import { Field, Mina, PrivateKey, PublicKey, AccountUpdate } from 'o1js';
+import { Field, Mina, PrivateKey, PublicKey, AccountUpdate, UInt64 } from 'o1js';
 
 /*
  * This file specifies how to test the `Escrow` example smart contract. It is safe to delete this file and replace
@@ -49,17 +49,29 @@ describe('Escrow', () => {
         await localDeploy();
     });
 
-    it('can deposit to the smart contract account to hold in escrow', async () => {
+    it('can deposit to the sender account', async () => {
         await localDeploy();
 
         console.log('Sender account:', senderAccount);
-        console.log('Smart contract account balance before:', zkApp.balance.get());
         // update transaction
         const txn = await Mina.transaction(senderAccount, () => {
             zkApp.deposit(senderAccount);
         });
         await txn.prove();
         await txn.sign([senderKey]).send();
-        console.log('Smart contract account balance after:', zkApp.balance.get());
     });
+
+    it('can deposit to smart contract to hold in escrow', async () => {
+        await localDeploy();
+
+        const mina = 1e9;
+        const txn = await Mina.transaction(senderAccount, () => {
+            zkApp.depositToSmartContract(UInt64.from(2 * mina));
+        });
+        await txn.prove();
+        await txn.sign([senderKey]).send();
+        console.log(txn.toPretty());
+    });
+
+
 });
