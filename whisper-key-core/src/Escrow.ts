@@ -1,27 +1,47 @@
-import { Mina, SmartContract, method, UInt64, AccountUpdate, PublicKey } from 'o1js';
+import { Mina, SmartContract, method, UInt64, AccountUpdate, PublicKey, State, state, Field, FlexibleProvablePure } from 'o1js';
 
 export class Escrow extends SmartContract {
-    init(): void {
+    @state(PublicKey) senderPublicKey = State<PublicKey>();
+    @state(PublicKey) receiverPublicKey = State<PublicKey>();
+    @state(Field) escrowAmount = State<Field>();
 
+    events = {
+        'escrow-funds-received': UInt64
+    };
+
+    init(): void {
+        this.escrowAmount.set(Field(0.001));
     }
 
-    // deposit to sender account from smart contract
-    @method async deposit(user: PublicKey) {
+    // withdraw from smart contract and send to receiver
+    @method async withdraw(user: PublicKey) {
         // add your deposit logic circuit here
         // that will adjust the amount
-
         const payerUpdate = AccountUpdate.createSigned(user);
-        console.log('Sender account balance before:', payerUpdate.balance);
 
         payerUpdate.send({ to: this.address, amount: UInt64.from(1000000) });
     }
 
+    @method setReceiver(receiver: PublicKey) {
+        this.receiverPublicKey.set(receiver);
+    }
+
     // deposit to smart contract from sender account
-    @method depositToSmartContract(amount: UInt64) {
+    @method deposit(amount: UInt64) {
+        let senderUpdate = AccountUpdate.create(this.sender);
+        senderUpdate.requireSignature();
+        senderUpdate.send({ to: this, amount });
+        this.emitEvent("escrow-funds-received", amount);
+    }
+
+    // deposit to smart contract from sender account
+    @method depositFromUser(sender: PublicKey, amount: UInt64) {
+        this.senderPublicKey.set(sender);
         let senderUpdate = AccountUpdate.create(this.sender);
         senderUpdate.requireSignature();
         senderUpdate.send({ to: this, amount });
     }
+
 }
 
 function printBalances(addr: PublicKey) {

@@ -47,8 +47,27 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     // const baseSig = signature.toBase58();
     // console.log("base58", baseSig);
     console.log(signResult)
-    fetchData({ data: state.formData, hash: hash, signResult: signResult });
+    sendEscrowPayment({ data: state.formData, hash: hash, signResult: signResult });
   };
+
+  // ToDo: Escrow
+  const sendEscrowPayment = (formData : any) => {
+    // Store form data
+    storeFormData();
+
+    // Deploy smart contract
+    deploySmartContractForUser();
+  }
+
+  const storeFormData = () => {
+
+  }
+
+  const deploySmartContractForUser = () => {
+    // Make escrow payment request
+
+    // Initiate payment
+  }
 
   const fetchData = (formData: any) => {
     const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/issue/${credentialMetadata.name}`;

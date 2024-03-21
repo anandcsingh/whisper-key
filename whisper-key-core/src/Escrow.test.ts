@@ -53,7 +53,7 @@ describe('Escrow', () => {
         await localDeploy();
         // update transaction
         const txn = await Mina.transaction(senderAccount, () => {
-            zkApp.deposit(senderAccount);
+            zkApp.withdraw(senderAccount);
         });
         await txn.prove();
         await txn.sign([senderKey]).send();
@@ -64,7 +64,7 @@ describe('Escrow', () => {
 
         const mina = 1e9;
         const txn = await Mina.transaction(senderAccount, () => {
-            zkApp.depositToSmartContract(UInt64.from(2 * mina));
+            zkApp.deposit(UInt64.from(2 * mina));
         });
         await txn.prove();
         await txn.sign([senderKey]).send();
