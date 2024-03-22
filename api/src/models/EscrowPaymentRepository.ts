@@ -1,15 +1,10 @@
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { ProfileRepository } from './ProfileRepository';
+import { PaymentRequirements } from './PaymentRequirements';
+import { Payment } from './Payment';
 
-// Define types/interfaces as needed
-interface Payment {
-    paymentAmount: number;
-    paymentStatus: string;
-    // Add more fields as needed
-}
-
-export class PaymentRepository {
+export class EscrowPaymentRepository {
     config: any;
     app: any;
     database: any;
@@ -18,12 +13,12 @@ export class PaymentRepository {
 
     constructor() {
         this.config = {
-            apiKey: "",
-            authDomain: "",
-            projectId: "",
-            storageBucket: "",
-            messagingSenderId: "",
-            appId: ""
+            apiKey: "AIzaSyCLf7YUCTyPN9spPSmbzwxFpxSLfz7Mqoc",
+            authDomain: "whisper-key.firebaseapp.com",
+            projectId: "whisper-key",
+            storageBucket: "whisper-key.appspot.com",
+            messagingSenderId: "1097281157212",
+            appId: "1:1097281157212:web:e9c42bc24d566fd269ce99"
         };
         this.app = initializeApp(this.config);
         this.database = getFirestore(this.app);
@@ -40,19 +35,21 @@ export class PaymentRepository {
         }
     }
 
-    async addOrUpdatePayment(payment: Payment, walletAddress: string): Promise<void> {
+    async addOrUpdatePayment(payment: Payment, paymentRequirements: PaymentRequirements, walletAddress: string): Promise<void> {
         // Assuming the payment is linked to a user profile, get the profile
-        const userProfile = await this.profileRepository.getProfile(walletAddress);
-        if (!userProfile) {
-            throw new Error("User profile not found");
-        }
+        // const userProfile = await this.profileRepository.getProfile(walletAddress);
+        // if (!userProfile) {
+        //     throw new Error("User profile not found");
+        // }
 
         // Store payment with a reference to user profile
+        let id = `${paymentRequirements.credentialMeta.name}${walletAddress}`;
         const paymentRef = doc(this.database, this.collectionName);
         const paymentData = {
             ...payment,
-            userProfileId: userProfile.id, // Assuming there's an ID for the user profile
-            timestamp: new Date().toISOString() // Add timestamp for the payment
+            ...paymentRequirements,
+            timestamp: new Date().toISOString(), // Add timestamp for the payment
+            id
         };
         await setDoc(paymentRef, paymentData);
     }
