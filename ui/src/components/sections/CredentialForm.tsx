@@ -46,7 +46,6 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     // const signature = new Signature(Field(signResult.signature.field), Scalar.fromBigInt(BigInt(signResult.signature.scalar)));
     // const baseSig = signature.toBase58();
     // console.log("base58", baseSig);
-    console.log(signResult)
     sendEscrowPayment({ data: state.formData, hash: hash, signResult: signResult });
   };
 
