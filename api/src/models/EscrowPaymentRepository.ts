@@ -48,6 +48,7 @@ export class EscrowPaymentRepository {
         const paymentData = {
             ...payment,
             ...paymentRequirements,
+            owner: walletAddress,
             timestamp: new Date().toISOString(), // Add timestamp for the payment
             id
         };

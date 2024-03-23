@@ -6,7 +6,8 @@ import Authentication from '@/modules/Authentication';
 import { AuthContext } from "@/components/layout/AuthPage";
 import Router from 'next/router';
 import { SHA256 } from 'crypto-js';
-import { Field, Signature, Scalar } from 'o1js';
+import { Field, Signature, Scalar, PublicKey } from 'o1js';
+import { ContractDeployer } from '../../../../whisper-key-core/src/ContractDeployer';
 
 
 interface CredentialFormProps {
@@ -46,26 +47,42 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     // const signature = new Signature(Field(signResult.signature.field), Scalar.fromBigInt(BigInt(signResult.signature.scalar)));
     // const baseSig = signature.toBase58();
     // console.log("base58", baseSig);
-    sendEscrowPayment({ data: state.formData, hash: hash, signResult: signResult });
+    var escrowAmt = 10;
+    var paymentStatus = "processing";
+
+    var ownerWalletAddress = state.formData.owner;
+    
+    storeEscrowData({ data: state.formData, hash: hash, signResult: signResult }, {paymentAmount: escrowAmt, paymentStatus: paymentStatus}, ownerWalletAddress);
   };
 
-  // ToDo: Escrow
-  const sendEscrowPayment = (formData : any) => {
-    // Store form data
-    storeFormData();
+  const storeEscrowData = async(formData: any, escrowData: any, ownerWalletAddress: string) => {
+    const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/api/escrow}`;
+    if (!apiUrl) {
+      throw new Error('API URL not defined in environment variables.');
+    }
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        // You can add other headers here if needed
+      },
+      body: JSON.stringify({
+        walletAddress: ownerWalletAddress,
+        payment: escrowData,
+        paymentReqs: formData 
+      })
+    };
+    try {
 
-    // Deploy smart contract
-    deploySmartContractForUser();
-  }
-
-  const storeFormData = () => {
-
-  }
-
-  const deploySmartContractForUser = () => {
-    // Make escrow payment request
-
-    // Initiate payment
+    const response = fetch(apiUrl, requestOptions)
+    .then((response) => response.json())
+    .then((data) => {
+          console.log(data);
+        })
+    .catch((err: any) => console.error('Error trying to fetch Escrow store data response', err));
+    } catch (error) {
+      console.error('Error trying to store Escrow Data', error);
+    }
   }
 
   const fetchData = (formData: any) => {

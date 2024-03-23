@@ -20,7 +20,7 @@ import cron from 'node-cron';
 import { profileRouter } from './routes/profileRoute.js';
 import { BlockHeightRepository } from './models/BlockHeightRepository.js';
 import { inboxRouter } from './routes/inboxRoute.js';
-import { escrowRouter } from './routes/escrowPaymentRoute.js';
+import { escrowRouter } from './routes/escrowRoute.js';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
@@ -47,7 +47,7 @@ app.use('/api/inbox', inboxRouter);
 
 app.use('/api/credential-stats', credsStatsRouter);
 
-app.unsubscribe('/api/escrow', escrowRouter);
+app.use('/api/escrow', escrowRouter);
 
 app.use('/api/poll/created', async (req, res, next) => {
   checkDeploymentStatus(new EventNotification());
