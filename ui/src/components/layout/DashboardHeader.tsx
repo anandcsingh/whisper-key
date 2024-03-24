@@ -18,6 +18,8 @@ const Header = () => {
   const [userEmail, setUserEmail] = useState('');
   const [inboxCount, setInboxCount] = useState(0);
   const [inboxNotiications, setInboxNotifications] = useState([]);
+  const [formData, setFormData] = useState({});
+
   var inbox: Inbox = new Inbox();
   const fetchNotifications = async () => {
 
@@ -82,6 +84,25 @@ const Header = () => {
     setIsProfileModalOpen(false);
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  function handleEscrowPayment(event: React.FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    console.log('Escrow payment initiated');
+    document.getElementById('payment_confirm').showModal()
+  }
+
+  const handleDialogConfirm = (): void => {
+    document.getElementById('escrow_pay_modal')?.close();
+    console.log('Form submitted:', formData);
+    setFormData({ address: '', credentialName: '', amount: '' });
+  };
+
 
   return (
 
@@ -107,8 +128,43 @@ const Header = () => {
                 {authState.userAddress.substring(0, 5) + "..." + authState.userAddress.substring(authState.userAddress.length - 5, authState.userAddress.length)}
               </p>
               }
-            <button type='button' style={{ marginRight: '5px' }} onClick={() => {}} className="button-channel inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button type='button' style={{ marginRight: '5px' }} onClick={()=>document.getElementById('escrow_pay_modal').showModal()} className="button-channel inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Make Payment</button>
+                <dialog id="escrow_pay_modal" className="modal">
+                  <div className="modal-box">
+                    <h3 className="font-bold text-lg">Escrow Payment 🪙</h3>
+                    <p className="py-4">Press ESC key to close</p>
+                    <div className="modal-action">
+                      <form method='submit' onSubmit={handleEscrowPayment}>
+                        {/* if there is a button in form, it will close the modal */}
+                        <div>
+                          <input style={{marginTop: "10px"}} name="address" type="text" placeholder="Wallet address" onChange={handleChange} className="input input-bordered input-info w-full max-w-xs" />
+                          <input style={{marginTop: "10px"}} name="credentialName" type="text" placeholder="Credential Name" onChange={handleChange} className="input input-bordered input-info w-full max-w-xs" />
+                          <input style={{marginTop: "10px"}} name="amount" type="text" placeholder="Amount in Mina" onChange={handleChange} className="input input-bordered input-info w-full max-w-xs" />
+                        </div>
+                        <button style={{marginTop: "20px"}} onClick={() => {console.log('modal closed')}} className="btn">Pay</button>
+                      </form>
+                    </div>
+                  </div>
+                </dialog>
+                {/* Open the modal using document.getElementById('ID').showModal() method */}
+                <dialog id="payment_confirm" className="modal">
+                <div className="modal-box">
+                  <h3 className="font-bold text-lg">Great!</h3>
+                  <p className="py-4">Are you sure you want to pay?</p>
+                  <div className="modal-action">
+                    <form method="dialog">
+                      {/* if there is a button in form, it will close the modal */}
+                      <button className="btn" onClick={() => {
+                        handleDialogConfirm();
+                      }} >Yes</button>
+                      <button style={{marginLeft: "5px"}} className='btn' onClick={() => {
+                        document.getElementById('payment_confirm')?.close();
+                      }} >No</button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
               <a href="#inbox_modal" type="button" className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Inbox
                 {inboxCount > 0 && <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">
