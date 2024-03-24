@@ -7,6 +7,8 @@ import Authentication from '@/modules/Authentication';
 import { AuthContext } from './AuthPage';
 import { ProfileMetadata } from '@/modules/ProfileMetadata';
 import { Inbox } from '@/modules/Inbox';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Header = () => {
 
@@ -101,6 +103,7 @@ const Header = () => {
     document.getElementById('escrow_pay_modal')?.close();
     console.log('Form submitted:', formData);
     setFormData({ address: '', credentialName: '', amount: '' });
+    toast('🦄 Payment request received and will be processed. You will receive a notification in your inbox when credential is ready!');
   };
 
 
@@ -165,6 +168,8 @@ const Header = () => {
                   </div>
                 </div>
               </dialog>
+              <ToastContainer autoClose={17000} />
+
               <a href="#inbox_modal" type="button" className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Inbox
                 {inboxCount > 0 && <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">
