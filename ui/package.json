@@ -32,6 +32,7 @@
     "react-loading-skeleton": "^3.4.0",
     "react-qr-code": "^2.0.12",
     "react-qr-scanner": "^1.0.0-alpha.11",
+    "react-toastify": "^10.0.5",
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2"
   },
