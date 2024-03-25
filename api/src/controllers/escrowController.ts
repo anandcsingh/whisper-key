@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { Payment } from "../models/Payment";
-import { PaymentRequirements } from "../models/PaymentRequirements";
-import { EscrowPaymentRepository } from "../models/EscrowPaymentRepository";
-import { ContractDeployer } from '../../../whisper-key-core/src/ContractDeployer';
+import { PaymentRequirements } from "../models/PaymentRequirements.js";
+import { EscrowPaymentRepository } from "../models/EscrowPaymentRepository.js";
+import { ContractDeployer } from 'contract-is-key';
+import path from 'path';
 
 export const getEscrowPaymentData = async (req: Request, res: Response) => {
-    res.status(200);
+    res.status(200).send({
+        success: true
+    });
 }
 
 export const addEscrowPaymentData = async (req: Request, res: Response) => {
@@ -28,7 +31,8 @@ export const addEscrowPaymentData = async (req: Request, res: Response) => {
 
     // Now, deploy the smart contract 
     let deployer = new ContractDeployer();
-    let escrowContractPath = "";
+    let escrowContractPath = path.resolve(__dirname, '../../dist/whisper-key-core/src/');
+    deployer.deployCredential(requirements.credentialMeta.name, escrowContractPath);
     var transactionUrl = "";
     try {
         let result = await deployer.deployCredential(`${requirements.credentialMeta.name}${walletAddress}`, escrowContractPath);
