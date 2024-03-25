@@ -35,8 +35,11 @@ export { IEntity }
 
 
 
-import {SignedCredential} from './SignedCredential.js';
-export {SignedCredential}
+import { SignedCredential } from './SignedCredential.js';
+export { SignedCredential }
+
+import { ContractDeployer } from './ContractDeployer.js';
+export { ContractDeployer };
 
 
 

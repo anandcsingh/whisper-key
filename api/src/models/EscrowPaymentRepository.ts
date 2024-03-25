@@ -1,8 +1,8 @@
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { ProfileRepository } from './ProfileRepository';
-import { PaymentRequirements } from './PaymentRequirements';
-import { Payment } from './Payment';
+import { ProfileRepository } from './ProfileRepository.js';
+import { PaymentRequirements } from './PaymentRequirements.js';
+import { Payment } from './Payment.js';
 
 export class EscrowPaymentRepository {
     config: any;

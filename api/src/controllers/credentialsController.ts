@@ -254,7 +254,7 @@ export const checkTasks = async () => {
 
 
 //let contractsDeploying: any = {"DriversPermit": { creds: ({ name: "DriversPermit", contractPublicKey: "B62qmY247XU9mYFj9emWdKATGGBLH7tRu5BZjDd8Qhy26emBkdLwk8B" } as CredentialMetadata)}};
-let contractsDeploying: any = {"Director": { creds: ({ name: "Director", contractPublicKey: "B62qrwAF6n1ox1BW3qbdb4SzTDR344ZwirkygvfgskFBD42quZYxWHW", owner: "B62qrwAF6n1ox1BW3qbdb4SzTDR344ZwirkygvfgskFBD42quZYxWHW" } as CredentialMetadata)}};
+let contractsDeploying: any = { "Director": { creds: ({ name: "Director", contractPublicKey: "B62qrwAF6n1ox1BW3qbdb4SzTDR344ZwirkygvfgskFBD42quZYxWHW", owner: "B62qrwAF6n1ox1BW3qbdb4SzTDR344ZwirkygvfgskFBD42quZYxWHW" } as CredentialMetadata) } };
 
 export const checkDeploymentStatus = async (notifier: EventNotification) => {
     try {
@@ -267,7 +267,7 @@ export const checkDeploymentStatus = async (notifier: EventNotification) => {
         console.log("contractsDeploying:", contractsDeploying);
         const senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
         const senderAccount = senderKey.toPublicKey();
-        const clonedContracts = {...contractsDeploying};
+        const clonedContracts = { ...contractsDeploying };
 
         // iterate over contractsDeploying object properties
         for (const key of Object.keys(contractsDeploying)) {
@@ -289,7 +289,46 @@ export const checkDeploymentStatus = async (notifier: EventNotification) => {
         contractsDeploying = clonedContracts;
     }
     catch (e) {
-        console.log("Error:", e);   
+        console.log("Error:", e);
+    }
+}
+
+let escrowContractsDeploying: any = { "Director": { creds: ({ name: "Director", contractPublicKey: "", owner: "" } as CredentialMetadata) } };
+
+export const checkEscrowDeploymentStatus = async (notifier: EventNotification) => {
+    try {
+        const Berkeley = Mina.Network({
+            mina: 'https://proxy.berkeley.minaexplorer.com/graphql',
+            archive: 'https://archive.berkeley.minaexplorer.com/',
+        });
+        Mina.setActiveInstance(Berkeley);
+        console.log("Checking deployment status");
+        console.log("contractsDeploying:", contractsDeploying);
+        const senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
+        const senderAccount = senderKey.toPublicKey();
+        const clonedContracts = { ...contractsDeploying };
+
+        // iterate over contractsDeploying object properties
+        for (const key of Object.keys(contractsDeploying)) {
+            const cred = contractsDeploying[key].creds;
+            console.log("Checking deployment status for", cred.name);
+            await setProxy(cred, senderAccount);
+            const proxy = contractsDeploying[key].proxy;
+            try {
+                const contractRoot = await proxy.getStorageRoot();
+                console.log(`${cred.name} Contract found`);
+                notifier.push(new NotificationData(cred.name, "", cred.owner, "created"));
+                delete clonedContracts[key];
+            } catch (e) {
+                console.log("Error:", e);
+                console.log(`${cred.name} Contract NOT found`);
+            }
+
+        }
+        contractsDeploying = clonedContracts;
+    }
+    catch (e) {
+        console.log("Error:", e);
     }
 }
 

@@ -21,6 +21,7 @@ import { profileRouter } from './routes/profileRoute.js';
 import { BlockHeightRepository } from './models/BlockHeightRepository.js';
 import { inboxRouter } from './routes/inboxRoute.js';
 import { escrowRouter } from './routes/escrowRoute.js';
+import { checkEscrowDeploymentStatus } from './controllers/credentialsController';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
@@ -32,6 +33,11 @@ app.use(cors());
 // Create Credential NOTIFICATIONS 
 // cron.schedule('*/5 * * * *', () => {
 //   checkDeploymentStatus(new EventNotification());
+// });
+
+// Create Escrow Contract Generation Notifications
+// cron.schedule('*/5 * * * *', () => {
+//   checkEscrowDeploymentStatus(new EventNotification());
 // });
 
 // Issue credential NOTIFICATIONS
@@ -53,6 +59,11 @@ app.use('/api/poll/created', async (req, res, next) => {
   checkDeploymentStatus(new EventNotification());
   res.status(200).send('checking created status');
 
+});
+
+app.use('/api/poll/escrow-created', async (req, res, next) => {
+  checkEscrowDeploymentStatus(new EventNotification());
+  res.status(200).send('checking escrow contract creation status');
 });
 
 app.use('/api/poll/issued', async (req, res, next) => {
