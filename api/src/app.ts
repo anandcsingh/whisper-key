@@ -21,7 +21,7 @@ import { profileRouter } from './routes/profileRoute.js';
 import { BlockHeightRepository } from './models/BlockHeightRepository.js';
 import { inboxRouter } from './routes/inboxRoute.js';
 import { escrowRouter } from './routes/escrowRoute.js';
-import { checkEscrowDeploymentStatus } from './controllers/credentialsController';
+import { checkEscrowDeploymentStatus } from './controllers/credentialsController.js';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
