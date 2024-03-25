@@ -303,17 +303,17 @@ export const checkEscrowDeploymentStatus = async (notifier: EventNotification) =
         });
         Mina.setActiveInstance(Berkeley);
         console.log("Checking deployment status");
-        console.log("contractsDeploying:", contractsDeploying);
+        console.log("escrowContractsDeploying:", escrowContractsDeploying);
         const senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
         const senderAccount = senderKey.toPublicKey();
-        const clonedContracts = { ...contractsDeploying };
+        const clonedContracts = { ...escrowContractsDeploying };
 
-        // iterate over contractsDeploying object properties
-        for (const key of Object.keys(contractsDeploying)) {
-            const cred = contractsDeploying[key].creds;
+        // iterate over escrowContractsDeploying object properties
+        for (const key of Object.keys(escrowContractsDeploying)) {
+            const cred = escrowContractsDeploying[key].creds;
             console.log("Checking deployment status for", cred.name);
             await setProxy(cred, senderAccount);
-            const proxy = contractsDeploying[key].proxy;
+            const proxy = escrowContractsDeploying[key].proxy;
             try {
                 const contractRoot = await proxy.getStorageRoot();
                 console.log(`${cred.name} Contract found`);
@@ -325,7 +325,7 @@ export const checkEscrowDeploymentStatus = async (notifier: EventNotification) =
             }
 
         }
-        contractsDeploying = clonedContracts;
+        escrowContractsDeploying = clonedContracts;
     }
     catch (e) {
         console.log("Error:", e);
