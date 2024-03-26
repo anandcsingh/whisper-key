@@ -30,15 +30,15 @@ export const addEscrowPaymentData = async (req: Request, res: Response) => {
     }
 
     // Now, deploy the smart contract 
-    let deployer = new ContractDeployer();
-    let escrowContractPath = path.resolve(__dirname, '../../dist/whisper-key-core/src/');
-    deployer.deployCredential(requirements.credentialMeta.name, escrowContractPath);
-    var transactionUrl = "";
-    try {
-        let result = await deployer.deployCredential(`${requirements.credentialMeta.name}${walletAddress}`, escrowContractPath);
-        transactionUrl = result.transactionUrl;
-    } catch (error) {
-        console.log(`An error occurred while trying to deploy smart contract: ${requirements.credentialMeta.name} for ${walletAddress}. 
-            '/n' ${error} `);
-    }
+    // let deployer = new ContractDeployer();
+    // let escrowContractPath = path.resolve(__dirname, '../../dist/whisper-key-core/src/');
+    // deployer.deployCredential(requirements.credentialMeta.name, escrowContractPath);
+    // var transactionUrl = "";
+    // try {
+    //     let result = await deployer.deployCredential(`${requirements.credentialMeta.name}${walletAddress}`, escrowContractPath);
+    //     transactionUrl = result.transactionUrl;
+    // } catch (error) {
+    //     console.log(`An error occurred while trying to deploy smart contract: ${requirements.credentialMeta.name} for ${walletAddress}. 
+    //         '/n' ${error} `);
+    // }
 }
