@@ -1,6 +1,6 @@
 import { Mina, SmartContract, method, UInt64, AccountUpdate, PublicKey, State, state, Field, FlexibleProvablePure } from 'o1js';
 
-export class Escrow extends SmartContract {
+export class EscrowContract extends SmartContract {
     @state(PublicKey) senderPublicKey = State<PublicKey>();
     @state(PublicKey) receiverPublicKey = State<PublicKey>();
     @state(Field) escrowAmount = State<Field>();

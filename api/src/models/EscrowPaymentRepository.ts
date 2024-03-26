@@ -9,7 +9,6 @@ export class EscrowPaymentRepository {
     app: any;
     database: any;
     collectionName = 'Payments';
-    profileRepository: ProfileRepository;
 
     constructor() {
         this.config = {
@@ -22,7 +21,6 @@ export class EscrowPaymentRepository {
         };
         this.app = initializeApp(this.config);
         this.database = getFirestore(this.app);
-        this.profileRepository = new ProfileRepository();
     }
 
     async getPayment(paymentId: string): Promise<Payment | undefined> {
@@ -35,19 +33,14 @@ export class EscrowPaymentRepository {
         }
     }
 
-    async addOrUpdatePayment(payment: Payment, paymentRequirements: PaymentRequirements, walletAddress: string): Promise<void> {
-        // Assuming the payment is linked to a user profile, get the profile
-        // const userProfile = await this.profileRepository.getProfile(walletAddress);
-        // if (!userProfile) {
-        //     throw new Error("User profile not found");
-        // }
-
+    async addOrUpdatePayment(payment: Payment, credential: any, walletAddress: string): Promise<void> {
         // Store payment with a reference to user profile
-        let id = `${paymentRequirements.credentialMeta.name}${walletAddress}`;
-        const paymentRef = doc(this.database, this.collectionName);
+        let id = `${credential.owner}`;
+        const paymentRef = doc(this.database, this.collectionName, id);
         const paymentData = {
-            ...payment,
-            ...paymentRequirements,
+            paymentAmount: payment.paymentAmount,
+            paymentStatus: payment.paymentStatus,
+            credential: credential,
             owner: walletAddress,
             timestamp: new Date().toISOString(), // Add timestamp for the payment
             id

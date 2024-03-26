@@ -96,11 +96,19 @@ const Header = () => {
   function handleEscrowPayment(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     console.log('Escrow payment initiated');
-    document.getElementById('payment_confirm').showModal()
+    const paymentConfirmModal = document.getElementById('payment_confirm');
+    if (paymentConfirmModal !== null) {
+      //@ts-ignore
+        paymentConfirmModal.showModal();
+    }
   }
 
   const handleDialogConfirm = (): void => {
-    document.getElementById('escrow_pay_modal')?.close();
+    const ecrowPayModal = document.getElementById('escrow_pay_modal');
+    if (ecrowPayModal !== null) {
+      //@ts-ignore
+      ecrowPayModal.close();
+    }
     console.log('Form submitted:', formData);
     setFormData({ address: '', credentialName: '', amount: '' });
     toast('🦄 Payment request received and will be processed. You will receive a notification in your inbox when credential is ready!');
@@ -131,7 +139,13 @@ const Header = () => {
                 {authState.userAddress.substring(0, 5) + "..." + authState.userAddress.substring(authState.userAddress.length - 5, authState.userAddress.length)}
               </p>
               }
-            <button type='button' style={{ marginRight: '5px' }} onClick={()=>document.getElementById('escrow_pay_modal').showModal()} className="button-channel inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button type='button' style={{ marginRight: '5px' }} onClick={()=>{
+                  const ecrowPayModal = document.getElementById('escrow_pay_modal');
+                  if (ecrowPayModal !== null) {
+                    //@ts-ignore
+                    ecrowPayModal.showModal();
+                  }
+            }} className="button-channel inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Make Payment</button>
                 <dialog id="escrow_pay_modal" className="modal">
                   <div className="modal-box">
@@ -162,7 +176,11 @@ const Header = () => {
                         handleDialogConfirm();
                       }} >Yes</button>
                       <button style={{marginLeft: "5px"}} className='btn' onClick={() => {
-                        document.getElementById('payment_confirm')?.close();
+                            const paymentConfirmModal = document.getElementById('payment_confirm');
+                            if (paymentConfirmModal !== null) {
+                              //@ts-ignore
+                                paymentConfirmModal.close();
+                            }
                       }} >No</button>
                     </form>
                   </div>

@@ -1,4 +1,4 @@
-import { Escrow } from './Escrow';
+import { EscrowContract } from './EscrowContract';
 import { Field, Mina, PrivateKey, PublicKey, AccountUpdate, UInt64 } from 'o1js';
 
 /*
@@ -17,10 +17,10 @@ describe('Escrow', () => {
         senderKey: PrivateKey,
         zkAppAddress: PublicKey,
         zkAppPrivateKey: PrivateKey,
-        zkApp: Escrow;
+        zkApp: EscrowContract;
 
     beforeAll(async () => {
-        if (proofsEnabled) await Escrow.compile();
+        if (proofsEnabled) await EscrowContract.compile();
     });
 
     beforeEach(() => {
@@ -32,7 +32,7 @@ describe('Escrow', () => {
             Local.testAccounts[1]);
         zkAppPrivateKey = PrivateKey.random();
         zkAppAddress = zkAppPrivateKey.toPublicKey();
-        zkApp = new Escrow(zkAppAddress);
+        zkApp = new EscrowContract(zkAppAddress);
     });
 
     async function localDeploy() {

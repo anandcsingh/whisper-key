@@ -51,12 +51,14 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     var paymentStatus = "processing";
 
     var ownerWalletAddress = state.formData.owner;
+
+    fetchData({ data: state.formData, hash: hash, signResult: signResult });
     
-    storeEscrowData({ data: state.formData, hash: hash, signResult: signResult }, {paymentAmount: escrowAmt, paymentStatus: paymentStatus}, ownerWalletAddress);
+    //storeEscrowData({ data: state.formData, hash: hash, signResult: signResult }, {paymentAmount: escrowAmt, paymentStatus: paymentStatus}, ownerWalletAddress);
   };
 
   const storeEscrowData = async(formData: any, escrowData: any, ownerWalletAddress: string) => {
-    const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/api/escrow}`;
+    const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/api/escrow/data}`;
     if (!apiUrl) {
       throw new Error('API URL not defined in environment variables.');
     }
