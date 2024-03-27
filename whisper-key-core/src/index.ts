@@ -41,5 +41,8 @@ export { SignedCredential }
 import { ContractDeployer } from './ContractDeployer.js';
 export { ContractDeployer };
 
+import { EscrowContract } from './EscrowContract.js';
+export { EscrowContract };
+
 
 

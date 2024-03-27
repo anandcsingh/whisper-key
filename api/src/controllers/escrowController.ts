@@ -26,19 +26,6 @@ export const addEscrowPaymentData = async (req: Request, res: Response) => {
         paymentRepo.addOrUpdatePayment(paymentData, requirements, walletAddress);
         res.status(200).json(paymentRepo);
     } catch (error) {
-        console.log('Error occured while trying to store escrow payment request', error);
+        console.log('Error occurred while trying to store escrow payment request', error);
     }
-
-    // Now, deploy the smart contract 
-    // let deployer = new ContractDeployer();
-    // let escrowContractPath = path.resolve(__dirname, '../../dist/whisper-key-core/src/');
-    // deployer.deployCredential(requirements.credentialMeta.name, escrowContractPath);
-    // var transactionUrl = "";
-    // try {
-    //     let result = await deployer.deployCredential(`${requirements.credentialMeta.name}${walletAddress}`, escrowContractPath);
-    //     transactionUrl = result.transactionUrl;
-    // } catch (error) {
-    //     console.log(`An error occurred while trying to deploy smart contract: ${requirements.credentialMeta.name} for ${walletAddress}. 
-    //         '/n' ${error} `);
-    // }
 }

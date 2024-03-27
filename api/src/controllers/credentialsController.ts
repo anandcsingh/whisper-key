@@ -11,6 +11,7 @@ import { NotificationData } from "../models/NotificationsRepository.js";
 import { EscrowPaymentRepository } from "../models/EscrowPaymentRepository.js";
 import { Payment } from "../models/Payment.js";
 import { fileURLToPath } from "url";
+import { EscrowBerkeleyDeployer } from "../EscrowBerkeleyDeployer.js";
 
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const name = req.params.name;
@@ -59,28 +60,31 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
 
     // Deploy
     try {
-        console.log("About to deploy contract....");
-        let deployer = new ContractDeployer();
-        const __filename = fileURLToPath(import.meta.url);
-        const __dirname = path.dirname(path.dirname(__filename));
-        //let escrowContractPath = path.resolve(__dirname, 'node_modules/contract-is-key/dist/src/');
-        let escrowContractPath = "/Users/kerishastewart/development/whisper-key/api/node_modules/contract-is-key/dist/src/";
-        escrowContractPath = path.resolve(`public/credentials`);
-        console.log('Escrow contract path:', escrowContractPath);
-        let name = "Escrow";
-        var transactionUrl = "";
-        try {
-            console.log('Before calling deploy credential method:');
-            let result = deployer.deployCredential(name, escrowContractPath).then((resp) => {
-                transactionUrl = resp.transactionUrl;
-                console.log('Transaction Url:', transactionUrl);
-                console.log('Smart contract public key:', resp.publicKey);
-            })
-        } catch (error) {
-            console.log(`An error occurred while trying to deploy smart contract: ${name} for ${cred.owner}. 
-                '/n' ${error} `);
-            res.status(500).send(error.message);
-        }
+        let deployer = new EscrowBerkeleyDeployer(cred.owner, cred.issuer);
+        deployer.deploy();
+
+        // console.log("About to deploy contract....");
+        // let deployer = new ContractDeployer();
+        // const __filename = fileURLToPath(import.meta.url);
+        // const __dirname = path.dirname(path.dirname(__filename));
+        // //let escrowContractPath = path.resolve(__dirname, 'node_modules/contract-is-key/dist/src/');
+        // let escrowContractPath = "/Users/kerishastewart/development/whisper-key/api/node_modules/contract-is-key/dist/src/";
+        // escrowContractPath = path.resolve(`public/credentials`);
+        // console.log('Escrow contract path:', escrowContractPath);
+        // let name = "Escrow";
+        // var transactionUrl = "";
+        // try {
+        //     console.log('Before calling deploy credential method:');
+        //     let result = deployer.deployCredential(name, escrowContractPath).then((resp) => {
+        //         transactionUrl = resp.transactionUrl;
+        //         console.log('Transaction Url:', transactionUrl);
+        //         console.log('Smart contract public key:', resp.publicKey);
+        //     })
+        // } catch (error) {
+        //     console.log(`An error occurred while trying to deploy smart contract: ${name} for ${cred.owner}. 
+        //         '/n' ${error} `);
+        //     res.status(500).send(error.message);
+        // }
     } catch (error) {
         console.log(`An error occurred while trying to deploy smart contract: ${name} for ${cred.owner}. 
                 '/n' ${error} `);
