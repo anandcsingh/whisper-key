@@ -26,6 +26,10 @@ export class EscrowContract extends SmartContract {
         this.receiverPublicKey.set(receiver);
     }
 
+    @method setSender(sender: PublicKey) {
+        this.senderPublicKey.set(sender);
+    }
+
     // deposit to smart contract from sender account
     @method deposit(amount: UInt64) {
         let senderUpdate = AccountUpdate.create(this.sender);

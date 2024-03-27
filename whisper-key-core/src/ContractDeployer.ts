@@ -211,7 +211,7 @@ async function getContract(name: string, smartContractBasePath: string) {
     console.log('About to attempt to import smart contract...');
     smartContractImports = await import(smartContractImportPath);
   } catch (error) {
-    console.error('Smart contract imports error:', error);
+    console.log('Smart contract imports error:', error);
   }
   console.log('smartContractImports', smartContractImports);
   const zkApp = smartContractImports[contractName]; //  The specified zkApp class to deploy
