@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { Payment } from "../models/Payment";
 import { PaymentRequirements } from "../models/PaymentRequirements.js";
 import { EscrowPaymentRepository } from "../models/EscrowPaymentRepository.js";
-import { ContractDeployer } from 'contract-is-key';
 import path from 'path';
 
 export const getEscrowPaymentData = async (req: Request, res: Response) => {

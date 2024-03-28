@@ -4,14 +4,16 @@ import path from "path";
 import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, Signature, fetchAccount } from "o1js";
 import { CredentialProxy, FreeCredentialContract, FreeCredentialEntity } from '../../public/credentials/FreeCredentialContract.js';
 import crypto from 'crypto';
-import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata, ContractDeployer } from 'contract-is-key';
+import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata } from 'contract-is-key';
 import Client from 'mina-signer';
 import { EventNotification } from "../models/EventNotification.js";
 import { NotificationData } from "../models/NotificationsRepository.js";
 import { EscrowPaymentRepository } from "../models/EscrowPaymentRepository.js";
 import { Payment } from "../models/Payment.js";
 import { fileURLToPath } from "url";
-import { EscrowBerkeleyDeployer } from "../EscrowBerkeleyDeployer.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const name = req.params.name;
@@ -53,49 +55,51 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         let paymentData = { paymentAmount: 1200, paymentStatus: "processing" } as Payment;
         let walletAddress: string = cred.owner as string;
         paymentRepo.addOrUpdatePayment(paymentData, cred, walletAddress);
-        res.status(200).json(paymentRepo);
     } catch (error) {
         console.log('Error occurred while trying to store escrow payment request', error);
     }
 
     // Deploy
     try {
-        let deployer = new EscrowBerkeleyDeployer(cred.owner, cred.issuer);
-        deployer.deploy();
-
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
         const raw = JSON.stringify({
-            "senderAccount": "B62qozSM7ocHBxErDNimZprWf5Zcd4BNKizffvnDhBrjohhzRnkr3pC",
-            "receiverAccount": "B62qqzMHkbogU9gnQ3LjrKomimsXYt4qHcXc8Cw4aX7tok8DjuDsAzx"
+            "senderAccount": `${cred.owner}`,
+            "receiverAccount": `${cred.issuer}`
         });
 
         const requestOptions: RequestInit = {
             method: "POST",
-            headers: myHeaders,
+            headers: {
+                'Content-Type': 'application/json'
+                // You can add other headers here if needed
+            },
             body: raw,
             redirect: "follow"
         };
 
-        fetch(`${process.env.SMART_CONTRACT_DEPLOYER_URL}/api/deploy`, requestOptions)
+        let smartContractDeployerUrl = process.env.SMART_CONTRACT_DEPLOYER_URL;
+        console.log('Smart contract deployer url:', smartContractDeployerUrl);
+        fetch(`${smartContractDeployerUrl}/api/deploy`, requestOptions)
             .then((response) => {
-                response.json();
+                if (!response.ok) {
+                    console.log('Responsse from deploy url:', response.statusText);
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
             })
             .then((result) => {
                 console.log('Result:', result);
-                //let smartContractPublicKey = result.smartContractPublicKey;
+                let smartContractPublicKey = result.smartContractPublicKey;
+                console.log('Smart contract public key:', result.smartContractPublicKey);
+                res.status(200).send('done');
             })
             .catch((error) => {
-                console.error(error)
+                console.error('Error occurred while attempting to make smart contract deploy request', error);
+                res.status(500).send(error.message);
             });
     } catch (error) {
         console.log(`An error occurred while trying to deploy smart contract: ${name} for ${cred.owner}. 
-                '/n' ${error} `);
+                '\n' ${error} `);
         res.status(500).send(error.message);
-    }
-    finally {
-        res.status(200).send('done');
     }
 }
 
