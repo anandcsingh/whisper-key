@@ -63,28 +63,32 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         let deployer = new EscrowBerkeleyDeployer(cred.owner, cred.issuer);
         deployer.deploy();
 
-        // console.log("About to deploy contract....");
-        // let deployer = new ContractDeployer();
-        // const __filename = fileURLToPath(import.meta.url);
-        // const __dirname = path.dirname(path.dirname(__filename));
-        // //let escrowContractPath = path.resolve(__dirname, 'node_modules/contract-is-key/dist/src/');
-        // let escrowContractPath = "/Users/kerishastewart/development/whisper-key/api/node_modules/contract-is-key/dist/src/";
-        // escrowContractPath = path.resolve(`public/credentials`);
-        // console.log('Escrow contract path:', escrowContractPath);
-        // let name = "Escrow";
-        // var transactionUrl = "";
-        // try {
-        //     console.log('Before calling deploy credential method:');
-        //     let result = deployer.deployCredential(name, escrowContractPath).then((resp) => {
-        //         transactionUrl = resp.transactionUrl;
-        //         console.log('Transaction Url:', transactionUrl);
-        //         console.log('Smart contract public key:', resp.publicKey);
-        //     })
-        // } catch (error) {
-        //     console.log(`An error occurred while trying to deploy smart contract: ${name} for ${cred.owner}. 
-        //         '/n' ${error} `);
-        //     res.status(500).send(error.message);
-        // }
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "senderAccount": "B62qozSM7ocHBxErDNimZprWf5Zcd4BNKizffvnDhBrjohhzRnkr3pC",
+            "receiverAccount": "B62qqzMHkbogU9gnQ3LjrKomimsXYt4qHcXc8Cw4aX7tok8DjuDsAzx"
+        });
+
+        const requestOptions: RequestInit = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        fetch(`${process.env.SMART_CONTRACT_DEPLOYER_URL}/api/deploy`, requestOptions)
+            .then((response) => {
+                response.json();
+            })
+            .then((result) => {
+                console.log('Result:', result);
+                //let smartContractPublicKey = result.smartContractPublicKey;
+            })
+            .catch((error) => {
+                console.error(error)
+            });
     } catch (error) {
         console.log(`An error occurred while trying to deploy smart contract: ${name} for ${cred.owner}. 
                 '/n' ${error} `);
