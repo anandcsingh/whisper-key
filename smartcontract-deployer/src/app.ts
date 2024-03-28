@@ -20,10 +20,10 @@ app.post('/api/deploy', async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'senderAccount and receiverAccount are required in the request body' });
     }
 
-    let smartContractPublicKey = "abc1234567";
-    // let deployer = new EscrowBerkeleyDeployer(senderAccount, receiverAccount);
-    // let smartContractPublicKey = await deployer.deploy();
-    // console.log(smartContractPublicKey);
+    let smartContractPublicKey = ""
+    let deployer = new EscrowBerkeleyDeployer(senderAccount, receiverAccount);
+    smartContractPublicKey = await deployer.deploy();
+    console.log(smartContractPublicKey);
 
     if (smartContractPublicKey)
         res.json({ message: 'Deploy initiation successful', smartContractPublicKey, senderAccount, receiverAccount });
