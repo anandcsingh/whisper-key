@@ -27,7 +27,7 @@ export default function Dashboard() {
 
 
   return (
-      <AuthPage validate={false}>
+      <AuthPage validate={true}>
       <DashboardHeader />
       <main>
         <div className='rankproof-page'>

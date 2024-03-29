@@ -89,6 +89,7 @@ const Authentication = {
     },
     /** @type {boolean} */
     doesAccountExist: async function () {
+        console.log('Checking if account exists:', this.address);
         const publicKey = PublicKey.fromBase58(this.address);
         const res = await this.zkClient.fetchAccount({ publicKey: publicKey });
         console.log("does account exist", res);
