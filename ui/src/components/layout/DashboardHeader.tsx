@@ -88,6 +88,7 @@ const Header = () => {
     }
     let myWalletAddress = authState.userAuthenticated ? authState.userAddress : '';
     if (myWalletAddress !== '' && myWalletAddress !== undefined && myWalletAddress !== null) {
+      console.log(`${myWalletAddress}, ${userPhone}, ${userEmail}, ${preferredNotificationChannel}`)
       const profile = new ProfileMetadata(myWalletAddress, userPhone, userEmail, preferredNotificationChannel);
       profile.updateProfileInfo();
     }

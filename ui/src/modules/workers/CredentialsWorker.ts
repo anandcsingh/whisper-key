@@ -54,7 +54,7 @@ const functions = {
   setupActiveInstance: async (args: {}) => {
     if (!localBlockchainSetup.useLocal) {
       const Berkeley = Mina.Network(
-        'https://api.minascan.io/node/berkeley/v1/graphql'
+        'https://proxy.berkeley.minaexplorer.com/graphql'
       );
       console.log('Berkeley Instance Created');
       Mina.setActiveInstance(Berkeley);
@@ -107,7 +107,7 @@ const functions = {
 
 
     // lookup address from credentials repo
-    let contractAddress = PublicKey.fromBase58("B62qpsNhMkUqtpdsdUyNURPa7Z9p4YB7mSaxFWk4bi5NobfBhttk8u2");//PublicKey.empty();// pull from credential repo
+    let contractAddress = PublicKey.fromBase58("B62qkXRq2dKn5tebDLHAaRK8u3y5BZi4geBxe2926GNH1vLxZ2dsQ12");//PublicKey.empty();// pull from credential repo
     if (localBlockchainSetup.useLocal) contractAddress = PrivateKey.random().toPublicKey();
     //state.mentatStore = new CredentialRepository().GetCredentialStore(args.name);
     state.credentialProxy = new CredentialProxy(contractAddress, args.name, args.owner, args.useProofs);
@@ -115,6 +115,8 @@ const functions = {
     state.owner = args.owner;
     state.credentialsRepository = {};
     console.log("contract setup");
+    let result = await fetchAccount({ publicKey: "B62qkXRq2dKn5tebDLHAaRK8u3y5BZi4geBxe2926GNH1vLxZ2dsQ12" });
+    console.log('result from fetching zkapp public address:', result);
     console.log("contract root:", JSON.stringify(await state.credentialProxy.getStorageRoot()))
     if (localBlockchainSetup.useLocal) {
       state.credentialProxy.deployLocal(localBlockchainSetup.localBlockchain, localBlockchainSetup.deployer!, contractAddress, localBlockchainSetup.useLocal);

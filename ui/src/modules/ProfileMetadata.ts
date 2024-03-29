@@ -53,8 +53,9 @@ export class ProfileMetadata {
     };
 
     async getProfileInfo(): Promise<any> {
-        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API_HOST}/api/profile`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/api/profile`;
         const queryString = `walletAddress=${encodeURIComponent(this.walletAddress)}`;
+        console.log('Query string for getting profole info:', `${apiUrl}?${queryString}`);
 
         try {
             const response = await axios.get(`${apiUrl}?${queryString}`);
