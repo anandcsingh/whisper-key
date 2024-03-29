@@ -11,7 +11,7 @@ import { NotificationData } from "../models/NotificationsRepository.js";
 import { EscrowPaymentRepository } from "../models/EscrowPaymentRepository.js";
 import { Payment } from "../models/Payment.js";
 import dotenv from 'dotenv';
-const cron = require('node-cron');
+import cron from 'node-cron';
 
 dotenv.config();
 
@@ -107,21 +107,33 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
 }
 
 const checkEscrowContractDeployStats = async (notifier: EventNotification, contractPublicAddress: string, credName: string, owner: string) => {
-    const scheduledJob = cron.schedule('*/5 * * * *', async () => {
-        let berkeleyUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
-        // you can use this with any spec-compliant graphql endpoint
-        let Berkeley = Mina.Network(berkeleyUrl);
-        Mina.setActiveInstance(Berkeley);
-        let pubKey = PublicKey.fromBase58(contractPublicAddress);
-        let zkApp = new EscrowContract(pubKey);
-        let payment = await zkApp.escrowAmount.fetch();
-        let isDeployed = payment?.equals(1).not().toBoolean() ?? false;
+    const scheduledJob = cron.schedule('*/15 * * * * *', async () => {
+        try {
+            let berkeleyUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
+            // you can use this with any spec-compliant graphql endpoint
+            let Berkeley = Mina.Network(berkeleyUrl);
+            Mina.setActiveInstance(Berkeley);
 
-        // Check if stopping condition is met
-        if (isDeployed) {
-            notifier.push(new NotificationData(credName, "", owner, "created"));
-            console.log('Stopping cron job...');
-            scheduledJob.stop(); // Stop the cron job
+            console.log('Compiling smart contract..... this can take a while...');
+            let { verificationKey } = await EscrowContract.compile();
+
+            let pubKey = PublicKey.fromBase58(contractPublicAddress);
+            let zkApp = new EscrowContract(pubKey);
+
+            let payment = await zkApp.escrowAmount.fetch();
+            let isDeployed = payment?.equals(1).not().toBoolean() ?? false;
+
+            // Check if stopping condition is met
+            if (isDeployed) {
+                notifier.push(new NotificationData(credName, "", owner, "created"));
+                console.log('Stopping cron job...');
+                scheduledJob.stop(); // Stop the cron job
+            }
+            else {
+                console.log('Not deployed yet...');
+            }
+        } catch (error) {
+            console.log('Error occurred while trying to check smart contract deploy status to notify user', error);
         }
     });
 }

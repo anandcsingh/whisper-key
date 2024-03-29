@@ -1,4 +1,4 @@
-import { Mina, SmartContract, method, UInt64, AccountUpdate, PublicKey, State, state, Field, FlexibleProvablePure } from 'o1js';
+import { Mina, SmartContract, method, UInt64, AccountUpdate, PublicKey, State, state, Field } from 'o1js';
 
 export class EscrowContract extends SmartContract {
     @state(PublicKey) senderPublicKey = State<PublicKey>();
@@ -10,7 +10,7 @@ export class EscrowContract extends SmartContract {
     };
 
     init(): void {
-        this.escrowAmount.set(Field(0.001));
+        this.escrowAmount.set(Field(0));
     }
 
     // withdraw from smart contract and send to receiver

@@ -11,9 +11,9 @@ export const getEscrowPaymentData = async (req: Request, res: Response) => {
 }
 
 export const addEscrowPaymentData = async (req: Request, res: Response) => {
-    const { walletAddress, payment, paymentReqs } = req.body;
+    const { walletAddress, payment, paymentReqs, smartContractPublicKey } = req.body;
 
-    if (!walletAddress || !paymentReqs || !payment) {
+    if (!walletAddress || !paymentReqs || !payment || !smartContractPublicKey) {
         return res.status(400).json({ error: 'Missing required parameters' });
     }
 
@@ -22,7 +22,7 @@ export const addEscrowPaymentData = async (req: Request, res: Response) => {
 
     try {
         var paymentRepo: EscrowPaymentRepository = new EscrowPaymentRepository();
-        paymentRepo.addOrUpdatePayment(paymentData, requirements, walletAddress);
+        paymentRepo.addOrUpdatePayment(paymentData, requirements, walletAddress, smartContractPublicKey);
         res.status(200).json(paymentRepo);
     } catch (error) {
         console.log('Error occurred while trying to store escrow payment request', error);
