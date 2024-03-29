@@ -64,8 +64,16 @@ const Header = () => {
     fetchNotifications();
   }, []);
 
-  const handleContactMethodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setPreferredNotificationChannel(event.target.value);
+  const handleContactMethodChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+    setPreferredNotificationChannel(e.target.value);
+  };
+
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setUserPhoneNum(e.target.value);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setUserEmail(e.target.value);
   };
 
   const clearNotifications = () => {
@@ -233,12 +241,13 @@ const Header = () => {
                     <label htmlFor="mobile" style={{ fontSize: '20px', color: 'white' }}>
                       Mobile Number
                     </label>
-                    <input id='mobile' value={userPhone} type="text" className="mt-1 block w-full p-2 border border-gray-300 
+                    <input onChange={handleMobileChange} id='mobile' value={userPhone} type="text" className="mt-1 block w-full p-2 border border-gray-300 
                   rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
                     <label htmlFor="email" style={{ fontSize: '20px', color: 'white' }}>
                       Email
                     </label>
-                    <input id='email' value={userEmail} type="text" className="mt-1 block w-full p-2 border border-gray-300 
+                    <input onChange={handleEmailChange}
+                    id='email' value={userEmail} type="text" className="mt-1 block w-full p-2 border border-gray-300 
                   rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
                     {/* Button to capture choice */}
                     <button

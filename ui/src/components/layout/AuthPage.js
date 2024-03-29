@@ -116,6 +116,7 @@ const AuthPage = ({ validate, children }) => {
 
             
             console.log('fetching account');
+            console.log('about to fetch contract address:', Authentication.contractAddress)
             Authentication.zkClient.fetchAccount({ publicKey: PublicKey.fromBase58(Authentication.contractAddress) });
             console.log('fetching account done');
             setFirstFetchAccount(true);

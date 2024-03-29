@@ -54,7 +54,7 @@ const functions = {
   setupActiveInstance: async (args: {}) => {
     if (!localBlockchainSetup.useLocal) {
       const Berkeley = Mina.Network(
-        'https://proxy.berkeley.minaexplorer.com/graphql'
+        'https://api.minascan.io/node/berkeley/v1/graphql'
       );
       console.log('Berkeley Instance Created');
       Mina.setActiveInstance(Berkeley);
@@ -81,16 +81,21 @@ const functions = {
   fetchAccount: async (args: { publicKey58: string }) => {
     console.log("fetching account AllMartialArtsEvents from worker:", args.publicKey58);
 
-    if (!localBlockchainSetup.useLocal) {
-      console.log("fetching account AllMartialArtsEvents:", args.publicKey58);
-      console.log("fetch @ ", new Date().toLocaleTimeString());
-      const publicKey = PublicKey.fromBase58(args.publicKey58);
-      let fetch = await fetchAccount({ publicKey });
-      console.log("fetched @ ", new Date().toLocaleTimeString());
-      return fetch;
-    } else {
-      console.log("no fetching using local blockchain");
-      return {error:null};
+    try {
+      if (!localBlockchainSetup.useLocal) {
+        console.log("fetching account AllMartialArtsEvents:", args.publicKey58);
+        console.log("fetch @ ", new Date().toLocaleTimeString());
+        const publicKey = PublicKey.fromBase58(args.publicKey58);
+        let fetch = await fetchAccount({ publicKey });
+        console.log("fetched @ ", new Date().toLocaleTimeString());
+        return fetch;
+      } else {
+        console.log("no fetching using local blockchain");
+        return { error: null };
+      }
+    } catch (error) {
+      console.log(`Error occurred while fetching account ${args.publicKey58}`, error);
+      throw error;
     }
 
   },
@@ -100,10 +105,10 @@ const functions = {
     const path = `../../../../credentials/PassportContract.js`;
     //const { CredentialProxy } = await import(/* webpackIgnore: true */path);
 
-   
+
     // lookup address from credentials repo
     let contractAddress = PublicKey.fromBase58("B62qpsNhMkUqtpdsdUyNURPa7Z9p4YB7mSaxFWk4bi5NobfBhttk8u2");//PublicKey.empty();// pull from credential repo
-    if(localBlockchainSetup.useLocal) contractAddress = PrivateKey.random().toPublicKey();
+    if (localBlockchainSetup.useLocal) contractAddress = PrivateKey.random().toPublicKey();
     //state.mentatStore = new CredentialRepository().GetCredentialStore(args.name);
     state.credentialProxy = new CredentialProxy(contractAddress, args.name, args.owner, args.useProofs);
     state.credentialName = args.name;

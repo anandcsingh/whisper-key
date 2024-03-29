@@ -38,11 +38,19 @@ export class ProfileRepository {
     }
 
     async addOrUpdateUserProfile(profile: ProfileMetadata): Promise<void> {
+        let id = profile.walletAddress;
         const docRef = doc(
             this.database,
             this.collectionName,
-            profile.walletAddress,
+            id,
         );
-        await setDoc(docRef, profile);
+        const profileData = {
+            walletAddres: profile.walletAddress,
+            preferredNotificationChannel: profile.preferredNotificationChannel,
+            phoneNumber: profile.phoneNumber,
+            emailAddress: profile.emailAddress,
+            id
+        }
+        await setDoc(docRef, profileData);
     }
 }

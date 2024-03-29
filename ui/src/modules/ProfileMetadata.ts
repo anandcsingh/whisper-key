@@ -35,7 +35,7 @@ export class ProfileMetadata {
     }
 
     updateProfileInfo = async (): Promise<any> => {
-        const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/api/profile`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/api/profile`;
         const requestBody = {
             walletAddress: this.walletAddress,
             phoneNumber: this.phoneNumber,
