@@ -33,15 +33,16 @@ export class EscrowPaymentRepository {
         }
     }
 
-    async addOrUpdatePayment(payment: Payment, credential: any, walletAddress: string): Promise<void> {
+    async addOrUpdatePayment(payment: Payment, credential: any, walletAddress: string, smartContractPublicKey: string): Promise<void> {
         // Store payment with a reference to user profile
-        let id = `${credential.owner}`;
+        let id = `${credential.credentialType}${credential.owner}`;
         const paymentRef = doc(this.database, this.collectionName, id);
         const paymentData = {
             paymentAmount: payment.paymentAmount,
             paymentStatus: payment.paymentStatus,
             credential: credential,
             owner: walletAddress,
+            smartContractPublicKey: smartContractPublicKey,
             timestamp: new Date().toISOString(), // Add timestamp for the payment
             id
         };

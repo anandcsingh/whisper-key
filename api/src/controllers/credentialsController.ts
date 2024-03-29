@@ -4,14 +4,14 @@ import path from "path";
 import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, Signature, fetchAccount } from "o1js";
 import { CredentialProxy, FreeCredentialContract, FreeCredentialEntity } from '../../public/credentials/FreeCredentialContract.js';
 import crypto from 'crypto';
-import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata } from 'contract-is-key';
+import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata, EscrowContract } from 'contract-is-key';
 import Client from 'mina-signer';
 import { EventNotification } from "../models/EventNotification.js";
 import { NotificationData } from "../models/NotificationsRepository.js";
 import { EscrowPaymentRepository } from "../models/EscrowPaymentRepository.js";
 import { Payment } from "../models/Payment.js";
-import { fileURLToPath } from "url";
 import dotenv from 'dotenv';
+import cron from 'node-cron';
 
 dotenv.config();
 
@@ -19,6 +19,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const name = req.params.name;
     const cred = req.body.data;
     const signedResult = req.body.signResult;
+    let smartContractPublicKey = "";
 
     if (signedResult != null) {
         const enableSignature = false;
@@ -49,16 +50,6 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     }
     console.log('Cred:', cred);
 
-    // Store Pending Data
-    try {
-        var paymentRepo: EscrowPaymentRepository = new EscrowPaymentRepository();
-        let paymentData = { paymentAmount: 1200, paymentStatus: "processing" } as Payment;
-        let walletAddress: string = cred.owner as string;
-        paymentRepo.addOrUpdatePayment(paymentData, cred, walletAddress);
-    } catch (error) {
-        console.log('Error occurred while trying to store escrow payment request', error);
-    }
-
     // Deploy
     try {
         const raw = JSON.stringify({
@@ -88,9 +79,8 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
             })
             .then((result) => {
                 console.log('Result:', result);
-                let smartContractPublicKey = result.smartContractPublicKey;
+                smartContractPublicKey = result.smartContractPublicKey;
                 console.log('Smart contract public key:', result.smartContractPublicKey);
-                res.status(200).send('done');
             })
             .catch((error) => {
                 console.error('Error occurred while attempting to make smart contract deploy request', error);
@@ -101,6 +91,51 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
                 '\n' ${error} `);
         res.status(500).send(error.message);
     }
+
+    // Store Pending Data
+    try {
+        var paymentRepo: EscrowPaymentRepository = new EscrowPaymentRepository();
+        let paymentData = { paymentAmount: 1200, paymentStatus: "processing" } as Payment;
+        let walletAddress: string = cred.owner as string;
+        paymentRepo.addOrUpdatePayment(paymentData, cred, walletAddress, smartContractPublicKey);
+        checkEscrowContractDeployStats(new EventNotification(), smartContractPublicKey, cred.credentialType, cred.owner);
+        res.status(200).send({ smartContractPublicKey });
+    } catch (error) {
+        console.log('Error occurred while trying to store escrow payment request', error);
+        res.status(500).send(error.message);
+    }
+}
+
+const checkEscrowContractDeployStats = async (notifier: EventNotification, contractPublicAddress: string, credName: string, owner: string) => {
+    const scheduledJob = cron.schedule('*/15 * * * * *', async () => {
+        try {
+            let berkeleyUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
+            // you can use this with any spec-compliant graphql endpoint
+            let Berkeley = Mina.Network(berkeleyUrl);
+            Mina.setActiveInstance(Berkeley);
+
+            console.log('Compiling smart contract..... this can take a while...');
+            let { verificationKey } = await EscrowContract.compile();
+
+            let pubKey = PublicKey.fromBase58(contractPublicAddress);
+            let zkApp = new EscrowContract(pubKey);
+
+            let payment = await zkApp.escrowAmount.fetch();
+            let isDeployed = payment?.equals(1).not().toBoolean() ?? false;
+
+            // Check if stopping condition is met
+            if (isDeployed) {
+                notifier.push(new NotificationData(credName, "", owner, "created"));
+                console.log('Stopping cron job...');
+                scheduledJob.stop(); // Stop the cron job
+            }
+            else {
+                console.log('Not deployed yet...');
+            }
+        } catch (error) {
+            console.log('Error occurred while trying to check smart contract deploy status to notify user', error);
+        }
+    });
 }
 
 export const issueCredential = async (req: Request, res: Response) => {
