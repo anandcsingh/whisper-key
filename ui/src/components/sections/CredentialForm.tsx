@@ -87,7 +87,7 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     }
   }
 
-  const fetchData = (formData: any) => {
+  const fetchData = async (formData: any) => {
     const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/issue/${credentialMetadata.name}`;
     if (!apiUrl) {
       throw new Error('API URL not defined in environment variables.');
@@ -102,14 +102,17 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     };
     try {
 
-    const response = fetch(apiUrl, requestOptions)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-          let transactionLink = `<a href="${data.transactionUrl}" class="btn btn-sm" target="_blank">View transaction</a>`;
-           setAuthState({ ...authState, alertAvailable: true, alertMessage: `Credential issued ${transactionLink}`, alertNeedsSpinner: false });
-        })
-    .catch((err: any) => console.error('Error trying to fetch Credential Metadata', err));
+    const response = await fetch(apiUrl, requestOptions);
+    console.log(response);
+    // .then((response) => {
+    //   console.log('api response from issuing cred', response);
+    //   response.json()})
+    // .then((data) => {
+    //   console.log(data);
+    //       let transactionLink = `<a href="${data.transactionUrl}" class="btn btn-sm" target="_blank">View transaction</a>`;
+    //        setAuthState({ ...authState, alertAvailable: true, alertMessage: `Credential issued ${transactionLink}`, alertNeedsSpinner: false });
+    //     })
+    // .catch((err: any) => console.error('Error trying to fetch Credential Metadata', err));
     } catch (error) {
       console.error('Error trying to fetch Credential Metadata', error);
     }

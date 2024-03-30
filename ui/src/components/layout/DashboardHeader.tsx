@@ -294,6 +294,8 @@ const Header = () => {
                                       `Credential ${notification.credentialName} has been created.`}
                                     {notification.type === 'issued' &&
                                       `Credential ${notification.credentialName} has been issued to you`}
+                                    {notification.type === 'escrow' &&
+                                      `Credential ${notification.credentialName} is ready for your escrow payment`}
                                   </td>
                                 </tr>
                               ))}
