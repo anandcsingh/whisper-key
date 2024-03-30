@@ -28,7 +28,7 @@ export class EventNotification {
         // send omni-channel notifications
         const message = `Your credential ${notification.credentialName} has been issued!`;
 
-        await this.sendNotification(notification.owner, message);
+        //await this.sendNotification(notification.owner, message);
 
     }
 
