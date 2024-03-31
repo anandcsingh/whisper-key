@@ -1,4 +1,4 @@
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, setDoc, query, getDocs, collection, where, updateDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { ProfileRepository } from './ProfileRepository.js';
 import { PaymentRequirements } from './PaymentRequirements.js';
@@ -33,6 +33,23 @@ export class EscrowPaymentRepository {
         }
     }
 
+    async getPaymentsByStatus(walletAddress: string, paymentStatus: string): Promise<Payment[] | undefined> {
+        const myQuery = query(
+            collection(this.database, this.collectionName),
+            where('owner', '==', walletAddress),
+            where('paymentStatus', '==', paymentStatus),
+            where('smartContractPublicKey', '!=', ''),
+        );
+
+        const querySnapshot = await getDocs(myQuery);
+
+        if (querySnapshot.empty) {
+            return undefined;
+        }
+
+        return querySnapshot.docs.map((doc) => doc.data() as Payment);
+    }
+
     async addOrUpdatePayment(payment: Payment, credential: any, walletAddress: string, smartContractPublicKey: string): Promise<void> {
         // Store payment with a reference to user profile
         let id = `${credential.credentialType}${credential.owner}`;
@@ -47,5 +64,17 @@ export class EscrowPaymentRepository {
             id
         };
         await setDoc(paymentRef, paymentData);
+    }
+
+    async updatePaymentPublicKey(id: string, publicKey: string): Promise<void> {
+        console.log('Payments record id to be updated:', id);
+        const paymentRef = doc(this.database, this.collectionName, id); // Reference the document
+        console.log('Pending payments public key to update:', publicKey);
+        try {
+            await updateDoc(paymentRef, { smartContractPublicKey: publicKey });
+            console.log("Payment public key updated successfully");
+        } catch (error) {
+            console.error("Error updating payment public key:", error);
+        }
     }
 }

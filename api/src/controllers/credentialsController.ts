@@ -15,11 +15,11 @@ import cron from 'node-cron';
 
 dotenv.config();
 
-export const notifyUser = async (req: Request, res: Response) => {
+export const escrowNotify = async (req: Request, res: Response) => {
     let data = req.body;
 
     let notifier = new EventNotification();
-    notifier.push(new NotificationData(data.credName, data.issuer, data.owner, "escrow"));
+    notifier.push(new NotificationData(data.credType, data.issuer, data.owner, "escrow"));
 }
 
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
@@ -62,7 +62,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         const raw = JSON.stringify({
             "senderAccount": `${cred.owner}`,
             "receiverAccount": `${cred.issuer}`,
-            "credentialName": `${cred.name}`
+            "credentialType": `${cred.credentialType}`
         });
 
         const requestOptions: RequestInit = {

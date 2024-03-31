@@ -21,6 +21,9 @@ const Header = () => {
   const [inboxCount, setInboxCount] = useState(0);
   const [inboxNotiications, setInboxNotifications] = useState([]);
   const [formData, setFormData] = useState({});
+  let [pendingPaymentData, setPendingPaymentData] = useState([]);
+  var [credPaymentSelected, setCredPaymentSelected] = useState(false);
+  var [credPaymentSelection, setCredPaymentSelection] = useState('');
 
   var inbox: Inbox = new Inbox();
   const fetchNotifications = async () => {
@@ -41,6 +44,34 @@ const Header = () => {
     }
   };
 
+  async function getPaymentsData(walletAddress: string, paymentStatus = "processing") {
+    let apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/api/escrow?walletAddress=${walletAddress}&paymentStatus=${paymentStatus}`;
+    const requestOptions = {
+      method: "GET",
+    };
+    
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('payments data', result);
+        setPendingPaymentData(result);
+      })
+      .catch((error) => console.error('An error occurred while fetching pending payments data:', error));
+  }
+
+  const fetchPendingPayments = async () => {
+    try {
+      console.log('fetching pending payments');
+      let myWalletAddress = authState.userAuthenticated ? authState.userAddress : '';
+      if (myWalletAddress !== '' && myWalletAddress !== undefined && myWalletAddress !== null) {
+        getPaymentsData(myWalletAddress);
+      }
+
+    } catch (error) {
+      console.log('Error occurred while trying to fetch pending payments from dd...', error);
+    }
+  }
+
   useEffect(() => {
     const fetchProfileInfo = async () => {
       try {
@@ -59,8 +90,7 @@ const Header = () => {
       }
     };
     fetchProfileInfo();
-
-    
+    fetchPendingPayments();
     fetchNotifications();
   }, []);
 
@@ -113,10 +143,10 @@ const Header = () => {
   }
 
   const handleDialogConfirm = (): void => {
-    const ecrowPayModal = document.getElementById('escrow_pay_modal');
-    if (ecrowPayModal !== null) {
+    const escrowPayModal = document.getElementById('escrow_pay_modal');
+    if (escrowPayModal !== null) {
       //@ts-ignore
-      ecrowPayModal.close();
+      escrowPayModal.close();
     }
     console.log('Form submitted:', formData);
     setFormData({ address: '', credentialName: '', amount: '' });
@@ -149,23 +179,38 @@ const Header = () => {
               </p>
               }
             <button type='button' style={{ marginRight: '5px' }} onClick={()=>{
-                  const ecrowPayModal = document.getElementById('escrow_pay_modal');
-                  if (ecrowPayModal !== null) {
+                  const escrowPayModal = document.getElementById('escrow_pay_modal');
+                  if (escrowPayModal !== null) {
                     //@ts-ignore
-                    ecrowPayModal.showModal();
+                    escrowPayModal.showModal();
                   }
             }} className="button-channel inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Make Payment</button>
                 <dialog id="escrow_pay_modal" className="modal">
                   <div className="modal-box">
-                    <h3 className="font-bold text-lg">Escrow Payment 🪙</h3>
+                    <h2>Choose a Credential to make an escrow payment for</h2>
+                    <li>
+                      {pendingPaymentData.map((item : any) => (
+                        <button className='btn btn-neutral' key={item.id} onClick={() => {
+                          setCredPaymentSelected(!credPaymentSelected);
+                          setCredPaymentSelection(item.credential.credentialType);
+                          console.log('Cred payment selected:', credPaymentSelected);
+                          console.log('Cred type:', credPaymentSelection)
+                          // const escrowTitle = document.getElementById('payment-title');
+                          // if(escrowTitle !== null){
+                          //   escrowTitle.innerText = `Escrow Payment: ${item.credential.credentialType} 🪙`;
+                          // }
+                        }}>{item.credential.credentialType}</button>
+                      ))}
+                    </li>
+                    <h3 id="payment-title" className="font-bold text-lg">Escrow Payment: {credPaymentSelection} 🪙</h3>
                     <p className="py-4">Press ESC key to close</p>
                     <div className="modal-action">
                       <form method='submit' onSubmit={handleEscrowPayment}>
                         {/* if there is a button in form, it will close the modal */}
                         <div>
                           <input style={{marginTop: "10px"}} name="address" type="text" placeholder="Wallet address" onChange={handleChange} className="input input-bordered input-info w-full max-w-xs" />
-                          <input style={{marginTop: "10px"}} name="credentialName" type="text" placeholder="Credential Name" onChange={handleChange} className="input input-bordered input-info w-full max-w-xs" />
+                          <input value={credPaymentSelection} style={{marginTop: "10px"}} name="credentialName" type="text" placeholder="Credential Name" className="input input-bordered input-info w-full max-w-xs" />
                           <input style={{marginTop: "10px"}} name="amount" type="text" placeholder="Amount in Mina" onChange={handleChange} className="input input-bordered input-info w-full max-w-xs" />
                         </div>
                         <button style={{marginTop: "20px"}} onClick={() => {console.log('modal closed')}} className="btn">Pay</button>
@@ -190,6 +235,7 @@ const Header = () => {
                               //@ts-ignore
                                 paymentConfirmModal.close();
                             }
+                            setCredPaymentSelection("");
                       }} >No</button>
                     </form>
                   </div>
@@ -295,7 +341,7 @@ const Header = () => {
                                     {notification.type === 'issued' &&
                                       `Credential ${notification.credentialName} has been issued to you`}
                                     {notification.type === 'escrow' &&
-                                      `Credential ${notification.credentialName} is ready for your escrow payment`}
+                                      `Credential ${notification.credentialName} is ready for your escrow payment of 10 Mina`}
                                   </td>
                                 </tr>
                               ))}

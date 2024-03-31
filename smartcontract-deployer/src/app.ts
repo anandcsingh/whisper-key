@@ -19,17 +19,18 @@ app.get('/api/', (req: Request, res: Response) => {
 });
 
 app.post('/api/deploy', async (req: Request, res: Response) => {
-    const { senderAccount, receiverAccount, credentialName } = req.body;
+    const { senderAccount, receiverAccount, credentialType } = req.body;
 
-    if (!senderAccount || !receiverAccount) {
-        return res.status(400).json({ error: 'senderAccount and receiverAccount are required in the request body' });
+    if (!senderAccount || !receiverAccount || !credentialType) {
+        return res.status(400).json({ error: 'missing request parameter...' });
     }
 
-    let smartContractPublicKey = "B62qkXRq2dKn5tebDLHAaRK8u3y5BZi4geBxe2926GNH1vLxZ2dsQ12";
-    // let deployer = new EscrowBerkeleyDeployer(senderAccount, receiverAccount);
-    // smartContractPublicKey = await deployer.deploy();
+    //let smartContractPublicKey = "B62qkXRq2dKn5tebDLHAaRK8u3y5BZi4geBxe2926GNH1vLxZ2dsQ12";
+    let deployer = new EscrowBerkeleyDeployer(senderAccount, receiverAccount);
+    let smartContractPublicKey = await deployer.deploy();
+    updatePendingPayment(smartContractPublicKey, credentialType, senderAccount);
     console.log(smartContractPublicKey);
-    checkEscrowContractDeployStats(smartContractPublicKey, credentialName, senderAccount, receiverAccount);
+    checkEscrowContractDeployStats(smartContractPublicKey, credentialType, senderAccount, receiverAccount);
 
     if (smartContractPublicKey)
         res.json({ message: 'Deploy initiation successful', smartContractPublicKey, senderAccount, receiverAccount });
@@ -37,7 +38,7 @@ app.post('/api/deploy', async (req: Request, res: Response) => {
         res.json({ message: 'Deploy initiation not successful', smartContractPublicKey, senderAccount, receiverAccount });
 });
 
-const checkEscrowContractDeployStats = async (contractPublicAddress: string, credName: string, owner: string, issuer: string) => {
+const checkEscrowContractDeployStats = async (contractPublicAddress: string, credType: string, owner: string, issuer: string) => {
     const scheduledJob = cron.schedule('*/15 * * * * *', async () => {
         try {
             let berkeleyUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
@@ -60,7 +61,7 @@ const checkEscrowContractDeployStats = async (contractPublicAddress: string, cre
                 // Api request to make a Notification event
                 let data = {
                     contractPublicAddress: contractPublicAddress,
-                    credName: credName,
+                    credType: credType,
                     owner: owner,
                     issuer: issuer
                 }
@@ -74,7 +75,10 @@ const checkEscrowContractDeployStats = async (contractPublicAddress: string, cre
         } catch (error) {
             console.log('Error occurred while trying to check smart contract deploy status to notify user', error);
         }
+    }, {
+        scheduled: false
     });
+    scheduledJob.start();
 }
 
 // Start the server
@@ -101,3 +105,28 @@ function deployNotification(data: any) {
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
 }
+
+function updatePendingPayment(smartContractPublicKey: string, credentialType: any, senderAccount: any) {
+    const apiUrl = `${process.env.NEXT_PUBLIC_API}/api/escrow/updatepubkey`;
+    if (!apiUrl) {
+        throw new Error('API URL not defined in environment variables.');
+    }
+    const requestOptions: RequestInit = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+            // You can add other headers here if needed
+        },
+        body: JSON.stringify({
+            smartContractPublicKey,
+            credentialType,
+            senderAccount
+        })
+    };
+
+    fetch(apiUrl, requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+}
+
