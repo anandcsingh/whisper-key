@@ -57,6 +57,7 @@ export class EscrowBerkeleyDeployer {
         console.log('About to generate keys for smart contract....');
         let keyPair = this.client.genKeys();
         let zkappKey = PrivateKey.fromBase58(keyPair.privateKey);
+        console.log('smart contract Private Key:', keyPair.privateKey);
         let zkappAddress = zkappKey.toPublicKey();
         zkAppPublicAddress = zkappAddress.toBase58();
         console.log('Smart contract public key:', zkAppPublicAddress);
@@ -80,6 +81,9 @@ export class EscrowBerkeleyDeployer {
                 { sender: feePayerAddress, fee },
                 async () => {
                     AccountUpdate.fundNewAccount(feePayerAddress);
+                    // initial states
+                    zkapp.setReceiver(PublicKey.fromBase58(this.receiverAccount));
+                    zkapp.setSender(PublicKey.fromBase58(this.senderAccount));
                     await zkapp.deploy({ verificationKey });
                 }
             );
