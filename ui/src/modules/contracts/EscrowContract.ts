@@ -33,7 +33,7 @@ export class EscrowContract extends SmartContract {
     // deposit to smart contract from sender account
     @method deposit(amount: UInt64) {
         let senderUpdate = AccountUpdate.create(this.sender);
-        senderUpdate.requireSignature();
+        // senderUpdate.requireSignature();
         senderUpdate.send({ to: this, amount });
         this.emitEvent("escrow-funds-received", amount);
     }

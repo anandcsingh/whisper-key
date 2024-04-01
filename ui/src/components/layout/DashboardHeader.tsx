@@ -9,6 +9,10 @@ import { ProfileMetadata } from '@/modules/ProfileMetadata';
 import { Inbox } from '@/modules/Inbox';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import EscrowWorkerClient from '@/modules/workers/EscrowWorkerClient';
+import { Field, PublicKey } from 'o1js';
+
+let transactionFee = 0.1;
 
 const Header = () => {
 
@@ -24,6 +28,20 @@ const Header = () => {
   let [pendingPaymentData, setPendingPaymentData] = useState([]);
   var [credPaymentSelected, setCredPaymentSelected] = useState(false);
   var [credPaymentSelection, setCredPaymentSelection] = useState('');
+  var [zkAppAddress, setzkAppAddress] = useState('');
+  const [transactionlink, setTransactionLink] = useState('');
+  const [loading, setLoading] = useState(false);
+
+
+  const [state, setState] = useState({
+    zkappWorkerClient: null as null | EscrowWorkerClient,
+    hasWallet: null as null | boolean,
+    hasBeenSetup: false,
+    accountExists: false,
+    publicKey: null as null | PublicKey,
+    zkappPublicKey: null as null | PublicKey,
+    creatingTransaction: false
+  });
 
   var inbox: Inbox = new Inbox();
   const fetchNotifications = async () => {
@@ -70,6 +88,101 @@ const Header = () => {
     } catch (error) {
       console.log('Error occurred while trying to fetch pending payments from dd...', error);
     }
+  }
+
+  const timeoutFn = (seconds: number) => {
+    return new Promise(function (resolve: any) {
+      setTimeout(function () {
+        resolve();
+      }, seconds * 1000);
+    });
+  }
+
+  const onSendTransaction = async () => {
+    console.log('zkappaddress', zkAppAddress);
+    console.log('Preparing to do a transaction');
+    if(zkAppAddress) {
+      console.log('Loading web worker...');
+      const zkappWorkerClient = new EscrowWorkerClient();
+      await timeoutFn(15);
+
+      console.log('Done loading web worker');
+
+      await zkappWorkerClient.setActiveInstanceToBerkeley();
+
+      const mina = (window as any).mina;
+
+      if (mina == null) {
+        setState({ ...state, hasWallet: false });
+        return;
+      }
+
+      const publicKeyBase58: string = (await mina.requestAccounts())[0];
+      const publicKey = PublicKey.fromBase58(publicKeyBase58);
+
+      console.log(`Using key:${publicKey.toBase58()}`);
+
+      console.log('Checking if fee payer account exists...');
+
+      const res = await zkappWorkerClient.fetchAccount({
+        publicKey: publicKey!
+      });
+      const accountExists = res.error == null;
+
+      await zkappWorkerClient.loadContract();
+
+      console.log('Compiling zkApp...');
+      await zkappWorkerClient.compileContract();
+      console.log('zkApp compiled');
+
+      const zkappPublicKey = PublicKey.fromBase58(zkAppAddress);
+
+      await zkappWorkerClient.initZkappInstance(zkappPublicKey);
+
+      setState({
+        ...state,
+        zkappWorkerClient,
+        hasWallet: true,
+        hasBeenSetup: true,
+        publicKey,
+        zkappPublicKey,
+        accountExists,
+      });
+
+      setState({ ...state, creatingTransaction: true });
+
+      console.log('Creating a transaction...');
+
+      await zkappWorkerClient!.fetchAccount({
+        publicKey: publicKey!
+      });
+      
+      await zkappWorkerClient!.depositTransaction(publicKey.toBase58());
+
+      console.log('Creating proof...');
+      await zkappWorkerClient!.proveUpdateTransaction();
+
+      console.log('Requesting send transaction...');
+      const transactionJSON = await zkappWorkerClient!.getTransactionJSON();
+
+      console.log('Getting transaction JSON...');
+      const { hash } = await (window as any).mina.sendTransaction({
+        transaction: transactionJSON,
+        feePayer: {
+          fee: transactionFee,
+          memo: ''
+        }
+      });
+
+      const transactionLink = `https://berkeley.minaexplorer.com/transaction/${hash}`;
+      console.log(`View transaction at ${transactionLink}`);
+
+      setTransactionLink(transactionLink);
+
+      setState({ ...state, creatingTransaction: false });
+      setLoading(false);
+    }
+
   }
 
   useEffect(() => {
@@ -150,7 +263,7 @@ const Header = () => {
     }
     console.log('Form submitted:', formData);
     setFormData({ address: '', credentialName: '', amount: '' });
-    toast('🦄 Payment request received and will be processed. You will receive a notification in your inbox when credential is ready!');
+    toast('🦄 Payment request received and will be processed. Wait for popup confirmation, then you will receive a notification in your inbox when credential is ready!');
   };
 
 
@@ -178,6 +291,10 @@ const Header = () => {
                 {authState.userAddress.substring(0, 5) + "..." + authState.userAddress.substring(authState.userAddress.length - 5, authState.userAddress.length)}
               </p>
               }
+            <div>
+              { loading && <span className="loading loading-spinner loading-lg"></span>
+ }
+            </div>
             <button type='button' style={{ marginRight: '5px' }} onClick={()=>{
                   const escrowPayModal = document.getElementById('escrow_pay_modal');
                   if (escrowPayModal !== null) {
@@ -188,14 +305,16 @@ const Header = () => {
                 Make Payment</button>
                 <dialog id="escrow_pay_modal" className="modal">
                   <div className="modal-box">
-                    <h2>Choose a Credential to make an escrow payment for</h2>
+                    <h2>Double click a Credential to make an escrow payment for (If any exists)</h2>
                     <li>
                       {pendingPaymentData.map((item : any) => (
                         <button className='btn btn-neutral' key={item.id} onClick={() => {
                           setCredPaymentSelected(!credPaymentSelected);
                           setCredPaymentSelection(item.credential.credentialType);
+                          setzkAppAddress(item.smartContractPublicKey);
                           console.log('Cred payment selected:', credPaymentSelected);
                           console.log('Cred type:', credPaymentSelection)
+                          console.log('zkApp Address:', zkAppAddress);
                           // const escrowTitle = document.getElementById('payment-title');
                           // if(escrowTitle !== null){
                           //   escrowTitle.innerText = `Escrow Payment: ${item.credential.credentialType} 🪙`;
@@ -211,7 +330,7 @@ const Header = () => {
                         <div>
                           <input style={{marginTop: "10px"}} name="address" type="text" placeholder="Wallet address" onChange={handleChange} className="input input-bordered input-info w-full max-w-xs" />
                           <input value={credPaymentSelection} style={{marginTop: "10px"}} name="credentialName" type="text" placeholder="Credential Name" className="input input-bordered input-info w-full max-w-xs" />
-                          <input style={{marginTop: "10px"}} name="amount" type="text" placeholder="Amount in Mina" onChange={handleChange} className="input input-bordered input-info w-full max-w-xs" />
+                          {/* <input style={{marginTop: "10px"}} name="amount" type="text" placeholder="Amount in Mina" onChange={handleChange} className="input input-bordered input-info w-full max-w-xs" /> */}
                         </div>
                         <button style={{marginTop: "20px"}} onClick={() => {console.log('modal closed')}} className="btn">Pay</button>
                       </form>
@@ -226,10 +345,13 @@ const Header = () => {
                   <div className="modal-action">
                     <form method="dialog">
                       {/* if there is a button in form, it will close the modal */}
-                      <button className="btn" onClick={() => {
+                      <button className="btn" onClick={async () => {
                         handleDialogConfirm();
+                        //setLoading(true);
+                        await onSendTransaction();
+                        //setLoading(false);
                       }} >Yes</button>
-                      <button style={{marginLeft: "5px"}} className='btn' onClick={() => {
+                      <button style={{marginLeft: "5px"}} className='btn' onClick={async () => {
                             const paymentConfirmModal = document.getElementById('payment_confirm');
                             if (paymentConfirmModal !== null) {
                               //@ts-ignore

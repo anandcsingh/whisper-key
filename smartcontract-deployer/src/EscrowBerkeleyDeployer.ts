@@ -81,9 +81,6 @@ export class EscrowBerkeleyDeployer {
                 { sender: feePayerAddress, fee },
                 async () => {
                     AccountUpdate.fundNewAccount(feePayerAddress);
-                    // initial states
-                    zkapp.setReceiver(PublicKey.fromBase58(this.receiverAccount));
-                    zkapp.setSender(PublicKey.fromBase58(this.senderAccount));
                     await zkapp.deploy({ verificationKey });
                 }
             );

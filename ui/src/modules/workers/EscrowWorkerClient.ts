@@ -6,7 +6,7 @@ import type {
     WorkerFunctions,
 } from './EscrowWorker';
 
-export default class ZkappWorkerClient {
+export default class EscrowWorkerClient {
     // ---------------------------------------------------------------------------------------
 
     setActiveInstanceToBerkeley() {
@@ -43,8 +43,8 @@ export default class ZkappWorkerClient {
         return Field.fromJSON(JSON.parse(result as string));
     }
 
-    depositTransaction() {
-        return this._call('depositToSmartContract', {});
+    depositTransaction(publicKey: string) {
+        return this._call('depositToSmartContract', { publicKey });
     }
 
     proveUpdateTransaction() {
