@@ -8,7 +8,7 @@ export const getAllCredentials = async (req: Request, res: Response) => {
     try {
         const credentials = await credentialRepository.GetAllCredentials();
         res.status(200).json(credentials);
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
 }
@@ -17,7 +17,7 @@ export const getTotalNumberOfIssuedCredentials = async (req: Request, res: Respo
     try {
         const issuedCreds = await credentialRepository.GetTotalNumberOfIssuedCredentials();
         res.status(200).json({ count: issuedCreds.length });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
 }
@@ -26,7 +26,7 @@ export const getFirstCreatedCredential = async (req: Request, res: Response) => 
     try {
         const first = await credentialRepository.GetFirstCreatedCredential();
         res.status(200).json(first);
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
 }
@@ -35,7 +35,7 @@ export const getMostRecentCredential = async (req: Request, res: Response) => {
     try {
         const last = await credentialRepository.GetMostRecentCredential();
         res.status(200).json(last);
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
 }
@@ -45,7 +45,7 @@ export const getMostOwnedCredential = async (req: Request, res: Response) => {
         const data = await credentialRepository.GroupDocumentsByFieldName('owner');
         const mostOwned = getKeyWithHighestCount(data);
         res.status(200).json({ mostOwned });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
 }

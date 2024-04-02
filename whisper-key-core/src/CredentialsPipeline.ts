@@ -49,7 +49,9 @@ export class CredentialsPipeline {
 
   async DeployToNetwork(creds: CredentialMetadata) {
     console.log("Deploying to network");
-    const deployer = new ContractDeployer();
+    const feePayerPrivateKey = "EKEaxBppkxKjn7a9rRVCxFsuGur9Xqy6KKVYE9jA4qeRvYA5fzix";//B62qpcuTN9rFhdfkHyZmttMzHqnteygvpPbg3WAdGhb3eZCnHE4DCcZ
+
+    const deployer = new ContractDeployer(feePayerPrivateKey);
     const result = await deployer.deployCredential(creds.name, "");
 
     creds.contractPrivateKey = result.privateKey;

@@ -33,7 +33,7 @@ export const addEscrowPaymentData = async (req: Request, res: Response) => {
         var paymentRepo: EscrowPaymentRepository = new EscrowPaymentRepository();
         paymentRepo.addOrUpdatePayment(paymentData, requirements, walletAddress, smartContractPublicKey);
         res.status(200).json(paymentRepo);
-    } catch (error) {
+    } catch (error: any) {
         console.log('Error occurred while trying to store escrow payment request', error);
         res.status(error.statusText).send(`Error occurred .....`);
     }

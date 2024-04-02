@@ -63,4 +63,4 @@ await transaction.prove();
 console.log("signing transaction");
 let result = await transaction.sign([senderKey]).send();
 
-console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash()}`);
+console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash}`);

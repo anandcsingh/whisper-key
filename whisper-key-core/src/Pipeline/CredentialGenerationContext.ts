@@ -5,6 +5,7 @@ export class CredentialGenerationContext {
     generatedFile: string;
     saveFilesPath: string;
     templatePath: any;
+    feePayer: string;
     //cloudStorage: ContractCloudStorage;
   bundledFile: any;
 }

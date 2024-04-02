@@ -4,6 +4,11 @@
     "module": "es2022",
     "lib": ["dom", "esnext"],
     "outDir": "./dist",
+    "rootDir": ".",
+    "strict": true,
+    "strictPropertyInitialization": false, // to enable generic constructors, e.g. on CircuitValue
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
@@ -11,6 +16,9 @@
     "allowJs": true,
     "declaration": true,
     "sourceMap": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": false,
   },
   "exclude": ["node_modules", "dist", "public"]
 

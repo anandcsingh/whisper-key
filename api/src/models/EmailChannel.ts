@@ -77,7 +77,7 @@ export class EmailChannel extends NotificationChannel {
 
         try {
             // Send email
-            const info = await transporter.sendMail(mailOptions);
+            const info = await transporter!.sendMail(mailOptions);
             console.log('Email sent: ', info.response);
 
         } catch (error) {

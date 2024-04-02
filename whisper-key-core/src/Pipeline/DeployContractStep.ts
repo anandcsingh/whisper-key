@@ -11,7 +11,7 @@ export class DeployContractStep implements IPipelineStep {
 
     async run(context: CredentialGenerationContext): Promise<void> {
         console.log("Deploying to network");
-        const deployer = new ContractDeployer();
+        const deployer = new ContractDeployer(context.feePayer);
         const result = await deployer.deployCredential(context.credential.name,context.saveFilesPath);
     
         context.credential.contractPrivateKey = result.privateKey;

@@ -1,6 +1,6 @@
 
 import Client from 'mina-signer';
-import { AccountUpdate, Mina, PrivateKey, PublicKey } from 'o1js';
+import { AccountUpdate, Mina, PrivateKey, PublicKey, fetchAccount } from 'o1js';
 //const findPrefix = require('find-npm-prefix');
 import path from 'path';
 import { get } from 'http';
@@ -16,15 +16,17 @@ export class ContractDeployer {
   zkAppAddress: PublicKey;
   graphQLUrl: string;
 
-  constructor() {
+  constructor(feePayer: string) {
 
     this.network = 'testnet';
     this.client = new Client({ network: this.network });
-    this.feePayerPrivateKey = PrivateKey.fromBase58(""); //B62qjZTHE1egoVSbWiAXHWnwKkPrCLaBGB7U1vMYXE8nG4KHWPVf6nq
+    this.feePayerPrivateKey = PrivateKey.fromBase58(feePayer); //B62qjZTHE1egoVSbWiAXHWnwKkPrCLaBGB7U1vMYXE8nG4KHWPVf6nq
     //this.feePayerPrivateKey = PrivateKey.fromBase58("EKEaxBppkxKjn7a9rRVCxFsuGur9Xqy6KKVYE9jA4qeRvYA5fzix");//B62qpcuTN9rFhdfkHyZmttMzHqnteygvpPbg3WAdGhb3eZCnHE4DCcZ
     this.feePayerPublicKey = this.feePayerPrivateKey.toPublicKey();
-    this.graphQLUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
-    //this.graphQLUrl = "https://api.minascan.io/node/berkeley/v1/graphql";
+    //this.graphQLUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
+    this.graphQLUrl = "https://api.minascan.io/node/berkeley/v1/graphql";
+    console.log("deploying to", this.graphQLUrl);
+    console.log("fee payer", this.feePayerPrivateKey);
   }
 
   async deployCredential(name: string, smartContractBasePath: string) {
@@ -85,6 +87,8 @@ export class ContractDeployer {
   async getTransaction(zkApp: any, verificationKey: any) {
     let Network = Mina.Network(this.graphQLUrl);
     Mina.setActiveInstance(Network);
+    console.log("get transaction public key", this.feePayerPublicKey.toBase58());
+    let response = await fetchAccount({ publicKey: this.feePayerPublicKey });
     const transactionFee = 100_000_000;
 
     let tx = await Mina.transaction({ sender: this.feePayerPublicKey, fee: transactionFee }, () => {

@@ -22,6 +22,6 @@ export class WhatsAppChannel extends NotificationChannel {
                 from: `whatsapp:${source}`,
                 to: `whatsapp:${destination.phone}`
             })
-            .then(message => console.log(message.sid));
+            .then((message: { sid: any; }) => console.log(message.sid));
     }
 }

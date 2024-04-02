@@ -23,7 +23,7 @@ export const sendSms = async (req: Request, res: Response) => {
             from: from,
             to: to
         })
-        .then(message => console.log(message.sid));
+        .then((message: { sid: any; }) => console.log(message.sid));
 
     res.status(200).send("ok");
 }
@@ -48,7 +48,7 @@ export const sendWhatsapp = async (req: Request, res: Response) => {
             from: `whatsapp:${from}`,
             to: `whatsapp:${to}`
         })
-        .then(message => console.log(message.sid));
+        .then((message: { sid: any; }) => console.log(message.sid));
 
     res.status(200).send("ok");
 

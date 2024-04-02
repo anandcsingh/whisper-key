@@ -94,7 +94,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
                 console.error('Error occurred while attempting to make smart contract deploy request', error);
                 res.status(500).send(error.message);
             });
-    } catch (error) {
+    } catch (error: any) {
         console.log(`An error occurred while trying to deploy smart contract: ${name} for ${cred.owner}. 
                 '\n' ${error} `);
         res.status(500).send(error.message);
@@ -108,7 +108,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         paymentRepo.addOrUpdatePayment(paymentData, cred, walletAddress, smartContractPublicKey);
         //checkEscrowContractDeployStats(new EventNotification(), smartContractPublicKey, cred.credentialType, cred.owner);
         res.status(200).send({ smartContractPublicKey });
-    } catch (error) {
+    } catch (error: any) {
         console.log('Error occurred while trying to store escrow payment request', error);
         res.status(500).send(error.message);
     }
@@ -190,7 +190,7 @@ export const issueCredential = async (req: Request, res: Response) => {
     console.log("signing transaction");
     let result = await transaction.sign([senderKey]).send();
 
-    console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash()}`);
+    console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash}`);
     res.send("ok");
 }
 
@@ -214,12 +214,14 @@ export const getOwnedCredentials = async (req: Request, res: Response) => {
 
 export const generateCredentials = async (req: Request, res: Response) => {
     console.log(req.body);
+    const senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEaxBppkxKjn7a9rRVCxFsuGur9Xqy6KKVYE9jA4qeRvYA5fzix");
 
     const creds: CredentialMetadata = CredentialMetadata.fromJson(req.body);
     creds.created = new Date();
 
     const pipeline = new CredentialGenerationPipeline();
     pipeline.initDefault();
+    pipeline.context.feePayer = 'EKEnaPrfADEKKPAV5AT57sjD22qRQ7cuxEPGW9LafMwd638R2EUH';
     await pipeline.run(creds);
 
     contractsDeploying[creds.name] = { creds };
@@ -332,7 +334,7 @@ export const checkEscrowDeploymentStatus = async (notifier: EventNotification) =
 }
 
 
-async function issueCredentialAfterPayment(name: string, req, cred: any, res: Response<any, Record<string, any>>) {
+async function issueCredentialAfterPayment(name: string, req: any, cred: any, res: Response<any, Record<string, any>>) {
     try {
 
         let proofsEnabled = true, senderAccount: PublicKey, senderKey: PrivateKey, zkAppAddress: PublicKey;
@@ -350,7 +352,7 @@ async function issueCredentialAfterPayment(name: string, req, cred: any, res: Re
         const credMetadata = await repo.GetCredential(name);
 
         console.log("credMetadata:", credMetadata);
-        zkAppAddress = PublicKey.fromBase58(credMetadata.contractPublicKey);
+        zkAppAddress = PublicKey.fromBase58(credMetadata!.contractPublicKey);
 
         //zkAppAddress = PublicKey.fromBase58("B62qmVJRKong9PuMagoWGDmPjSdmSkjPhW2R3ZyB8nZswiSAxcua5H8");
         await fetchAccount({ publicKey: zkAppAddress });
@@ -395,7 +397,7 @@ async function issueCredentialAfterPayment(name: string, req, cred: any, res: Re
             transactionUrl: `https://berkeley.minaexplorer.com/transaction/${result.hash()}`,
         });
     }
-    catch (e) {
+    catch (e: any) {
         console.log("Error:", e);
         res.status(500).send(e.message);
     }

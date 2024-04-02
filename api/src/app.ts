@@ -88,9 +88,9 @@ app.use('/api/events/:name', async (req, res, next) => {
   const templatePath = `../../public/credentials/${req.params.name}Contract.js`
 
   const { CredentialProxy } = await import(/* webpackIgnore: true */templatePath);
-  const zkAppAddress = PublicKey.fromBase58(credMetadata.contractPublicKey);
+  const zkAppAddress = PublicKey.fromBase58(credMetadata!.contractPublicKey);
 
-  console.log("credMetadata.contractPublicKey:", credMetadata.contractPublicKey);
+  console.log("credMetadata.contractPublicKey:", credMetadata!.contractPublicKey);
   const proxy = new CredentialProxy(zkAppAddress, name, PublicKey.empty, true);
   const blockHeight = UInt32.from(34964);
   const events = await proxy.fetchEvents(UInt32.from(0));
@@ -182,7 +182,7 @@ app.get('/real', async (req, res, next) => {
   console.log("signing transaction");
   let result = await transaction.sign([senderKey]).send();
 
-  console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash()}`);
+  console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash}`);
   res.send("ok");
 })
 

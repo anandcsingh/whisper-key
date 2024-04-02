@@ -1,5 +1,4 @@
 import { CredentialMetadata, CredentialRepository } from "contract-is-key";
-import { CronJob } from "node-cron";
 import { PublicKey, UInt32 } from "o1js";
 import { NotificationData, NotificationsRepository } from "./NotificationsRepository.js";
 import { ProfileMetadata } from "./ProfileMetadata.js";
@@ -51,10 +50,10 @@ export class EventNotification {
     private async sendNotification(address: string, message: string) {
         try {
             let profileData = await this.profileRepo.getProfile(address);
-            const channel = NotificationChannelFactory.createChannel(profileData.preferredNotificationChannel);
+            const channel = NotificationChannelFactory.createChannel(profileData!.preferredNotificationChannel);
             const destination = new MessageDestination();
-            destination.email = profileData.emailAddress;
-            destination.phone = profileData.phoneNumber;
+            destination.email = profileData!.emailAddress;
+            destination.phone = profileData!.phoneNumber;
             channel.sendMessage(destination, message);
         } catch (error) {
             console.error('Error occurred while attempting to push notification update', error);
