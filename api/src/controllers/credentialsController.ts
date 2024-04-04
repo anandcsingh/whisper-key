@@ -4,7 +4,7 @@ import path from "path";
 import { CircuitString, Field, MerkleMap, Mina, PrivateKey, PublicKey, Signature, fetchAccount } from "o1js";
 import { CredentialProxy, FreeCredentialContract, FreeCredentialEntity } from '../../public/credentials/FreeCredentialContract.js';
 import crypto from 'crypto';
-import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata, EscrowContract } from 'contract-is-key';
+import { CredentialGenerationPipeline, CredentialRepository, CredentialMetadata } from 'contract-is-key';
 import Client from 'mina-signer';
 import { EventNotification } from "../models/EventNotification.js";
 import { NotificationData } from "../models/NotificationsRepository.js";
@@ -12,6 +12,8 @@ import { EscrowPaymentRepository } from "../models/EscrowPaymentRepository.js";
 import { Payment } from "../models/Payment.js";
 import dotenv from 'dotenv';
 import cron from 'node-cron';
+import { EscrowBerkeleyDeployer } from "../deployer/EscrowBerkeleyDeployer.js";
+import { EscrowContract } from "../deployer/EscrowContract.js";
 
 dotenv.config();
 
@@ -59,45 +61,13 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
 
     // Deploy
     try {
-        const raw = JSON.stringify({
-            "senderAccount": `${cred.owner}`,
-            "receiverAccount": `${cred.issuer}`,
-            "credentialType": `${cred.credentialType}`
-        });
-
-        const requestOptions: RequestInit = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-                // You can add other headers here if needed
-            },
-            body: raw,
-            redirect: "follow"
-        };
-
-        let smartContractDeployerUrl = process.env.SMART_CONTRACT_DEPLOYER_URL;
-        console.log('Smart contract deployer url:', smartContractDeployerUrl);
-        fetch(`${smartContractDeployerUrl}/api/deploy`, requestOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    console.log('Responsse from deploy url:', response.statusText);
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((result) => {
-                console.log('Result:', result);
-                smartContractPublicKey = result.smartContractPublicKey;
-                console.log('Smart contract public key:', result.smartContractPublicKey);
-            })
-            .catch((error) => {
-                console.error('Error occurred while attempting to make smart contract deploy request', error);
-                res.status(500).send(error.message);
-            });
-    } catch (error: any) {
-        console.log(`An error occurred while trying to deploy smart contract: ${name} for ${cred.owner}. 
-                '\n' ${error} `);
-        res.status(500).send(error.message);
+        let escrowBerkeleyDeployer = new EscrowBerkeleyDeployer(cred.owner, cred.issuer);
+        smartContractPublicKey = await escrowBerkeleyDeployer.deploy();
+        updatePendingPayment(smartContractPublicKey, cred.credentialType, cred.owner);
+        console.log(smartContractPublicKey);
+        checkEscrowContractDeployStats(smartContractPublicKey, cred.credentialType, cred.owner, cred.issuer);
+    } catch (error) {
+        console.log(`An error occurred while trying to deploy smart contract: ${name} for ${cred.owner}`);
     }
 
     // Store Pending Data
@@ -106,11 +76,67 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
         let paymentData = { paymentAmount: 1200, paymentStatus: "processing" } as Payment;
         let walletAddress: string = cred.owner as string;
         paymentRepo.addOrUpdatePayment(paymentData, cred, walletAddress, smartContractPublicKey);
-        //checkEscrowContractDeployStats(new EventNotification(), smartContractPublicKey, cred.credentialType, cred.owner);
         res.status(200).send({ smartContractPublicKey });
     } catch (error: any) {
         console.log('Error occurred while trying to store escrow payment request', error);
         res.status(500).send(error.message);
+    }
+}
+
+const checkEscrowContractDeployStats = async (contractPublicAddress: string, credType: string, owner: string, issuer: string) => {
+    const scheduledJob = cron.schedule('*/15 * * * * *', async () => {
+        try {
+            let berkeleyUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
+            // you can use this with any spec-compliant graphql endpoint
+            let Berkeley = Mina.Network(berkeleyUrl);
+            Mina.setActiveInstance(Berkeley);
+
+            console.log('Compiling smart contract..... this can take a while...');
+            let { verificationKey } = await EscrowContract.compile();
+
+            let pubKey = PublicKey.fromBase58(contractPublicAddress);
+            let zkApp = new EscrowContract(pubKey);
+
+            let payment = await zkApp.escrowAmount.fetch();
+            let isDeployed = payment?.equals(1).not().toBoolean() ?? false;
+
+            // Check if stopping condition is met
+            if (isDeployed) {
+                console.log('Smart contract is deployed...');
+                // Api request to make a Notification event
+                let data = {
+                    contractPublicAddress: contractPublicAddress,
+                    credType: credType,
+                    owner: owner,
+                    issuer: issuer
+                }
+                console.log('About to send notification to API about smart contract');
+                deployNotification(data);
+                scheduledJob.stop();
+            }
+            else {
+                console.log('Not deployed yet...');
+            }
+        } catch (error) {
+            console.log('Error occurred while trying to check smart contract deploy status to notify user', error);
+        }
+    }, {
+        scheduled: false
+    });
+    scheduledJob.start();
+}
+
+function deployNotification(data: any) {
+    let notifier = new EventNotification();
+    notifier.push(new NotificationData(data.credType, data.issuer, data.owner, "escrow"));
+}
+
+function updatePendingPayment(smartContractPublicKey: string, credentialType: any, senderAccount: any) {
+    let repo = new EscrowPaymentRepository();
+    try {
+        repo.updatePaymentPublicKey(`${credentialType}${senderAccount}`, smartContractPublicKey);
+    } catch (error) {
+        console.log(`Error while updating payment public key: ${error}`);
     }
 }
 
