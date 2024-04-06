@@ -84,7 +84,7 @@ export const issueCredentialViaProxy = async (req: Request, res: Response) => {
 }
 
 const checkEscrowContractDeployStats = async (contractPublicAddress: string, credType: string, owner: string, issuer: string) => {
-    const scheduledJob = cron.schedule('*/15 * * * * *', async () => {
+    const scheduledJob = cron.schedule('0 0 * * * *', async () => {
         try {
             let berkeleyUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
             // you can use this with any spec-compliant graphql endpoint
