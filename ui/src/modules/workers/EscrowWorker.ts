@@ -4,7 +4,7 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
-import type { EscrowContract } from '../../../../smartcontract-deployer/build/src/EscrowContract.js';
+import type { EscrowContract } from '../../modules/EscrowContract.js';
 
 const state = {
     EscrowContract: null as null | typeof EscrowContract,
@@ -26,7 +26,7 @@ const functions = {
         Mina.setActiveInstance(Berkeley);
     },
     loadContract: async (args: {}) => {
-        const { EscrowContract } = await import('../../../../smartcontract-deployer/build/src/EscrowContract.js');
+        const { EscrowContract } = await import('../../modules/EscrowContract.js');
         state.EscrowContract = EscrowContract;
     },
     compileContract: async (args: {}) => {
