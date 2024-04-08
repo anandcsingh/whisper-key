@@ -7,7 +7,6 @@ import { AuthContext } from "@/components/layout/AuthPage";
 import Router from 'next/router';
 import { SHA256 } from 'crypto-js';
 import { Field, Signature, Scalar, PublicKey } from 'o1js';
-import { ContractDeployer } from '../../../../whisper-key-core/src/ContractDeployer';
 
 
 interface CredentialFormProps {
