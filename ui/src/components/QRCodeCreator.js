@@ -1,7 +1,9 @@
 import QRCode from "react-qr-code";
 
 import { useEffect, useState, useContext } from "react";
-import { AuthContext } from '@/components/layout/AuthPage'
+// import { AuthContext } from '@/components/layout/AuthPage'
+import { AuthContext } from 'zkshield';
+
 import { prop } from "o1js";
 
 

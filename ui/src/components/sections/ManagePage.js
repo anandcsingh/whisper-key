@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useEffect, useState, useContext } from "react";
-import {AuthContext} from '@/components/layout/AuthPage'
-
+// import {AuthContext} from '@/components/layout/AuthPage'
+import { AuthContext } from 'zkshield';
 import QRCodeCreator from '@/components/QRCodeCreator';
 const ManagePage = () => {
 

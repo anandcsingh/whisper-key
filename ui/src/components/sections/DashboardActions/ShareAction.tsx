@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { DashboardActionsProps } from "./DashboardActions";
 import React from "react";
 import Authentication from "@/modules/Authentication";
 import QRCodeCreator from "@/components/QRCodeCreator";
+import { AuthContext } from 'zkshield';
+
 
 const InstructorsAction: React.FC<DashboardActionsProps> = ({ isInstructor }) => {
+  const [authState, _]  = useContext(AuthContext);
 
   const [address, setAddress] = useState('');
   const [showAddress, setShowAddress] = useState(false);
   const showAddressModalRef = React.useRef<HTMLDivElement>(null);
   const showAddressModal = async () => {
-    let tempAddress = Authentication.address ? Authentication.address : 'No address loaded';// Authentication.address;
+    let tempAddress = authState.userAddress ? authState.userAddress : 'No address loaded';// authState.userAddress;
     setAddress(tempAddress);
     setShowAddress(true);
     try {

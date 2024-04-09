@@ -4,7 +4,8 @@ import QRCodeScanner from "@/components/QRCodeScanner"
 import Authentication from "@/modules/Authentication";
 import AllMaWorkerEventsClient from "@/modules/workers/AllMaWorkerEventsClient";
 import { Bool, CircuitString, Field, PublicKey, Struct } from 'o1js';
-import { AuthContext } from "@/components/layout/AuthPage";
+// import { AuthContext } from "@/components/layout/AuthPage";
+import { AuthContext } from 'zkshield';
 import Router from 'next/router';
 import axios from "axios";
 //import { defineComponent } from "vue";
@@ -75,7 +76,7 @@ const AddForm = () => {
     let credentialMetaData = {
       name: vcNameValue, 
       description: vcDescriptionValue, 
-      owner: Authentication.address ?? "2n1VVuNBQof37isET7MBTPkD5VRfE7T8xRpKtD1BAinfy1GuQWux", 
+      owner: authState.userAddress ?? "2n1VVuNBQof37isET7MBTPkD5VRfE7T8xRpKtD1BAinfy1GuQWux", 
       created: new Date().toISOString(),
       version: "1.0",
       fields: credentialFields

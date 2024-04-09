@@ -1,6 +1,7 @@
 import Authentication from '@/modules/Authentication';
 import { useEffect, useState, useContext, Component, ChangeEvent } from "react";
-import { AuthContext } from '@/components/layout/AuthPage';
+// import { AuthContext } from '@/components/layout/AuthPage';
+import { AuthContext } from 'zkshield';
 import { CredentialMetadata, CredentialField } from '../../modules/CredentialMetadata';
 import CredentialForm from './CredentialForm';
 import QRCodeScanner from '../QRCodeScanner';
@@ -8,11 +9,12 @@ import QRCodeScanner from '../QRCodeScanner';
 const DashBoardIssueCredentials = () => {
     const [selectedCredential, setSelectedCredential] = useState<CredentialMetadata | null>(null);
     const [credentialMetaDataList, setCredentialMetaDataList] = useState<CredentialMetadata[]>([]);
+    const [authState, setAuthState] = useContext(AuthContext);
 
     const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = event.target.value;
         const selectedCredentialObject = credentialMetaDataList.find(vc => vc.name === selectedValue);
-        selectedCredentialObject!.issuer = Authentication.address;
+        selectedCredentialObject!.issuer = authState.userAddress;
         // Do something with the selectedCredentialObject, such as updating state
         setSelectedCredential(selectedCredentialObject || null);
     };
@@ -25,7 +27,7 @@ const DashBoardIssueCredentials = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const credsApi = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/created/${Authentication.address}`;
+                const credsApi = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/created/${authState.userAddress}`;
 
                 console.log('credsAPi: ', credsApi)
                 if(!credsApi){

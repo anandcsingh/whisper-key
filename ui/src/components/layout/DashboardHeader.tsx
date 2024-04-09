@@ -4,13 +4,14 @@ import Router from 'next/router';
 import { useContext, useEffect, useState } from "react";
 import React from 'react';
 import Authentication from '@/modules/Authentication';
-import { AuthContext } from './AuthPage';
+// import { AuthContext } from './AuthPage';
 import { ProfileMetadata } from '@/modules/ProfileMetadata';
 import { Inbox } from '@/modules/Inbox';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EscrowWorkerClient from '@/modules/workers/EscrowWorkerClient';
 import { Field, PublicKey } from 'o1js';
+import { AuthContext } from 'zkshield';
 
 let transactionFee = 0.1;
 

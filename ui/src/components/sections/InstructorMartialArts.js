@@ -6,8 +6,8 @@ import { Tabs } from 'flowbite-react';
 import StudentList from './StudentList';
 import { curveBasisClosed } from 'd3';
 import { Field, MerkleMap, PublicKey } from 'o1js';
-import { AuthContext } from '@/components/layout/AuthPage';
-
+// import { AuthContext } from '@/components/layout/AuthPage';
+import { AuthContext } from 'zkshield';
 const InstructorMartialArts = ({martialArts}) => {
   let [showStudents, setShowStudents] = useState(false);
   const [authState, _]  = useContext(AuthContext);

@@ -1,5 +1,6 @@
 import QRCodeScanner from "@/components/QRCodeScanner";
-import { AuthContext } from "@/components/layout/AuthPage";
+// import { AuthContext } from "@/components/layout/AuthPage";
+import { AuthContext } from 'zkshield';
 import Authentication from "@/modules/Authentication";
 import AllMaWorkerEventsClient from "@/modules/workers/AllMaWorkerEventsClient";
 import Router from 'next/router';
