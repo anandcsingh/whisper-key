@@ -27,6 +27,7 @@ const DashBoardIssueCredentials = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                console.log('authState: ', authState);
                 const credsApi = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/created/${authState.userAddress}`;
 
                 console.log('credsAPi: ', credsApi)

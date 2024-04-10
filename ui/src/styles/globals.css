@@ -95,3 +95,8 @@ a {
   cursor: pointer;
   background-color: aliceblue;
 }
+
+.shieldHeader {
+  font-weight: bold;
+  font-size: xx-large;
+}

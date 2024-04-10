@@ -33,6 +33,7 @@ export default function Dashboard() {
     <ZkShield mainContainerClassName="hero min-h-screen bg-base-200"
       innerContainerClassName="hero-content text-center"
       selectProviderClassName="selectProviderContainer"
+      headerClassName="shieldHeader"
       ignoreConnectForTesting={false}
       localAccount={privateKey}
       autoLaunch={true}
