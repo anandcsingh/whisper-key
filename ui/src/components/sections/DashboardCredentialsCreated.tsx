@@ -1,7 +1,9 @@
 import Authentication from '@/modules/Authentication';
 import React, { Component } from 'react';
 import { useEffect, useState, useContext } from "react";
-import { AuthContext } from '@/components/layout/AuthPage';
+// import { AuthContext } from '@/components/layout/AuthPage';
+import { AuthContext } from 'zkshield';
+
 import { CredentialMetadata, CredentialField } from '../../modules/CredentialMetadata';
 import axios from "axios";
 import Link from 'next/link'
@@ -13,11 +15,13 @@ const DashboardCredentialsCreated = () => {
         credentials: [] as any,
         currentCredential: { fields: [] } as any,
     });
+    const [authState, setAuthState] = useContext(AuthContext);
+
 
     useEffect(() => {
 
         (async () => {
-            const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/created/${Authentication.address}`;
+            const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/created/${authState.userAddress}`;
 
             const requestHeaders = { "Content-Type": "application/json" };
             let createdCredentials: CredentialMetadata[] = [];

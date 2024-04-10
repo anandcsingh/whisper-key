@@ -1,8 +1,8 @@
 // https://stackoverflow.com/questions/73479439/how-to-trigger-an-custom-alert-component-in-a-different-component
 //https://stackblitz.com/edit/react-ts-nv3cv2?file=ToggleAlert.tsx
 import { useContext } from "react";
-import { AuthContext } from "../layout/AuthPage";
-
+// import { AuthContext } from "../layout/AuthPage";
+import { AuthContext } from 'zkshield';
 export default function NotificationBox() {
     const [authState, setAuthState] = useContext(AuthContext);
 

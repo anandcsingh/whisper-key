@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { AuthContext } from "../layout/AuthPage";
+// import { AuthContext } from "../layout/AuthPage";
+import { AuthContext } from 'zkshield';
 import DashboardCredentialsCreated from "./DashboardCredentialsCreated";
 import DashBoardCredentialsOwnedGrid from "./DashboardCredentialsOwnedGrid";
 

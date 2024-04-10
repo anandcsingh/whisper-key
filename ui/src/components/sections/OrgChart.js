@@ -2,8 +2,8 @@ import React, { useLayoutEffect, useRef, useEffect, useContext } from 'react';
 import { OrgChart } from 'd3-org-chart';
 import * as d3 from 'd3';
 import { Authentication } from './../../modules/Authentication'
-import { AuthContext } from '@/components/layout/AuthPage';
-
+// import { AuthContext } from '@/components/layout/AuthPage';
+import { AuthContext } from 'zkshield';
 //https://github.com/bumbeishvili/org-chart
 export const OrgChartComponent = (props, ref) => {
   const d3Container = useRef(null);

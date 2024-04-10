@@ -3,7 +3,9 @@ import { CredentialMetadata, CredentialField } from '../../modules/CredentialMet
 
 import QRCodeScanner from '../QRCodeScanner';
 import Authentication from '@/modules/Authentication';
-import { AuthContext } from "@/components/layout/AuthPage";
+// import { AuthContext } from "@/components/layout/AuthPage";
+import { AuthContext } from 'zkshield';
+
 import Router from 'next/router';
 import { SHA256 } from 'crypto-js';
 import { Field, Signature, Scalar, PublicKey } from 'o1js';
@@ -32,7 +34,7 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    state.formData.issuer = Authentication.address; // the credential owner is issuing the credential
+    state.formData.issuer = authState.userAddress; // the credential owner is issuing the credential
     state.formData.credentialType = credentialMetadata.name;
     // Process the form data, you can access it from this.state.formData
     console.log('Form Data:', state.formData);
@@ -254,7 +256,7 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
 
 //   handleSubmit = (e: FormEvent) => {
 //     e.preventDefault();
-//     this.state.formData.issuer = Authentication.address; // the credential owner is issuing the credential
+//     this.state.formData.issuer = authState.userAddress; // the credential owner is issuing the credential
 //     // Process the form data, you can access it from this.state.formData
 //     console.log('Form Data:', this.state.formData);
 //     // TODO: Smooze method goes here

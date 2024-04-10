@@ -34,7 +34,8 @@
     "react-qr-scanner": "^1.0.0-alpha.11",
     "react-toastify": "^10.0.5",
     "tailwindcss": "3.3.3",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "zkshield": "^0.3.32"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.22.15",

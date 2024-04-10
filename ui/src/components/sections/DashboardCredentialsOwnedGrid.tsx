@@ -1,11 +1,13 @@
 import Authentication from '@/modules/Authentication';
 import React, { Component } from 'react';
 import { useEffect, useState, useContext } from "react";
-import { AuthContext } from '@/components/layout/AuthPage';
+// import { AuthContext } from '@/components/layout/AuthPage';
+import { AuthContext } from 'zkshield';
 import { CredentialMetadata, CredentialField } from '../../modules/CredentialMetadata';
 import axios from "axios";
 
 const DashBoardCredentialsOwnedGrid = () => {
+    const [authState, _]  = useContext(AuthContext);
 
     const [owned, setOwned] = useState({
         credentials: [] as any,
@@ -16,7 +18,7 @@ const DashBoardCredentialsOwnedGrid = () => {
     useEffect(() => {
 
         (async () => {
-            const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/owned/${Authentication.address}`;
+            const apiURL = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/owned/${authState.userAddress}`;
 
             const requestHeaders = { "Content-Type": "application/json" };
             let ownedCredentials: CredentialMetadata[] = [];
