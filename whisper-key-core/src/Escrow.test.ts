@@ -15,6 +15,8 @@ describe('Escrow', () => {
         deployerKey: PrivateKey,
         senderAccount: PublicKey,
         senderKey: PrivateKey,
+        receiverKey: PrivateKey,
+        receiverAccount: PublicKey,
         zkAppAddress: PublicKey,
         zkAppPrivateKey: PrivateKey,
         zkApp: EscrowContract;
@@ -30,9 +32,13 @@ describe('Escrow', () => {
             Local.testAccounts[0]);
         ({ privateKey: senderKey, publicKey: senderAccount } =
             Local.testAccounts[1]);
+        ({ privateKey: receiverKey, publicKey: receiverAccount } =
+            Local.testAccounts[2]);
         zkAppPrivateKey = PrivateKey.random();
         zkAppAddress = zkAppPrivateKey.toPublicKey();
-        zkApp = new EscrowContract(zkAppAddress);
+        let senderPubKey = PublicKey.toBase58(senderAccount);
+        let receiverPubKey = PublicKey.toBase58(receiverAccount);
+        zkApp = new EscrowContract(senderPubKey, receiverPubKey, zkAppAddress);
     });
 
     async function localDeploy() {
@@ -45,9 +51,9 @@ describe('Escrow', () => {
         await txn.sign([deployerKey, zkAppPrivateKey]).send();
     }
 
-    it('generates and deploys the `Escrow` smart contract', async () => {
-        await localDeploy();
-    });
+    // it('generates and deploys the `Escrow` smart contract', async () => {
+    //     await localDeploy();
+    // });
 
     it('can deposit to the sender account', async () => {
         await localDeploy();
@@ -72,6 +78,16 @@ describe('Escrow', () => {
         let balance = Mina.getBalance(zkAppAddress).div(1e9);
         console.log(`zkApp balance after deposit:  ${balance} MINA`);
         expect(balance).toEqual(UInt64.from(2));
+    });
+
+    it('can set sender PublicKey and receiver PublicKey before deploying', async () => {
+        await localDeploy();
+
+        const senderPubKey = zkApp.senderPublicKey.get();
+        const receiverPubKey = zkApp.receiverPublicKey.get();
+
+        expect(senderPubKey).not.toBeNull();
+        expect(receiverPubKey).not.toBeNull();
     });
 
 });

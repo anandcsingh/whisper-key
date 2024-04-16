@@ -95,7 +95,7 @@ const checkEscrowContractDeployStats = async (contractPublicAddress: string, cre
             let { verificationKey } = await EscrowContract.compile();
 
             let pubKey = PublicKey.fromBase58(contractPublicAddress);
-            let zkApp = new EscrowContract(pubKey);
+            let zkApp = new EscrowContract(owner, issuer, pubKey);
 
             let payment = await zkApp.escrowAmount.fetch();
             let isDeployed = payment?.equals(1).not().toBoolean() ?? false;

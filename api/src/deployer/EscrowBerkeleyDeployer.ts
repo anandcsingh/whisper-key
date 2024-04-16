@@ -63,7 +63,7 @@ export class EscrowBerkeleyDeployer {
             let { verificationKey } = await EscrowContract.compile();
 
             // check if the zkapp is already deployed, based on whether the account exists and its first zkapp state is !== 0
-            let zkapp = new EscrowContract(zkappAddress);
+            let zkapp = new EscrowContract(this.senderAccount, this.receiverAccount, zkappAddress);
             console.log('zkApp:', zkapp);
 
             // Deploy ...
