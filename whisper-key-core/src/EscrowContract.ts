@@ -5,6 +5,20 @@ export class EscrowContract extends SmartContract {
     @state(PublicKey) receiverPublicKey = State<PublicKey>();
     @state(Field) escrowAmount = State<Field>();
 
+    /**
+     * Initializes a new instance of the Escrow Contract.
+     * @param senderAddress The public key of the sender initiating the escrow.
+     * @param receiverAddress The public key of the receiver participating in the escrow.
+     * @param zkAppAddress The public key of the zero-knowledge application associated with this escrow.
+     */
+    constructor(senderAddress: string, receiverAddress: string, zkAppAddress: PublicKey) {
+        super(zkAppAddress);
+        let senderPubKey = PublicKey.fromBase58(senderAddress);
+        let receiverPubKey = PublicKey.fromBase58(receiverAddress);
+        this.senderPublicKey.set(senderPubKey);
+        this.receiverPublicKey.set(receiverPubKey);
+    }
+
     events = {
         'escrow-funds-received': UInt64
     };
