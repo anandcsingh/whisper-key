@@ -43,6 +43,14 @@ export default class EscrowWorkerClient {
         return Field.fromJSON(JSON.parse(result as string));
     }
 
+    async getEscrowEvents() {
+        return this._call('getEscrowEvents', {});
+    }
+
+    async withdrawFromSmartContract(publicKey: string) {
+        return this._call('withdrawFromSmartContract', { publicKey });
+    }
+
     depositTransaction(publicKey: string) {
         return this._call('depositToSmartContract', { publicKey });
     }

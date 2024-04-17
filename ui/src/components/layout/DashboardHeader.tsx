@@ -181,6 +181,26 @@ const Header = () => {
       setTransactionLink(transactionLink);
 
       setState({ ...state, creatingTransaction: false });
+
+      var events = await zkappWorkerClient.getEscrowEvents();
+      console.log('Events loaded in the UI ....');
+
+      let escrowReceived = false;
+
+      //@ts-ignore
+      events!.map(async (e) => {
+        let data = JSON.stringify(e.event);
+        if(data === 'escrow-funds-received') {
+          // Transfer from smart contract to Verifiable Credential Issuer
+          await zkappWorkerClient.withdrawFromSmartContract(publicKey.toBase58());
+          escrowReceived = true;
+        }
+      })
+
+      if(escrowReceived) {
+        // Complete credential issuing
+      }
+
       setLoading(false);
     }
 
