@@ -52,11 +52,28 @@ const functions = {
         });
         state.transaction = transaction;
     },
+    withdrawFromSmartContract: async (args: { publicKey: string }) => {
+        let fee = 100_000_000;
+        let sender = PublicKey.fromBase58(args.publicKey);
+        const transaction = await Mina.transaction({ sender, fee }, () => {
+            state.zkapp!.withdraw();
+        });
+        state.transaction = transaction;
+    },
     proveUpdateTransaction: async (args: {}) => {
         await state.transaction!.prove();
     },
     getTransactionJSON: async (args: {}) => {
         return state.transaction!.toJSON();
+    },
+    getEscrowEvents: async (args: {}) => {
+        const events = await state.zkapp!.fetchEvents();
+        console.log(
+            events.map((e) => {
+                return { type: e.type, data: JSON.stringify(e.event) };
+            })
+        );
+        return events;
     }
 };
 

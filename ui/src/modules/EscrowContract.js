@@ -9,14 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Mina, SmartContract, method, UInt64, AccountUpdate, PublicKey, State, state, Field } from 'o1js';
 export class EscrowContract extends SmartContract {
-    constructor() {
-        super(...arguments);
+    /**
+     * Initializes a new instance of the Escrow Contract.
+     * @param senderAddress The public key of the sender initiating the escrow.
+     * @param receiverAddress The public key of the receiver participating in the escrow.
+     * @param zkAppAddress The public key of the zero-knowledge application associated with this escrow.
+     */
+    constructor(senderAddress, receiverAddress, zkAppAddress) {
+        super(zkAppAddress);
         this.senderPublicKey = State();
         this.receiverPublicKey = State();
         this.escrowAmount = State();
         this.events = {
             'escrow-funds-received': UInt64
         };
+        let senderPubKey = PublicKey.fromBase58(senderAddress);
+        let receiverPubKey = PublicKey.fromBase58(receiverAddress);
+        this.senderPublicKey.set(senderPubKey);
+        this.receiverPublicKey.set(receiverPubKey);
     }
     init() {
         this.escrowAmount.set(Field(0));
@@ -25,8 +35,9 @@ export class EscrowContract extends SmartContract {
     async withdraw(user) {
         // add your deposit logic circuit here
         // that will adjust the amount
-        const payerUpdate = AccountUpdate.createSigned(user);
-        payerUpdate.send({ to: this.address, amount: UInt64.from(1000000) });
+        let receiverPubKey = this.receiverPublicKey.get();
+        const payerUpdate = AccountUpdate.createSigned(receiverPubKey);
+        payerUpdate.send({ to: this.address, amount: UInt64.from(2 * 1e9) });
     }
     setReceiver(receiver) {
         this.receiverPublicKey.set(receiver);

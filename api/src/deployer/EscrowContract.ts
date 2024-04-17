@@ -31,9 +31,10 @@ export class EscrowContract extends SmartContract {
     @method async withdraw(user: PublicKey) {
         // add your deposit logic circuit here
         // that will adjust the amount
-        const payerUpdate = AccountUpdate.createSigned(user);
+        let receiverPubKey = this.receiverPublicKey.get();
+        const payerUpdate = AccountUpdate.createSigned(receiverPubKey);
 
-        payerUpdate.send({ to: this.address, amount: UInt64.from(1000000) });
+        payerUpdate.send({ to: this.address, amount: UInt64.from(2 * 1e9) });
     }
 
     @method setReceiver(receiver: PublicKey) {
