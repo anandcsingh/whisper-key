@@ -138,7 +138,7 @@ const Header = () => {
 
       const zkappPublicKey = PublicKey.fromBase58(zkAppAddress);
 
-      await zkappWorkerClient.initZkappInstance(zkappPublicKey);
+      await zkappWorkerClient.initZkappInstance(zkappPublicKey, publicKeyBase58, "B62qozSM7ocHBxErDNimZprWf5Zcd4BNKizffvnDhBrjohhzRnkr3pC");
 
       setState({
         ...state,
@@ -199,11 +199,40 @@ const Header = () => {
 
       if(escrowReceived) {
         // Complete credential issuing
+        fetchData({});
       }
 
       setLoading(false);
     }
 
+  }
+
+  const fetchData = (data: any) => {
+    const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/issue/${data.name}`;
+    if (!apiUrl) {
+      throw new Error('API URL not defined in environment variables.');
+    }
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        // You can add other headers here if needed
+      },
+      body: JSON.stringify(data)
+    };
+    try {
+
+    const response = fetch(apiUrl, requestOptions)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+          let transactionLink = `<a href="${data.transactionUrl}" class="btn btn-sm" target="_blank">View transaction</a>`;
+           setAuthState({ ...authState, alertAvailable: true, alertMessage: `Credential issued ${transactionLink}`, alertNeedsSpinner: false });
+        })
+    .catch((err: any) => console.error('Error trying to fetch Credential Metadata', err));
+    } catch (error) {
+      console.error('Error trying to fetch Credential Metadata', error);
+    }
   }
 
   useEffect(() => {

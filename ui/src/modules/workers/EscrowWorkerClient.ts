@@ -32,8 +32,10 @@ export default class EscrowWorkerClient {
         return result as ReturnType<typeof fetchAccount>;
     }
 
-    initZkappInstance(publicKey: PublicKey) {
+    initZkappInstance(publicKey: PublicKey, owner: string, issuer: string) {
         return this._call('initZkappInstance', {
+            owner: owner,
+            issuer: issuer,
             publicKey58: publicKey.toBase58(),
         });
     }

@@ -18,9 +18,9 @@ const functions = {
     setActiveInstanceToBerkeley: async (args: {}) => {
         console.log('setting network instance');
         const Berkeley = Mina.Network(
-            //'https://api.minascan.io/node/berkeley/v1/graphql'
+            'https://api.minascan.io/node/berkeley/v1/graphql'
             //'https://berkeley.graphql.minaexplorer.com/'
-            'https://proxy.berkeley.minaexplorer.com/graphql'
+            //'https://proxy.berkeley.minaexplorer.com/graphql'
         );
         console.log('Berkeley Instance Created');
         Mina.setActiveInstance(Berkeley);
@@ -36,9 +36,9 @@ const functions = {
         const publicKey = PublicKey.fromBase58(args.publicKey58);
         return await fetchAccount({ publicKey });
     },
-    initZkappInstance: async (args: { publicKey58: string }) => {
+    initZkappInstance: async (args: { publicKey58: string, owner: string, issuer: string }) => {
         const publicKey = PublicKey.fromBase58(args.publicKey58);
-        state.zkapp = new state.EscrowContract!(publicKey);
+        state.zkapp = new state.EscrowContract!(args.owner, args.issuer, publicKey);
     },
     getAmount: async (args: {}) => {
         const currentNum = await state.zkapp!.escrowAmount.get();
