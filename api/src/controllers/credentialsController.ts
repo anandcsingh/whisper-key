@@ -360,72 +360,108 @@ export const checkEscrowDeploymentStatus = async (notifier: EventNotification) =
 }
 
 
-async function issueCredentialAfterPayment(name: string, req: any, cred: any, res: Response<any, Record<string, any>>) {
-    try {
+export const issueCredentialAfterPayment = async (req: Request, res: Response) => {
+    const name = req.params.name;
+    const cred = req.body.data;
+    const signedResult = req.body.signResult;
 
-        let proofsEnabled = true, senderAccount: PublicKey, senderKey: PrivateKey, zkAppAddress: PublicKey;
+    if (signedResult != null) {
+        const enableSignature = true;
+        if (enableSignature) {
 
+            const receivedHash = signedResult.data;
+            const jsonString = JSON.stringify(cred);
+            const serverHash = crypto.createHash('sha256').update(jsonString).digest('hex');
+            console.log("cred:", cred);
+            console.log("serverHash:", serverHash);
+            console.log("receivedHash:", receivedHash);
 
-        const Berkeley = Mina.Network(
-            'https://proxy.berkeley.minaexplorer.com/graphql'
-        );
-        console.log('Berkeley Instance Created');
-        Mina.setActiveInstance(Berkeley);
-        senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
-        senderAccount = senderKey.toPublicKey();
-        console.log("senderAccount:", senderAccount.toBase58());
-        const repo = new CredentialRepository();
-        const credMetadata = await repo.GetCredential(name);
+            if (serverHash != receivedHash) {
+                res.status(500).send("Data hashes does not match");
+                return;
+            } else {
 
-        console.log("credMetadata:", credMetadata);
-        zkAppAddress = PublicKey.fromBase58(credMetadata!.contractPublicKey);
+                let client = new Client({ network: 'testnet' });
+                const verify = client.verifyMessage(signedResult);
+                if (!verify) {
+                    res.status(500).send("Signature does not match");
+                    return;
+                } else {
+                    console.log("Signature matches");
+                }
+            }
+        }
 
-        //zkAppAddress = PublicKey.fromBase58("B62qmVJRKong9PuMagoWGDmPjSdmSkjPhW2R3ZyB8nZswiSAxcua5H8");
-        await fetchAccount({ publicKey: zkAppAddress });
-        const path = `../../../public/credentials/${req.params.name}Contract.js`;
-        // const path = `../../public/credentials/FreeCredentialContract.js`
-        const { CredentialProxy } = await import(/* webpackIgnore: true */ path);
-        console.log("Dyanmic proxy loaded");
-        console.log("path:", path);
-        const proxy = new CredentialProxy(zkAppAddress, req.params.name, senderAccount, proofsEnabled);
+        try {
 
-        const backingStore = repo.GetCredentialStore(name);
-        const merkleStore = await backingStore.getMerkleMap();
-        const contractRoot = await proxy.getStorageRoot();
-        const backingStoreRoot = merkleStore.map.getRoot();
-
-        // verify roots match
-        // if (backingStoreRoot.toString() != contractRoot.toString()) {
-        //   res.status(500).send({
-        //     success: false,
-        //     message: "Roots do not match",
-        //   });
-        //   return;   
-        // }
-        console.log("senderAccount:", senderAccount.toBase58());
+            let proofsEnabled = true,
+                senderAccount: PublicKey,
+                senderKey: PrivateKey,
+                zkAppAddress: PublicKey;
 
 
-        await fetchAccount({ publicKey: zkAppAddress });
-        console.log("Issuing via proxy for", req.params.name, "contract");
-        console.log("entity:", cred);
-        const txn = await proxy.issueCredential(senderAccount, cred, merkleStore);
-        await txn.transaction.prove();
-        let result = await txn.transaction.sign([senderKey]).send();
-        console.log("Issued via proxy");
-        //console.log("entity", txn.pendingEntity);
-        backingStore.upsert(txn.pendingEntity!);
+            const Berkeley = Mina.Network(
+                'https://proxy.berkeley.minaexplorer.com/graphql'
+            );
+            console.log('Berkeley Instance Created');
+            Mina.setActiveInstance(Berkeley);
+            senderKey = process.env.FEE_PAYER ? PrivateKey.fromBase58(process.env.FEE_PAYER) : PrivateKey.fromBase58("EKEjzZdcsuaThenLan7UkQRxKXwZGTC2L6ufbCg4X5M9WF6UJx2j");
+            senderAccount = senderKey.toPublicKey();
+            console.log("senderAccount:", senderAccount.toBase58());
+            const repo = new CredentialRepository();
+            const credMetadata = await repo.GetCredential(name);
 
-        console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash()}`);
-        res.send({
-            success: true,
-            message: "Credential issued",
-            transactionHash: result.hash(),
-            transactionUrl: `https://berkeley.minaexplorer.com/transaction/${result.hash()}`,
-        });
-    }
-    catch (e: any) {
-        console.log("Error:", e);
-        res.status(500).send(e.message);
+            console.log("credMetadata:", credMetadata);
+            zkAppAddress = PublicKey.fromBase58(credMetadata!.contractPublicKey);
+
+            //zkAppAddress = PublicKey.fromBase58("B62qmVJRKong9PuMagoWGDmPjSdmSkjPhW2R3ZyB8nZswiSAxcua5H8");
+            await fetchAccount({ publicKey: zkAppAddress });
+            const path = `../../../public/credentials/${req.params.name}Contract.js`
+            // const path = `../../public/credentials/FreeCredentialContract.js`
+            const { CredentialProxy } = await import(/* webpackIgnore: true */path);
+            console.log("Dyanmic proxy loaded");
+            console.log("path:", path);
+            const proxy = new CredentialProxy(zkAppAddress, req.params.name, senderAccount, proofsEnabled);
+
+            const backingStore = repo.GetCredentialStore(name);
+            const merkleStore = await backingStore.getMerkleMap();
+            const contractRoot = await proxy.getStorageRoot();
+            const backingStoreRoot = merkleStore.map.getRoot();
+
+            // verify roots match
+            // if (backingStoreRoot.toString() != contractRoot.toString()) {
+            //   res.status(500).send({
+            //     success: false,
+            //     message: "Roots do not match",
+            //   });
+            //   return;   
+            // }
+            console.log("senderAccount:", senderAccount.toBase58());
+
+
+            await fetchAccount({ publicKey: zkAppAddress });
+            console.log("Issuing via proxy for", req.params.name, "contract");
+            console.log("entity:", cred);
+            const txn = await proxy.issueCredential(senderAccount, cred, merkleStore);
+            await txn.transaction.prove();
+            let result = await txn.transaction.sign([senderKey]).send();
+            console.log("Issued via proxy");
+            //console.log("entity", txn.pendingEntity);
+            backingStore.upsert(txn.pendingEntity!);
+
+            console.log(`https://berkeley.minaexplorer.com/transaction/${result.hash()}`);
+            res.send({
+                success: true,
+                message: "Credential issued",
+                transactionHash: result.hash(),
+                transactionUrl: `https://berkeley.minaexplorer.com/transaction/${result.hash()}`,
+            });
+        }
+        catch (e) {
+            console.log("Error:", e);
+            res.status(500).send(e.message);
+        }
+
     }
 }
 
