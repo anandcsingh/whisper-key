@@ -15,6 +15,9 @@ import { AuthContext } from 'zkshield';
 
 let transactionFee = 0.1;
 
+// [smartContractPubKey, Issuer]
+type CredentialIssuer = [string, string];
+
 const Header = () => {
 
   const [authState, setAuthState] = useContext(AuthContext);
@@ -30,7 +33,9 @@ const Header = () => {
   var [credPaymentSelected, setCredPaymentSelected] = useState(false);
   var [credPaymentSelection, setCredPaymentSelection] = useState('');
   var [zkAppAddress, setzkAppAddress] = useState('');
+  const [credentialIssuers, setCredentialIssuers] = useState<CredentialIssuer[]>([]);
   const [transactionlink, setTransactionLink] = useState('');
+  const [currentEscrowCredential, setCurrentEscrowCredential] = useState('');
   const [loading, setLoading] = useState(false);
 
 
@@ -99,6 +104,10 @@ const Header = () => {
     });
   }
 
+  const findIssuer = (criteria: (tuple: CredentialIssuer) => boolean): CredentialIssuer | undefined => {
+    return credentialIssuers.find(criteria);
+  };
+
   const onSendTransaction = async () => {
     console.log('zkappaddress', zkAppAddress);
     console.log('Preparing to do a transaction');
@@ -138,7 +147,14 @@ const Header = () => {
 
       const zkappPublicKey = PublicKey.fromBase58(zkAppAddress);
 
-      await zkappWorkerClient.initZkappInstance(zkappPublicKey, publicKeyBase58, "B62qozSM7ocHBxErDNimZprWf5Zcd4BNKizffvnDhBrjohhzRnkr3pC");
+      //await zkappWorkerClient.initZkappInstance(zkappPublicKey, publicKeyBase58, "B62qozSM7ocHBxErDNimZprWf5Zcd4BNKizffvnDhBrjohhzRnkr3pC");
+      let issuer = findIssuer(i => i[0] == zkAppAddress);
+
+      if(issuer === null || issuer == undefined) {
+        console.log(`Issuer value not found for Escrow Smart Contract... Resolve and try again ...`);
+        return;
+      }
+      await zkappWorkerClient.initZkappInstance(zkappPublicKey, publicKeyBase58, issuer[0]);
 
       setState({
         ...state,
@@ -199,7 +215,9 @@ const Header = () => {
 
       if(escrowReceived) {
         // Complete credential issuing
-        fetchData({});
+        fetchData({
+          name: currentEscrowCredential
+        });
       }
 
       setLoading(false);
@@ -293,6 +311,9 @@ const Header = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    if(e.target.name === "credentialName") {
+      setCurrentEscrowCredential(e.target.value);
+    }
   };
 
   function handleEscrowPayment(event: React.FormEvent<HTMLFormElement>): void {
@@ -362,6 +383,9 @@ const Header = () => {
                           setCredPaymentSelected(!credPaymentSelected);
                           setCredPaymentSelection(item.credential.credentialType);
                           setzkAppAddress(item.smartContractPublicKey);
+                          var issuer: CredentialIssuer;
+                          issuer = [item.smartContractPublicKey, item.credential.issuer];
+                          setCredentialIssuers([...credentialIssuers, issuer]);
                           console.log('Cred payment selected:', credPaymentSelected);
                           console.log('Cred type:', credPaymentSelection)
                           console.log('zkApp Address:', zkAppAddress);
