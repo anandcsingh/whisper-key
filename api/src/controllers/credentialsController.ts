@@ -456,6 +456,8 @@ export const issueCredentialAfterPayment = async (req: Request, res: Response) =
                 transactionHash: result.hash(),
                 transactionUrl: `https://berkeley.minaexplorer.com/transaction/${result.hash()}`,
             });
+
+            sendCredentialIssuedNotification(cred);
         }
         catch (e) {
             console.log("Error:", e);
@@ -463,6 +465,11 @@ export const issueCredentialAfterPayment = async (req: Request, res: Response) =
         }
 
     }
+}
+
+async function sendCredentialIssuedNotification(data: any) {
+    let notifier = new EventNotification();
+    notifier.push(new NotificationData(data.credType, data.issuer, data.owner, "issued"));
 }
 
 async function setProxy(cred: any, senderAccount: PublicKey) {
