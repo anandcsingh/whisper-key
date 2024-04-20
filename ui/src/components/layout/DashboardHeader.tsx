@@ -109,6 +109,8 @@ const Header = () => {
   };
 
   const onSendTransaction = async () => {
+    
+    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Compiling smart contract for escrow payment...`, alertNeedsSpinner: true });
     console.log('zkappaddress', zkAppAddress);
     console.log('Preparing to do a transaction');
     if(zkAppAddress) {
@@ -174,6 +176,7 @@ const Header = () => {
         publicKey: publicKey!
       });
       
+      setAuthState({ ...authState, alertAvailable: true, alertMessage: `About to accept your escrow payment...`, alertNeedsSpinner: true });
       await zkappWorkerClient!.depositTransaction(publicKey.toBase58());
 
       console.log('Creating proof...');
@@ -192,11 +195,13 @@ const Header = () => {
       });
 
       const transactionLink = `https://berkeley.minaexplorer.com/transaction/${hash}`;
+      setTransactionLink(transactionLink);
+      setState({ ...state, creatingTransaction: false });
+
       console.log(`View transaction at ${transactionLink}`);
 
-      setTransactionLink(transactionLink);
-
-      setState({ ...state, creatingTransaction: false });
+      let transactionLinkBtn = `<a href="${transactionLink}" class="btn btn-sm" target="_blank">View transaction</a>`;
+      setAuthState({ ...authState, alertAvailable: true, alertMessage: `Successful escrow payment: ${transactionLinkBtn} You will get a message in inbox when your credential is issued.`, alertNeedsSpinner: false });
 
       var events = await zkappWorkerClient.getEscrowEvents();
       console.log('Events loaded in the UI ....');
