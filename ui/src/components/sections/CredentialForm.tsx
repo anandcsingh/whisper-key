@@ -38,7 +38,7 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     state.formData.credentialType = credentialMetadata.name;
     // Process the form data, you can access it from this.state.formData
     console.log('Form Data:', state.formData);
-    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Issuing Verifiable Credential, please wait this can take a few mins`, alertNeedsSpinner: true });
+    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Issuing Verifiable Credential for Escrow Payment, you will receive a message in your inbox when payment can be made `, alertNeedsSpinner: true });
     Router.back();
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     const credStr = JSON.stringify(state.formData);
