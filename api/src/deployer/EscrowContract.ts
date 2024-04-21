@@ -5,36 +5,19 @@ export class EscrowContract extends SmartContract {
     @state(PublicKey) receiverPublicKey = State<PublicKey>();
     @state(Field) escrowAmount = State<Field>();
 
-    /**
-     * Initializes a new instance of the Escrow Contract.
-     * @param senderAddress The public key of the sender initiating the escrow.
-     * @param receiverAddress The public key of the receiver participating in the escrow.
-     * @param zkAppAddress The public key of the zero-knowledge application associated with this escrow.
-     */
-    constructor(senderAddress: string, receiverAddress: string, zkAppAddress: PublicKey) {
-        super(zkAppAddress);
-        let senderPubKey = PublicKey.fromBase58(senderAddress);
-        let receiverPubKey = PublicKey.fromBase58(receiverAddress);
-        this.senderPublicKey.set(senderPubKey);
-        this.receiverPublicKey.set(receiverPubKey);
-    }
-
     events = {
         'escrow-funds-received': UInt64
     };
 
     init(): void {
+        super.init();
         this.escrowAmount.set(Field(0));
     }
 
     // withdraw from smart contract and send to receiver
-    @method async withdraw(user: PublicKey) {
-        // add your deposit logic circuit here
-        // that will adjust the amount
-        let receiverPubKey = this.receiverPublicKey.get();
-        const payerUpdate = AccountUpdate.createSigned(receiverPubKey);
-
-        payerUpdate.send({ to: this.address, amount: UInt64.from(2 * 1e9) });
+    @method withdraw() {
+        this.receiverPublicKey.requireEquals(this.receiverPublicKey.get());
+        this.send({ to: this.receiverPublicKey.get(), amount: UInt64.from(2 * 1e9) });
     }
 
     @method setReceiver(receiver: PublicKey) {

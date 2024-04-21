@@ -18,9 +18,9 @@ const functions = {
     setActiveInstanceToBerkeley: async (args: {}) => {
         console.log('setting network instance');
         const Berkeley = Mina.Network(
-            'https://api.minascan.io/node/berkeley/v1/graphql'
+            //'https://api.minascan.io/node/berkeley/v1/graphql'
             //'https://berkeley.graphql.minaexplorer.com/'
-            //'https://proxy.berkeley.minaexplorer.com/graphql'
+            'https://proxy.berkeley.minaexplorer.com/graphql'
         );
         console.log('Berkeley Instance Created');
         Mina.setActiveInstance(Berkeley);
@@ -43,6 +43,31 @@ const functions = {
     getAmount: async (args: {}) => {
         const currentNum = await state.zkapp!.escrowAmount.get();
         return JSON.stringify(currentNum.toJSON());
+    },
+    getSender: async (args: {}) => {
+        const sender = await state.zkapp!.senderPublicKey.requireNothing();
+        console.log('sender ...', sender);
+    },
+    getReceiver: async (args: {}) => {
+        return await state.zkapp!.receiverPublicKey.requireNothing();
+    },
+    setSender: async (args: { senderPublicKey: string, feePayerPubKey: string }) => {
+        let fee = 100_000_000;
+        let feePayerPubKey = PublicKey.fromBase58(args.feePayerPubKey);
+        let sender = PublicKey.fromBase58(args.senderPublicKey);
+        const transaction = await Mina.transaction(() => {
+            state.zkapp!.setSender(sender);
+        });
+        state.transaction = transaction;
+    },
+    setReceiver: async (args: { receiverPublicKey: string, feePayerPubKey: string }) => {
+        let fee = 100_000_000;
+        let feePayerPubKey = PublicKey.fromBase58(args.feePayerPubKey);
+        let receiver = PublicKey.fromBase58(args.receiverPublicKey);
+        const transaction = await Mina.transaction(() => {
+            state.zkapp!.setReceiver(receiver);
+        });
+        state.transaction = transaction;
     },
     depositToSmartContract: async (args: { publicKey: string }) => {
         let fee = 100_000_000;
