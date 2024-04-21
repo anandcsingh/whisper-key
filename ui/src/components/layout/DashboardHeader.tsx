@@ -177,6 +177,23 @@ const Header = () => {
       });
       
       setAuthState({ ...authState, alertAvailable: true, alertMessage: `About to accept your escrow payment...`, alertNeedsSpinner: true });
+
+      console.log('Getting escrow sender...');
+      let escrowSender = await zkappWorkerClient.getSender();
+      console.log('Getting escrow receiver...');
+      let escrowReceiver = await zkappWorkerClient.getReceiver();
+
+      if(escrowSender === null || escrowSender === undefined) {
+        console.log('Setting escrow sender...');
+        escrowSender = await zkappWorkerClient.setSender(publicKeyBase58, publicKeyBase58);
+      }
+
+      if(escrowReceiver === null || escrowReceiver === undefined) {
+        console.log('Setting escrow receiver...');
+        escrowReceiver = await zkappWorkerClient.setReciever(issuer[0], publicKeyBase58);
+      }
+      
+      console.log('About to start action to deposit to the smart contract');
       await zkappWorkerClient!.depositTransaction(publicKey.toBase58());
 
       console.log('Creating proof...');
