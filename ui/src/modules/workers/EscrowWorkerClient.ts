@@ -48,6 +48,7 @@ export default class EscrowWorkerClient {
     }
 
     async setSender(senderPublicKey: string, feePayerPubKey: string) {
+        console.log('inside sender setter...');
         return this._call('setSender', { senderPublicKey, feePayerPubKey });
     }
 

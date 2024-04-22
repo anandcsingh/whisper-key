@@ -31,6 +31,7 @@ export class EscrowContract extends SmartContract {
         this.receiverPublicKey.set(receiver);
     }
     setSender(sender) {
+        console.log("Set sender js...");
         this.senderPublicKey.set(sender);
     }
     // deposit to smart contract from sender account
