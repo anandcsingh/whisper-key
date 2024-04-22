@@ -186,15 +186,18 @@ const Header = () => {
       if(escrowSender === null || escrowSender === undefined) {
         console.log('Setting escrow sender...');
         escrowSender = await zkappWorkerClient.setSender(publicKeyBase58, publicKeyBase58);
+        console.log('Successfully set escrow sender...');
       }
 
       if(escrowReceiver === null || escrowReceiver === undefined) {
         console.log('Setting escrow receiver...');
         escrowReceiver = await zkappWorkerClient.setReciever(issuer[0], publicKeyBase58);
+        console.log('Successfully set escrow receiver...');
       }
       
       console.log('About to start action to deposit to the smart contract');
       await zkappWorkerClient!.depositTransaction(publicKey.toBase58());
+      console.log('Successfully deposited to smart contract');
 
       console.log('Creating proof...');
       await zkappWorkerClient!.proveUpdateTransaction();
