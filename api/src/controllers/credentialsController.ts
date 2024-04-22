@@ -24,6 +24,31 @@ export const escrowNotify = async (req: Request, res: Response) => {
     notifier.push(new NotificationData(data.credType, data.issuer, data.owner, "escrow"));
 }
 
+export const getCredential = async (req: Request, res: Response) => {
+    const name = req.params.name;
+
+    const repo = new CredentialRepository();
+    const credMetadata = await repo.GetCredential(name);
+    res.status(200).send(credMetadata);
+}
+export const getCredentialByNameAndAddress = async (req: Request, res: Response) => {
+    const address = req.params.address;
+    const credential = req.params.credentialName;
+
+    const repo = new CredentialRepository();
+    const store = repo.GetCredentialStore(credential);
+    const cred = await store.get(address);
+    res.status(200).send(cred);
+}
+export const getIssuedCredential = async (req: Request, res: Response) => {
+    const address = req.params.address;
+
+    const repo = new CredentialRepository();
+    const issued = await repo.getIssuedCredentialsByIssuer(address);
+    console.log("Issued:", issued);
+    res.status(200).send(issued);
+}
+
 export const issueCredentialViaProxy = async (req: Request, res: Response) => {
     const name = req.params.name;
     const cred = req.body.data;
