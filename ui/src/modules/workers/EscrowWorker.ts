@@ -38,7 +38,7 @@ const functions = {
     },
     initZkappInstance: async (args: { publicKey58: string, owner: string, issuer: string }) => {
         const publicKey = PublicKey.fromBase58(args.publicKey58);
-        state.zkapp = new state.EscrowContract!(args.owner, args.issuer, publicKey);
+        state.zkapp = new state.EscrowContract!(publicKey);
     },
     getAmount: async (args: {}) => {
         const currentNum = await state.zkapp!.escrowAmount.get();

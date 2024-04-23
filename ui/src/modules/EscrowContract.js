@@ -24,14 +24,15 @@ export class EscrowContract extends SmartContract {
     }
     // withdraw from smart contract and send to receiver
     withdraw() {
-        this.receiverPublicKey.assertEquals(this.receiverPublicKey.get());
+        this.receiverPublicKey.requireEquals(this.receiverPublicKey.get());
         this.send({ to: this.receiverPublicKey.get(), amount: UInt64.from(2 * 1e9) });
     }
     setReceiver(receiver) {
+        this.receiverPublicKey.getAndRequireEquals();
         this.receiverPublicKey.set(receiver);
     }
     setSender(sender) {
-        console.log("Set sender js...");
+        this.senderPublicKey.getAndRequireEquals();
         this.senderPublicKey.set(sender);
     }
     // deposit to smart contract from sender account
