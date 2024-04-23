@@ -21,10 +21,12 @@ export class EscrowContract extends SmartContract {
     }
 
     @method setReceiver(receiver: PublicKey) {
+        this.receiverPublicKey.getAndRequireEquals();
         this.receiverPublicKey.set(receiver);
     }
 
     @method setSender(sender: PublicKey) {
+        this.senderPublicKey.getAndRequireEquals();
         this.senderPublicKey.set(sender);
     }
 

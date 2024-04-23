@@ -21,14 +21,12 @@ export class EscrowContract extends SmartContract {
     }
 
     @method setReceiver(receiver: PublicKey) {
+        this.receiverPublicKey.getAndRequireEquals();
         this.receiverPublicKey.set(receiver);
     }
 
     @method setSender(sender: PublicKey) {
-        console.log("insideee");
-        const currentState = this.senderPublicKey.getAndRequireEquals();
-        var pubKey = PublicKey.toBase58(sender);
-        console.log('We got a pub key...', pubKey);
+        this.senderPublicKey.getAndRequireEquals();
         this.senderPublicKey.set(sender);
     }
 
