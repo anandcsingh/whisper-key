@@ -24,6 +24,24 @@ export const escrowNotify = async (req: Request, res: Response) => {
     notifier.push(new NotificationData(data.credType, data.issuer, data.owner, "escrow"));
 }
 
+export const getIssuedPendingCredentials = async (req: Request, res: Response) => {
+    const address = req.params.address;
+    var paymentRepo: EscrowPaymentRepository = new EscrowPaymentRepository();
+    const payments = await paymentRepo.getPaymentsByIssuer(address);
+    res.status(200).send(payments);
+}
+export const getPendingCredential = async (req: Request, res: Response) => {
+    console.log("payment address from pending");
+
+    const address = req.params.address;
+    const credential = req.params.credentialName;
+    const id = `${credential}${address}`;
+    var paymentRepo: EscrowPaymentRepository = new EscrowPaymentRepository();
+    const payment = await paymentRepo.getPayment(id);
+    console.log("payment", payment);
+    res.status(200).send(payment);
+}
+
 export const getCredential = async (req: Request, res: Response) => {
     const name = req.params.name;
 
@@ -31,7 +49,10 @@ export const getCredential = async (req: Request, res: Response) => {
     const credMetadata = await repo.GetCredential(name);
     res.status(200).send(credMetadata);
 }
+
+
 export const getCredentialByNameAndAddress = async (req: Request, res: Response) => {
+    console.log("Getting credential by name and address");
     const address = req.params.address;
     const credential = req.params.credentialName;
 

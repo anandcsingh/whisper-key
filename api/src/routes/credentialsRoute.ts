@@ -1,6 +1,6 @@
 // routes/credentialsRoute.ts
 import express from 'express';
-import {getCredentialByNameAndAddress, getIssuedCredential, getCredential, addTask, escrowNotify, generateCredentials, getCreatedCredentials, getOwnedCredentials, issueCredentialViaProxy } from '../controllers/credentialsController.js';
+import { getIssuedPendingCredentials, getPendingCredential, getCredentialByNameAndAddress, getIssuedCredential, getCredential, addTask, escrowNotify, generateCredentials, getCreatedCredentials, getOwnedCredentials, issueCredentialViaProxy } from '../controllers/credentialsController.js';
 import { get } from 'http';
 
 /**
@@ -279,4 +279,6 @@ credsRouter.get('/addtask', addTask);
 credsRouter.post('/deployNotification', escrowNotify);
 credsRouter.get('/metadata/:name', getCredential);
 credsRouter.get('/issuedby/:address', getIssuedCredential);
-credsRouter.get('/:credentialName/:address', getCredentialByNameAndAddress);
+credsRouter.get('/owned/pending/:credentialName/:address', getPendingCredential);
+credsRouter.get('/pending/issuedby/:address', getIssuedPendingCredentials);
+credsRouter.get('/named/:credentialName/:address', getCredentialByNameAndAddress);

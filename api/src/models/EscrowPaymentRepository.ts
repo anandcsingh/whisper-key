@@ -50,6 +50,21 @@ export class EscrowPaymentRepository {
         return querySnapshot.docs.map((doc) => doc.data() as Payment);
     }
 
+    async getPaymentsByIssuer(walletAddress: string): Promise<any[] | undefined> {
+        const myQuery = query(
+            collection(this.database, this.collectionName),
+            where('credential.issuer', '==', walletAddress),
+        );
+
+        const querySnapshot = await getDocs(myQuery);
+
+        if (querySnapshot.empty) {
+            return undefined;
+        }
+
+        return querySnapshot.docs.map((doc) => doc.data());
+    }
+
     async addOrUpdatePayment(payment: Payment, credential: any, walletAddress: string, smartContractPublicKey: string): Promise<void> {
         // Store payment with a reference to user profile
         let id = `${credential.credentialType}${credential.owner}`;
