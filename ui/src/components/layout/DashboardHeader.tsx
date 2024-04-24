@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import EscrowWorkerClient from '@/modules/workers/EscrowWorkerClient';
 import { Field, PublicKey } from 'o1js';
 import { AuthContext } from 'zkshield';
+import { SHA256 } from 'crypto-js';
 
 let transactionFee = 0.1;
 
@@ -223,27 +224,51 @@ const Header = () => {
       let transactionLinkBtn = `<a href="${transactionLink}" class="btn btn-sm" target="_blank">View transaction</a>`;
       setAuthState({ ...authState, alertAvailable: true, alertMessage: `Successful escrow payment: ${transactionLinkBtn} You will get a message in inbox when your credential is issued.`, alertNeedsSpinner: false });
 
-      var events = await zkappWorkerClient.getEscrowEvents();
-      console.log('Events loaded in the UI ....');
+      console.log('Successfully transferred Mina in escrow to the issuer. Next step is to issue the credential');
 
-      let escrowReceived = false;
+      // var events = await zkappWorkerClient.getEscrowEvents();
+      
+      // console.log('Events loaded in the UI ....');
 
-      //@ts-ignore
-      events!.map(async (e) => {
-        let data = JSON.stringify(e.event);
-        if(data === 'escrow-funds-received') {
-          // Transfer from smart contract to Verifiable Credential Issuer
-          await zkappWorkerClient.withdrawFromSmartContract(publicKey.toBase58());
-          escrowReceived = true;
-        }
-      })
+      let escrowReceived = true;
+
+      // //@ts-ignore
+      // events!.map(async (e) => {
+      //   let data = JSON.stringify(e.event);
+      //   if(data === 'escrow-funds-received') {
+      //     // Transfer from smart contract to Verifiable Credential Issuer
+      //     await zkappWorkerClient.withdrawFromSmartContract(publicKey.toBase58());
+      //     escrowReceived = true;
+      //   }
+      // })
+
+     // #region - Issuing Credential for Owner
+      let cred = {
+        owner: publicKeyBase58, 
+        issuer: issuer[0], 
+        credentialType: credPaymentSelection
+      };
+      let credStr = JSON.stringify(cred);
+      // #region new-signedresult
+      const hashRes = SHA256(credStr).toString();
+      const signResult = await (window as any).mina?.signMessage({ message: hashRes }).catch((err: any) => err);
+      // #endregion
 
       if(escrowReceived) {
         // Complete credential issuing
         fetchData({
-          name: currentEscrowCredential
+          name: currentEscrowCredential,
+          cred: {
+            owner: publicKeyBase58, 
+            issuer: issuer[0], 
+            credentialType: credPaymentSelection
+          }
         });
       }
+
+      setAuthState({ ...authState, alertAvailable: true, alertMessage: `Your credential has been successfully issued! 🥳`, alertNeedsSpinner: false });
+
+      // #endregion
 
       setLoading(false);
     }
