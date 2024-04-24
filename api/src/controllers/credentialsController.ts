@@ -55,10 +55,12 @@ export const getCredentialByNameAndAddress = async (req: Request, res: Response)
     console.log("Getting credential by name and address");
     const address = req.params.address;
     const credential = req.params.credentialName;
-
+    console.log("Address:", address);
+    console.log("Credential:", credential);
     const repo = new CredentialRepository();
     const store = repo.GetCredentialStore(credential);
     const cred = await store.get(address);
+    console.log("Cred:", cred);
     res.status(200).send(cred);
 }
 export const getIssuedCredential = async (req: Request, res: Response) => {

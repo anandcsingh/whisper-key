@@ -130,6 +130,9 @@ export class CredentialRepository {
       const allIsssued = (await store.getAll());
       allIsssued.forEach((value, key) => {
         if ((value as any).owner === owner) {
+          const cred = value as any;
+          cred.credentialType = credentialMetadata.name;
+          cred.description = credentialMetadata.description;
           creds.push(value);
         }
       });
