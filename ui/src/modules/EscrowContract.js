@@ -22,6 +22,10 @@ export class EscrowContract extends SmartContract {
         super.init();
         this.escrowAmount.set(Field(0));
     }
+    async initState(owner, issuer) {
+        this.senderPublicKey.set(owner);
+        this.receiverPublicKey.set(issuer);
+    }
     // withdraw from smart contract and send to receiver
     withdraw() {
         this.receiverPublicKey.requireEquals(this.receiverPublicKey.get());
@@ -62,6 +66,12 @@ __decorate([
     state(Field),
     __metadata("design:type", Object)
 ], EscrowContract.prototype, "escrowAmount", void 0);
+__decorate([
+    method,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [PublicKey, PublicKey]),
+    __metadata("design:returntype", Promise)
+], EscrowContract.prototype, "initState", null);
 __decorate([
     method,
     __metadata("design:type", Function),
