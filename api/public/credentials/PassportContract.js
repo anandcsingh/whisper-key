@@ -13,12 +13,8 @@ export class PassportEntity extends Struct({
     credentialType: CircuitString,
     issuer: PublicKey,
     owner: PublicKey,
-    FirstName: CircuitString,
-    LastName: CircuitString,
-    DateOfBirth: CircuitString,
-    ExpiryDate: CircuitString,
-    PassportNumber: CircuitString,
-    Nationality: CircuitString,
+            Name: CircuitString,
+            Number: Field,
 }) {
     toPlainObject() {
         return {
@@ -26,12 +22,8 @@ export class PassportEntity extends Struct({
             credentialType: this.credentialType.toString(),
             issuer: this.issuer.toBase58(),
             owner: this.owner.toBase58(),
-            FirstName: this.FirstName.toString(),
-            LastName: this.LastName.toString(),
-            DateOfBirth: this.DateOfBirth.toString(),
-            ExpiryDate: this.ExpiryDate.toString(),
-            PassportNumber: this.PassportNumber.toString(),
-            Nationality: this.Nationality.toString(),
+            Name: this.Name.toString(),
+            Number: Number(this.Number.toBigInt()),
         };
     }
     static fromPlainObject(obj) {
@@ -40,12 +32,8 @@ export class PassportEntity extends Struct({
             credentialType: CircuitString.fromString(obj.credentialType),
             issuer: PublicKey.fromBase58(obj.issuer),
             owner: PublicKey.fromBase58(obj.owner),
-            FirstName: CircuitString.fromString(obj.FirstName),
-            LastName: CircuitString.fromString(obj.LastName),
-            DateOfBirth: CircuitString.fromString(obj.DateOfBirth),
-            ExpiryDate: CircuitString.fromString(obj.ExpiryDate),
-            PassportNumber: CircuitString.fromString(obj.PassportNumber),
-            Nationality: CircuitString.fromString(obj.Nationality),
+            Name: CircuitString.fromString(obj.Name),
+            Number: Field(obj.Number),
         });
     }
     hash() {
@@ -53,12 +41,8 @@ export class PassportEntity extends Struct({
             .concat(this.credentialType.toFields())
             .concat(this.issuer.toFields())
             .concat(this.owner.toFields())
-            .concat(this.FirstName.toFields())
-            .concat(this.LastName.toFields())
-            .concat(this.DateOfBirth.toFields())
-            .concat(this.ExpiryDate.toFields())
-            .concat(this.PassportNumber.toFields())
-            .concat(this.Nationality.toFields())
+            .concat(this.Name.toFields())
+                        .concat(this.Number.toFields())
             );
     }
 }
@@ -66,6 +50,9 @@ export class PassportContract extends SmartContract {
     constructor() {
         super(...arguments);
         this.mapRoot = State();
+        this.events = {
+            issued: PublicKey,
+        };
     }
     init() {
         super.init();
@@ -85,6 +72,7 @@ export class PassportContract extends SmartContract {
         const hash = credential.hash();
         const [newRoot, _] = witness.computeRootAndKey(hash);
         this.mapRoot.set(newRoot);
+        this.emitEvent('issued', owner);
     }
 }
 __decorate([
@@ -122,6 +110,13 @@ export class CredentialProxy {
         }
         this.zkApp = new PassportContract(this.contractAddress);
     }
+    async fetchEvents(start, end) {
+        let events = await this.zkApp.fetchEvents(start, end);
+        let content = events.map((e) => {
+            return { type: e.type, data: JSON.stringify(e.event), blockHeight: Number(e.blockHeight.toBigint()) };
+        });
+        return content;
+    }
     async getEntityFromObject(obj) {
         return PassportEntity.fromPlainObject(obj);
     }
@@ -141,10 +136,8 @@ export class CredentialProxy {
     async issueCredential(payer, credential, merkleStore) {
         if (!this.useLocal)
             await fetchAccount({ publicKey: this.contractAddress });
-        
         credential.id = merkleStore.nextID;
         const entity = PassportEntity.fromPlainObject(credential);
-        entity.id = Field(merkleStore.nextID);
         let hash = entity.hash();
         merkleStore.map.set(entity.id, hash);
         const witness = merkleStore.map.getWitness(entity.id);

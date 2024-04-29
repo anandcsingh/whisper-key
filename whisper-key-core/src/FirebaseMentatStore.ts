@@ -69,13 +69,11 @@ export class FirebaseMentatStore extends ZkMentatStore {
         );
 
         const querySnapshot = await getDocs(maQuery);
-        console.log(querySnapshot.size);
         if (querySnapshot.size > 0) {
             querySnapshot.forEach((doc) => {
                 let entity = doc.data() as IEntity;
                 all.set((entity as any)[this.keyField], entity);
             });
-            console.log(all.size);
             return all;
         }
         else {

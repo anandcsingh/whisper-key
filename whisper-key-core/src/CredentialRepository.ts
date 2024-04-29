@@ -130,6 +130,9 @@ export class CredentialRepository {
       const allIsssued = (await store.getAll());
       allIsssued.forEach((value, key) => {
         if ((value as any).owner === owner) {
+          const cred = value as any;
+          cred.credentialType = credentialMetadata.name;
+          cred.description = credentialMetadata.description;
           creds.push(value);
         }
       });
@@ -213,6 +216,40 @@ export class CredentialRepository {
     });
 
     return fieldCounts;
+  }
+
+  async getIssuedCredentialsByIssuer(issuer: string): Promise<any[]> {
+    const maQuery = query(
+      collection(this.database, this.collectionName),
+      where('owner', '==', issuer)
+    );
+
+    const querySnapshot = await getDocs(maQuery);
+    const credentials: CredentialMetadata[] = [];
+    const creds: any = [];
+    console.log("Getting credentials by issuer", issuer);
+    querySnapshot.forEach((doc) => {
+      const credentialMetadata = doc.data() as CredentialMetadata;
+      credentials.push(credentialMetadata);
+    }
+    );
+
+    for (let i = 0; i < credentials.length; i++) {
+      const credentialMetadata = credentials[i];
+      const store = this.GetCredentialStore(credentialMetadata.name);
+
+      const allIsssued = (await store.getAll());
+
+      allIsssued.forEach((value, key) => {
+        const dataObj = value as any;
+        console.log("Checking if ", dataObj.issuer, " is equal to ", issuer);
+        if (dataObj.issuer == issuer) {
+          console.log("Adding credential to creds", dataObj);
+          creds.push(value);
+        }
+      });
+    }
+    return creds;
   }
 
 }
