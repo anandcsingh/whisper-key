@@ -3,6 +3,7 @@ import {
     Mina,
     AccountUpdate,
     fetchAccount,
+    PublicKey,
 } from 'o1js';
 import { EscrowContract } from './EscrowContract.js';
 import Client from 'mina-signer';
@@ -21,6 +22,8 @@ export class EscrowBerkeleyDeployer {
     }
 
     async deploy(): Promise<string> {
+        const ownerPub = PublicKey.fromBase58(this.senderAccount);
+        const issuerPub = PublicKey.fromBase58(this.receiverAccount);
         let zkAppPublicAddress: string = "";
         console.log('Entered deployment...');
         let berkeleyUrl = "https://proxy.berkeley.minaexplorer.com/graphql";
@@ -74,6 +77,7 @@ export class EscrowBerkeleyDeployer {
                 async () => {
                     AccountUpdate.fundNewAccount(feePayerAddress);
                     await zkapp.deploy({ verificationKey });
+                    await zkapp.initState(ownerPub, issuerPub);
                 }
             );
 

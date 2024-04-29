@@ -181,8 +181,10 @@ const Header = () => {
 
       console.log('Getting escrow sender...');
       let escrowSender = await zkappWorkerClient.getSender();
+      console.log('Escrow sender: ', escrowSender)
       console.log('Getting escrow receiver...');
       let escrowReceiver = await zkappWorkerClient.getReceiver();
+      console.log('Escrow receiver: ', escrowReceiver);
 
       if(escrowSender === null || escrowSender === undefined) {
         console.log('Setting escrow sender...');
@@ -222,7 +224,36 @@ const Header = () => {
       console.log(`View transaction at ${transactionLink}`);
 
       let transactionLinkBtn = `<a href="${transactionLink}" class="btn btn-sm" target="_blank">View transaction</a>`;
-      setAuthState({ ...authState, alertAvailable: true, alertMessage: `Successful escrow payment: ${transactionLinkBtn} You will get a message in inbox when your credential is issued.`, alertNeedsSpinner: false });
+      setAuthState({ ...authState, alertAvailable: true, alertMessage: `Successful escrow payment: ${transactionLinkBtn}... About to transfer funds to issuer!`, alertNeedsSpinner: false });
+      
+      //toast(`Successful escrow payment: ${transactionLinkBtn}`);
+
+      await zkappWorkerClient.withdrawFromSmartContract(publicKeyBase58);
+
+      console.log('Creating proof...');
+      await zkappWorkerClient!.proveUpdateTransaction();
+
+      console.log('Requesting send transaction for withdraw...');
+      const transactionJsonWd = await zkappWorkerClient!.getTransactionJSON();
+
+      console.log('Getting transaction JSON...');
+      let hashWithdraw = await (window as any).mina.sendTransaction({
+        transaction: transactionJSON,
+        feePayer: {
+          fee: transactionFee,
+          memo: ''
+        }
+      });
+
+      const transactionLinkWithdraw = `https://berkeley.minaexplorer.com/transaction/${hashWithdraw.hash}`;
+      setTransactionLink(transactionLinkWithdraw);
+      setState({ ...state, creatingTransaction: false });
+
+      console.log(`View transaction at ${transactionLinkWithdraw}`);
+
+      setAuthState({ ...authState, alertAvailable: true, alertMessage: `Successfully transferred funds to the issuer....`, alertNeedsSpinner: false });
+
+      toast(`Successfully transferred funds to the issuer. You will be alerted in your inbox when your Credential has been issued!`);
 
       console.log('Successfully transferred Mina in escrow to the issuer. Next step is to issue the credential');
 
@@ -266,7 +297,7 @@ const Header = () => {
         });
       }
 
-      setAuthState({ ...authState, alertAvailable: true, alertMessage: `Your credential has been successfully issued! 🥳`, alertNeedsSpinner: false });
+      // setAuthState({ ...authState, alertAvailable: true, alertMessage: `Your credential has been successfully issued! 🥳`, alertNeedsSpinner: false });
 
       // #endregion
 

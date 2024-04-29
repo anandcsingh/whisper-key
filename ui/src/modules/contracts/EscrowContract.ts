@@ -14,6 +14,11 @@ export class EscrowContract extends SmartContract {
         this.escrowAmount.set(Field(0));
     }
 
+    @method async initState(owner: PublicKey, issuer: PublicKey) {
+        this.senderPublicKey.set(owner);
+        this.receiverPublicKey.set(issuer);
+    }
+
     // withdraw from smart contract and send to receiver
     @method withdraw() {
         this.receiverPublicKey.requireEquals(this.receiverPublicKey.get());
@@ -45,7 +50,6 @@ export class EscrowContract extends SmartContract {
         senderUpdate.requireSignature();
         senderUpdate.send({ to: this, amount });
     }
-
 }
 
 function printBalances(addr: PublicKey) {
