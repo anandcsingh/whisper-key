@@ -19,19 +19,20 @@ export class EscrowContract extends SmartContract {
         };
     }
     init() {
+        super.init();
         this.escrowAmount.set(Field(0));
     }
     // withdraw from smart contract and send to receiver
-    async withdraw(user) {
-        // add your deposit logic circuit here
-        // that will adjust the amount
-        const payerUpdate = AccountUpdate.createSigned(user);
-        payerUpdate.send({ to: this.address, amount: UInt64.from(1000000) });
+    withdraw() {
+        this.receiverPublicKey.requireEquals(this.receiverPublicKey.get());
+        this.send({ to: this.receiverPublicKey.get(), amount: UInt64.from(2 * 1e9) });
     }
     setReceiver(receiver) {
+        this.receiverPublicKey.getAndRequireEquals();
         this.receiverPublicKey.set(receiver);
     }
     setSender(sender) {
+        this.senderPublicKey.getAndRequireEquals();
         this.senderPublicKey.set(sender);
     }
     // deposit to smart contract from sender account
@@ -64,8 +65,8 @@ __decorate([
 __decorate([
     method,
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [PublicKey]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
 ], EscrowContract.prototype, "withdraw", null);
 __decorate([
     method,

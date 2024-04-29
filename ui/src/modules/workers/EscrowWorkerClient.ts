@@ -32,15 +32,41 @@ export default class EscrowWorkerClient {
         return result as ReturnType<typeof fetchAccount>;
     }
 
-    initZkappInstance(publicKey: PublicKey) {
+    initZkappInstance(publicKey: PublicKey, owner: string, issuer: string) {
         return this._call('initZkappInstance', {
+            owner: owner,
+            issuer: issuer,
             publicKey58: publicKey.toBase58(),
         });
+    }
+    async getSender() {
+        return this._call('getSender', {});
+    }
+
+    async getReceiver() {
+        return this._call('getReceiver', {});
+    }
+
+    async setSender(senderPublicKey: string, feePayerPubKey: string) {
+        console.log('inside sender setter...');
+        return this._call('setSender', { senderPublicKey, feePayerPubKey });
+    }
+
+    async setReciever(receiverPublicKey: string, feePayerPubKey: string) {
+        return this._call('setReceiver', { receiverPublicKey, feePayerPubKey });
     }
 
     async getEscrowAmount(): Promise<Field> {
         const result = await this._call('getAmount', {});
         return Field.fromJSON(JSON.parse(result as string));
+    }
+
+    async getEscrowEvents() {
+        return this._call('getEscrowEvents', {});
+    }
+
+    async withdrawFromSmartContract(publicKey: string) {
+        return this._call('withdrawFromSmartContract', { publicKey });
     }
 
     depositTransaction(publicKey: string) {

@@ -274,6 +274,8 @@ credsRouter.get('/created/:address', getCreatedCredentials);
 
 credsRouter.post('/issue/:name', issueCredentialViaProxy);
 
+credsRouter.post('/issue/new/:name', issueCredentialAfterPayment);
+
 credsRouter.get('/owned/:address', getOwnedCredentials);
 credsRouter.get('/addtask', addTask);
 credsRouter.post('/deployNotification', escrowNotify);

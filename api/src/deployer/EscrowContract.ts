@@ -10,23 +10,23 @@ export class EscrowContract extends SmartContract {
     };
 
     init(): void {
+        super.init();
         this.escrowAmount.set(Field(0));
     }
 
     // withdraw from smart contract and send to receiver
-    @method async withdraw(user: PublicKey) {
-        // add your deposit logic circuit here
-        // that will adjust the amount
-        const payerUpdate = AccountUpdate.createSigned(user);
-
-        payerUpdate.send({ to: this.address, amount: UInt64.from(1000000) });
+    @method withdraw() {
+        this.receiverPublicKey.requireEquals(this.receiverPublicKey.get());
+        this.send({ to: this.receiverPublicKey.get(), amount: UInt64.from(2 * 1e9) });
     }
 
     @method setReceiver(receiver: PublicKey) {
+        this.receiverPublicKey.getAndRequireEquals();
         this.receiverPublicKey.set(receiver);
     }
 
     @method setSender(sender: PublicKey) {
+        this.senderPublicKey.getAndRequireEquals();
         this.senderPublicKey.set(sender);
     }
 

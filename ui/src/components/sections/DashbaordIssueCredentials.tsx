@@ -30,7 +30,7 @@ const DashBoardIssueCredentials = () => {
                 console.log('authState: ', authState);
                 const credsApi = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/created/${authState.userAddress}`;
 
-                console.log('credsAPi: ', credsApi)
+                console.log('credsApi: ', credsApi)
                 if(!credsApi){
                     throw new Error('API URL not defined in environment variables.');
                 }    

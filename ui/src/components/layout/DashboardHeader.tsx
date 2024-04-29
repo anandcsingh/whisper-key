@@ -12,8 +12,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import EscrowWorkerClient from '@/modules/workers/EscrowWorkerClient';
 import { Field, PublicKey } from 'o1js';
 import { AuthContext } from 'zkshield';
+import { SHA256 } from 'crypto-js';
 
 let transactionFee = 0.1;
+
+// [smartContractPubKey, Issuer]
+type CredentialIssuer = [string, string];
 
 const Header = () => {
 
@@ -30,7 +34,9 @@ const Header = () => {
   var [credPaymentSelected, setCredPaymentSelected] = useState(false);
   var [credPaymentSelection, setCredPaymentSelection] = useState('');
   var [zkAppAddress, setzkAppAddress] = useState('');
+  const [credentialIssuers, setCredentialIssuers] = useState<CredentialIssuer[]>([]);
   const [transactionlink, setTransactionLink] = useState('');
+  const [currentEscrowCredential, setCurrentEscrowCredential] = useState('');
   const [loading, setLoading] = useState(false);
 
 
@@ -99,7 +105,13 @@ const Header = () => {
     });
   }
 
+  const findIssuer = (criteria: (tuple: CredentialIssuer) => boolean): CredentialIssuer | undefined => {
+    return credentialIssuers.find(criteria);
+  };
+
   const onSendTransaction = async () => {
+    
+    setAuthState({ ...authState, alertAvailable: true, alertMessage: `Compiling smart contract for escrow payment...`, alertNeedsSpinner: true });
     console.log('zkappaddress', zkAppAddress);
     console.log('Preparing to do a transaction');
     if(zkAppAddress) {
@@ -138,7 +150,14 @@ const Header = () => {
 
       const zkappPublicKey = PublicKey.fromBase58(zkAppAddress);
 
-      await zkappWorkerClient.initZkappInstance(zkappPublicKey);
+      //await zkappWorkerClient.initZkappInstance(zkappPublicKey, publicKeyBase58, "B62qozSM7ocHBxErDNimZprWf5Zcd4BNKizffvnDhBrjohhzRnkr3pC");
+      let issuer = findIssuer(i => i[0] == zkAppAddress);
+
+      if(issuer === null || issuer == undefined) {
+        console.log(`Issuer value not found for Escrow Smart Contract... Resolve and try again ...`);
+        return;
+      }
+      await zkappWorkerClient.initZkappInstance(zkappPublicKey, publicKeyBase58, issuer[0]);
 
       setState({
         ...state,
@@ -158,7 +177,28 @@ const Header = () => {
         publicKey: publicKey!
       });
       
+      setAuthState({ ...authState, alertAvailable: true, alertMessage: `About to accept your escrow payment...`, alertNeedsSpinner: true });
+
+      console.log('Getting escrow sender...');
+      let escrowSender = await zkappWorkerClient.getSender();
+      console.log('Getting escrow receiver...');
+      let escrowReceiver = await zkappWorkerClient.getReceiver();
+
+      if(escrowSender === null || escrowSender === undefined) {
+        console.log('Setting escrow sender...');
+        escrowSender = await zkappWorkerClient.setSender(publicKeyBase58, publicKeyBase58);
+        console.log('Successfully set escrow sender...');
+      }
+
+      if(escrowReceiver === null || escrowReceiver === undefined) {
+        console.log('Setting escrow receiver...');
+        escrowReceiver = await zkappWorkerClient.setReciever(issuer[0], publicKeyBase58);
+        console.log('Successfully set escrow receiver...');
+      }
+      
+      console.log('About to start action to deposit to the smart contract');
       await zkappWorkerClient!.depositTransaction(publicKey.toBase58());
+      console.log('Successfully deposited to smart contract');
 
       console.log('Creating proof...');
       await zkappWorkerClient!.proveUpdateTransaction();
@@ -176,14 +216,91 @@ const Header = () => {
       });
 
       const transactionLink = `https://berkeley.minaexplorer.com/transaction/${hash}`;
+      setTransactionLink(transactionLink);
+      setState({ ...state, creatingTransaction: false });
+
       console.log(`View transaction at ${transactionLink}`);
 
-      setTransactionLink(transactionLink);
+      let transactionLinkBtn = `<a href="${transactionLink}" class="btn btn-sm" target="_blank">View transaction</a>`;
+      setAuthState({ ...authState, alertAvailable: true, alertMessage: `Successful escrow payment: ${transactionLinkBtn} You will get a message in inbox when your credential is issued.`, alertNeedsSpinner: false });
 
-      setState({ ...state, creatingTransaction: false });
+      console.log('Successfully transferred Mina in escrow to the issuer. Next step is to issue the credential');
+
+      // var events = await zkappWorkerClient.getEscrowEvents();
+      
+      // console.log('Events loaded in the UI ....');
+
+      let escrowReceived = true;
+
+      // //@ts-ignore
+      // events!.map(async (e) => {
+      //   let data = JSON.stringify(e.event);
+      //   if(data === 'escrow-funds-received') {
+      //     // Transfer from smart contract to Verifiable Credential Issuer
+      //     await zkappWorkerClient.withdrawFromSmartContract(publicKey.toBase58());
+      //     escrowReceived = true;
+      //   }
+      // })
+
+     // #region - Issuing Credential for Owner
+      let cred = {
+        owner: publicKeyBase58, 
+        issuer: issuer[0], 
+        credentialType: credPaymentSelection
+      };
+      let credStr = JSON.stringify(cred);
+      // #region new-signedresult
+      const hashRes = SHA256(credStr).toString();
+      const signResult = await (window as any).mina?.signMessage({ message: hashRes }).catch((err: any) => err);
+      // #endregion
+
+      if(escrowReceived) {
+        // Complete credential issuing
+        fetchData({
+          name: currentEscrowCredential,
+          cred: {
+            owner: publicKeyBase58, 
+            issuer: issuer[0], 
+            credentialType: credPaymentSelection
+          }
+        });
+      }
+
+      setAuthState({ ...authState, alertAvailable: true, alertMessage: `Your credential has been successfully issued! 🥳`, alertNeedsSpinner: false });
+
+      // #endregion
+
       setLoading(false);
     }
 
+  }
+
+  const fetchData = (data: any) => {
+    const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/issue/${data.name}`;
+    if (!apiUrl) {
+      throw new Error('API URL not defined in environment variables.');
+    }
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        // You can add other headers here if needed
+      },
+      body: JSON.stringify(data)
+    };
+    try {
+
+    const response = fetch(apiUrl, requestOptions)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+          let transactionLink = `<a href="${data.transactionUrl}" class="btn btn-sm" target="_blank">View transaction</a>`;
+           setAuthState({ ...authState, alertAvailable: true, alertMessage: `Credential issued ${transactionLink}`, alertNeedsSpinner: false });
+        })
+    .catch((err: any) => console.error('Error trying to fetch Credential Metadata', err));
+    } catch (error) {
+      console.error('Error trying to fetch Credential Metadata', error);
+    }
   }
 
   useEffect(() => {
@@ -244,6 +361,9 @@ const Header = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    if(e.target.name === "credentialName") {
+      setCurrentEscrowCredential(e.target.value);
+    }
   };
 
   function handleEscrowPayment(event: React.FormEvent<HTMLFormElement>): void {
@@ -313,6 +433,9 @@ const Header = () => {
                           setCredPaymentSelected(!credPaymentSelected);
                           setCredPaymentSelection(item.credential.credentialType);
                           setzkAppAddress(item.smartContractPublicKey);
+                          var issuer: CredentialIssuer;
+                          issuer = [item.smartContractPublicKey, item.credential.issuer];
+                          setCredentialIssuers([...credentialIssuers, issuer]);
                           console.log('Cred payment selected:', credPaymentSelected);
                           console.log('Cred type:', credPaymentSelection)
                           console.log('zkApp Address:', zkAppAddress);
