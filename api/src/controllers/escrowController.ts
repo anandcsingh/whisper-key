@@ -19,6 +19,19 @@ export const getEscrowPaymentData = async (req: Request, res: Response) => {
     }
 }
 
+export const getPaymentsForAddress = async (req: Request, res: Response) => {
+    const walletAddress = req.params.address;
+
+    let escrowRepo = new EscrowPaymentRepository();
+    try {
+        let result = await escrowRepo.getPaymentsForAddress(walletAddress);
+        console.log(result);
+        res.status(200).send(result);
+    } catch (error) {
+        console.log('Error occurred while getting payment data', error);
+        res.send([]);
+    }
+}
 export const addEscrowPaymentData = async (req: Request, res: Response) => {
     const { walletAddress, payment, paymentReqs, smartContractPublicKey } = req.body;
 

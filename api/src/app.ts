@@ -22,6 +22,7 @@ import { BlockHeightRepository } from './models/BlockHeightRepository.js';
 import { inboxRouter } from './routes/inboxRoute.js';
 import { escrowRouter } from './routes/escrowRoute.js';
 import { checkEscrowDeploymentStatus } from './controllers/credentialsController.js';
+import { verificationsRouter } from './routes/verificationsRoute.js';
 
 const app = express();
 const port = process.env.PORT || 3001; // Set your desired port
@@ -54,6 +55,7 @@ app.use('/api/inbox', inboxRouter);
 app.use('/api/credential-stats', credsStatsRouter);
 
 app.use('/api/escrow', escrowRouter);
+app.use('/api/verifications', verificationsRouter);
 
 app.use('/api/poll/created', async (req, res, next) => {
   checkDeploymentStatus(new EventNotification());
