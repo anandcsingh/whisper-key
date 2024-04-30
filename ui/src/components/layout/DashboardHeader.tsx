@@ -307,7 +307,7 @@ const Header = () => {
   }
 
   const fetchData = (data: any) => {
-    const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/issue/${data.name}`;
+    const apiUrl = `${process.env.NEXT_PUBLIC_CREDENTIALS_API}/issue?name=${data.name}`;
     if (!apiUrl) {
       throw new Error('API URL not defined in environment variables.');
     }

@@ -110,7 +110,7 @@ const CredentialForm: React.FC<CredentialFormProps> = ({ credentialMetadata }) =
     .then((data) => {
       console.log(data);
           let transactionLink = `<a href="${data.transactionUrl}" class="btn btn-sm" target="_blank">View transaction</a>`;
-           setAuthState({ ...authState, alertAvailable: true, alertMessage: `Credential issued ${transactionLink}`, alertNeedsSpinner: false });
+           setAuthState({ ...authState, alertAvailable: true, alertMessage: `Credential issuing step 1: Escrow smart contract: ${transactionLink}`, alertNeedsSpinner: false });
         })
     .catch((err: any) => console.error('Error trying to fetch Credential Metadata', err));
     } catch (error) {
