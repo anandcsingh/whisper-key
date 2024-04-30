@@ -35,7 +35,7 @@ export class VerificationsRepository {
   
   async addVerification(verification: VerificationData): Promise<void> {
     verification.id = randomUUID();
-
+    verification.verificationDate = new Date();
     const docRef = doc(
       this.database,
       'Verifications',
@@ -45,15 +45,52 @@ export class VerificationsRepository {
     await setDoc(docRef, verification);
   }
 
-  async getVerifications(owner: string): Promise<VerificationData[]> {
+  async addVerificationTemplate(verification: any): Promise<void> {
+    verification.id = randomUUID();
+    verification.created = new Date();
+
+    const docRef = doc(
+      this.database,
+      'VerificationTemplates',
+      verification.id,
+    );
+
+    await setDoc(docRef, verification);
+  }
+
+  async getVerificationTemplates(templateOwner: string): Promise<any[]> {
+    
+    const maQuery = query(collection(this.database, 'VerificationTemplates'), 
+    where('templateOwner', '==', templateOwner),
+    orderBy('name', 'asc'));
+    const querySnapshot = await getDocs(maQuery);
+    const verifications: any[] = [];
+    querySnapshot.forEach((doc) => {
+      verifications.push(doc.data());
+    });
+    return verifications;
+  }
+
+  async getVerificationByID(id: string): Promise<VerificationData | undefined> {
+    const docRef = doc(this.database, 'Verifications', id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        return docSnap.data() as VerificationData;
+    } else {
+        return undefined;
+    }
+}
+
+  async getVerifications(requestor: string): Promise<any[]> {
     
     const maQuery = query(collection(this.database, 'Verifications'), 
-    where('owner', '==', owner),
+    where('requestor', '==', requestor),
     orderBy('verificationDate', 'desc'));
     const querySnapshot = await getDocs(maQuery);
-    const verifications: VerificationData[] = [];
+    const verifications: any[] = [];
+    console.log("get verifications size",querySnapshot.size);
     querySnapshot.forEach((doc) => {
-      verifications.push(doc.data() as VerificationData);
+      verifications.push(doc.data());
     });
     return verifications;
   }

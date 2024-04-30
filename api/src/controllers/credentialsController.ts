@@ -30,6 +30,17 @@ export const getIssuedPendingCredentials = async (req: Request, res: Response) =
     const payments = await paymentRepo.getPaymentsByIssuer(address);
     res.status(200).send(payments);
 }
+
+export const getAllCredentials = async (req: Request, res: Response) => {
+    try {
+        const credentialRepository = new CredentialRepository();
+        const credentials = await credentialRepository.GetAllCredentials();
+        res.status(200).json(credentials);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 export const getPendingCredential = async (req: Request, res: Response) => {
     console.log("payment address from pending");
 
