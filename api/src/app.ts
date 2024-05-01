@@ -53,6 +53,12 @@ app.use('/api/profile', profileRouter);
 app.use('/api/inbox', inboxRouter);
 
 app.use('/api/credential-stats', credsStatsRouter);
+app.use('/api/stats', credsStatsRouter);
+app.get('/download/:name', (req, res) => {
+
+  const file = `public/credentials/${req.params.name}Contract.js`;
+  res.download(file);
+});
 
 app.use('/api/escrow', escrowRouter);
 app.use('/api/verifications', verificationsRouter);
