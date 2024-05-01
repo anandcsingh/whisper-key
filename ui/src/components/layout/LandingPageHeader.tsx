@@ -23,10 +23,16 @@ const Header = () => {
             
               <div className="flex items-center lg:order-2" id="mobile-menu-2">
               <Link style={{marginRight:'10px'}}
+                className="inline-block py-2 px-4 text-sm leading-5 text-green-50 btn-secondary hover:bg-indigo-600 font-medium focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-md float-right"
+                 href='https://whisper-key-docs.onrender.com/' >
+                    Docs
+                </Link>
+                <Link style={{marginRight:'10px'}}
                 className="inline-block py-2 px-4 text-sm leading-5 text-green-50 btn-primary hover:bg-indigo-600 font-medium focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-md float-right"
                  href='/credentials' >
                     View Credentials
                 </Link>
+                
                 <Link 
                 className="inline-block py-2 px-4 text-sm leading-5 text-green-50 btn-primary hover:bg-indigo-600 font-medium focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-md float-right"
                  href='/dashboard' >
