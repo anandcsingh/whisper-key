@@ -16,10 +16,12 @@ export default function Credentials() {
         const fetchData = async () => {
             try {
                 console.log('base URL:', process.env.NEXT_PUBLIC_BASE_API);
-                const apiURL = `${process.env.NEXT_PUBLIC_BASE_API}/api/credential-stats`;
+                const apiURL = `${process.env.NEXT_PUBLIC_BASE_API}/api/stats`;
                 console.log(apiURL);
                 const response = await axios.get(`${apiURL}/`);
-                const creds: CredentialMetadata[] = response.data as CredentialMetadata[];
+                const result = await fetch(apiURL);
+                const data = await result.json();
+                const creds: CredentialMetadata[] = data;// response.data as CredentialMetadata[];
                 setAllCreds(creds);
     
             } catch (error) {
@@ -70,7 +72,7 @@ export default function Credentials() {
                                         if (cred.owner !== '') {
                                             return (
                                                 <tr key={cred.id}>
-                                                    <td>{cred.name}</td>
+                                                    <td><a href={`${process.env.NEXT_PUBLIC_BASE_API}/download/${cred.name}`}>{cred.name}</a></td>
                                                     <td>{cred.owner}</td>
                                                 </tr>
                                             );
